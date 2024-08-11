@@ -10,8 +10,8 @@ export class BreedService {
 		private readonly prisma: PrismaService
 	) {}
 
-	async findAll() {
-		return this.breedRepository.findAll()
+	async findAll({ lang }: { lang: string }) {
+		return this.breedRepository.findAll({ lang })
 	}
 
 	async create(breed: BreedDto) {

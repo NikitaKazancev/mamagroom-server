@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common'
+import { ConstantModule } from './constant/constant.module'
 import { BreedModule } from './entities/breed/breed.module'
 import { PriceModule } from './entities/price/price.module'
-import { ProceduresModule } from './entities/procedures/procedures.module'
+import { ProcedureModule } from './entities/procedure/procedure.module'
 
 @Module({
-	imports: [ProceduresModule, PriceModule, BreedModule],
+	imports: [ProcedureModule, PriceModule, BreedModule, ConstantModule],
 	controllers: [],
 	providers: [],
 })

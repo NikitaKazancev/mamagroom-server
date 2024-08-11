@@ -8,7 +8,7 @@ export class PriceRepository {
 
 	findAll() {
 		return this.prisma.price.findMany({
-			orderBy: { service: { order: 'asc' } },
+			orderBy: { procedure: { order: 'asc' } },
 			where: {
 				isDeleted: false,
 			},

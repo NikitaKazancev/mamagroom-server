@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Get, Post, Query } from '@nestjs/common'
 import { BreedService } from './breed.service'
 import { BreedDto } from './dto/breed.dto'
 
@@ -7,8 +7,8 @@ export class BreedController {
 	constructor(private readonly breedService: BreedService) {}
 
 	@Get()
-	findAll() {
-		return this.breedService.findAll()
+	findAll(@Query('lang') lang: string) {
+		return this.breedService.findAll({ lang })
 	}
 
 	@Post()

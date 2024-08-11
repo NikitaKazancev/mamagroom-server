@@ -1,24 +1,16 @@
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
 
-export class PriceDto {
+export class ProcedureDto {
+	@IsString()
+	name: string
+
 	@IsOptional()
 	@IsString()
-	procedureId?: string
-
-	@IsOptional()
-	@IsString()
-	breedId?: string
+	description?: string
 
 	@IsOptional()
 	@IsNumber()
-	size?: number
-
-	@IsOptional()
-	@IsNumber()
-	weight?: number
-
-	@IsNumber()
-	price: number
+	order?: number
 
 	@IsOptional()
 	@IsBoolean()

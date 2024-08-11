@@ -2,6 +2,7 @@ model Breed {
    id   String @id @unique @default(cuid())
    name String @unique
 
+   language  String   @default("ru")
    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
    updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
    isUsed    Boolean  @default(true)

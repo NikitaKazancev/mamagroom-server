@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { ServiceAPI } from 'src/components/procedures/service.api'
-import { BreedAPI } from 'src/entities/breed/breed.api'
+import { BreedAPI } from 'src/entities/breed/utils/breed.api'
+import { ProcedureAPI } from 'src/entities/procedure/utils/procedure.api'
 import { PrismaService } from 'src/prisma.service'
 import { PriceDto } from './dto/price.dto'
 import { PriceRepository } from './price.repository'
@@ -11,7 +11,7 @@ export class PriceService {
 		private readonly priceRepository: PriceRepository,
 		private readonly prisma: PrismaService,
 		private readonly breedAPI: BreedAPI,
-		private readonly serviceAPI: ServiceAPI
+		private readonly procedureAPI: ProcedureAPI
 	) {}
 
 	async findAll() {
@@ -20,7 +20,7 @@ export class PriceService {
 
 	async create(price: PriceDto) {
 		await this.breedAPI.checkBreedExistence(price.breedId)
-		await this.serviceAPI.checkServiceExistence(price.serviceId)
+		await this.procedureAPI.checkProcedureExistence(price.procedureId)
 
 		const priceDB = { ...price }
 		return this.priceRepository.create(priceDB)

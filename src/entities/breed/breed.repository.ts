@@ -6,11 +6,12 @@ import { BreedDBDto } from './dto/breed-db.dto'
 export class BreedRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findAll() {
+	findAll({ lang }: { lang: string }) {
 		return this.prisma.breed.findMany({
 			orderBy: { name: 'asc' },
 			where: {
 				isDeleted: false,
+				language: lang,
 			},
 		})
 	}
