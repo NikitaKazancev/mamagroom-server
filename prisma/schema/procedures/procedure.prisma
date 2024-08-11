@@ -1,0 +1,18 @@
+model Procedure {
+   id   String @id @unique @default(cuid())
+   name String @unique
+
+   description String?
+   order       Int     @unique
+
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   Prices                          Price[]
+   ProcedureCategories             ProcedureCategory[]
+   ProcedureCategoriesOnProcedures ProcedureCategoriesOnProcedures[]
+
+   @@map("procedures")
+}

@@ -1,0 +1,25 @@
+model ProcedureCategory {
+   id   String @id @unique @default(cuid())
+   name String @unique
+
+   order Int @unique
+
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   procedures                      Procedure[]
+   ProcedureCategoriesOnProcedures ProcedureCategoriesOnProcedures[]
+
+   @@map("procedure_categories")
+}
+
+model ProcedureCategoriesOnProcedures {
+   procedureId String
+   procedure   Procedure         @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+   categoryId  String
+   category    ProcedureCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+   @@id([procedureId, categoryId])
+}
