@@ -1,1 +1,0 @@
-fetch("https://mamagroom.ru/api").then(res => res.json()).then(console.log)

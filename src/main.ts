@@ -4,14 +4,7 @@ import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule, {
-		httpsOptions: {
-			// cert: readFileSync('./secrets/www_mamagroom_ru.pem'),
-			// key: readFileSync('./secrets/www_mamagroom_ru-key.pem'),
-			// ca: readFileSync('./secrets/www_mamagroom_ru-ca.pem'),
-			rejectUnauthorized: false,
-		},
-	})
+	const app = await NestFactory.create(AppModule)
 
 	app.setGlobalPrefix('api')
 	app.use(cookieParser())
