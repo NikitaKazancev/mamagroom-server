@@ -1,0 +1,18 @@
+model HeaderNavbarLink {
+   id       String             @id @unique @default(cuid())
+   name     String             @unique
+   link     String?
+   sublinks HeaderNavbarLink[] @relation("HeaderNavbarSubliks")
+   order    Int
+
+   language  String   @default("ru")
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   parentLinkId     String?
+   HeaderNavbarLink HeaderNavbarLink? @relation("HeaderNavbarSubliks", fields: [parentLinkId], references: [id])
+
+   @@map("header_navbar_links")
+}

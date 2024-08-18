@@ -1,11 +1,14 @@
 import { PrismaClient } from '@prisma/client'
+import { LANGUAGES } from 'src/utils/constants'
+import { PAGES_GENERAL } from '../pages-general.constants'
 
 /* eslint-disable no-console */
-export const constantsSeed = async (prisma: PrismaClient) => {
+export const pagesGeneralSeed = async (prisma: PrismaClient) => {
 	await prisma.constant.create({
 		data: {
-			name: 'header_nav_links',
-			language: 'ru',
+			type: PAGES_GENERAL.type,
+			name: PAGES_GENERAL.headerNavLinks,
+			language: LANGUAGES.RUSSIAN,
 			value: JSON.stringify([
 				{ name: 'главная', link: '/' },
 				{
@@ -21,17 +24,18 @@ export const constantsSeed = async (prisma: PrismaClient) => {
 						},
 					],
 				},
-				{ name: 'мастера', link: '/' },
-				{ name: 'вакансии', link: '/' },
-				{ name: 'контакты', link: '/' },
+				{ name: 'мастера', link: '/masters' },
+				{ name: 'вакансии', link: '/vacancies' },
+				{ name: 'контакты', link: '/contacts' },
 			]),
 		},
 	})
 
 	await prisma.constant.create({
 		data: {
-			name: 'header_nav_links',
-			language: 'en',
+			type: PAGES_GENERAL.type,
+			name: PAGES_GENERAL.headerNavLinks,
+			language: LANGUAGES.ENGLISH,
 			value: JSON.stringify([
 				{ name: 'home', link: '/' },
 				{
@@ -47,9 +51,9 @@ export const constantsSeed = async (prisma: PrismaClient) => {
 						},
 					],
 				},
-				{ name: 'masters', link: '/' },
-				{ name: 'vacancies', link: '/' },
-				{ name: 'contacts', link: '/' },
+				{ name: 'masters', link: '/masters' },
+				{ name: 'vacancies', link: '/vacancies' },
+				{ name: 'contacts', link: '/contacts' },
 			]),
 		},
 	})
