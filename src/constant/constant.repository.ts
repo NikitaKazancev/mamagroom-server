@@ -95,7 +95,7 @@ export class ConstantRepository {
 		})
 	}
 
-	deleteOne(data: ConstantDto) {
+	deleteOne(data: Omit<ConstantDto, 'value'>) {
 		return this.prisma.constant.delete({
 			where: {
 				language_type_name: {

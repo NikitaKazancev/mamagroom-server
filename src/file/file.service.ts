@@ -1,9 +1,12 @@
 import { readdirSync } from 'fs'
+import { FILE_PATHS } from './utils/file.constants'
 
 export class FileService {
-	findDestinationsSliderAboutUs() {
-		const fileNames = readdirSync('./static/slider-about-us')
+	findSliderAboutUsDestinations() {
+		const fileNames = readdirSync(`./static/${FILE_PATHS.sliderAboutUs}`)
 
-		return fileNames.map(fileName => `/static/slider-about-us/${fileName}`)
+		return fileNames.map(
+			fileName => `/static/${FILE_PATHS.sliderAboutUs}/${fileName}`
+		)
 	}
 }

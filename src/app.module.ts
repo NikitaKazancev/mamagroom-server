@@ -6,6 +6,7 @@ import { BreedModule } from './entities/breed/breed.module'
 import { HeaderNavbarLinkModule } from './entities/header-navbar-link/header-navbar-link.module'
 import { PriceModule } from './entities/price/price.module'
 import { ProcedureModule } from './entities/procedure/procedure.module'
+import { ValueModule } from './entities/values/value.module'
 import { FileModule } from './file/file.module'
 
 @Module({
@@ -20,6 +21,7 @@ import { FileModule } from './file/file.module'
 		ConstantModule,
 		FileModule,
 		HeaderNavbarLinkModule,
+		ValueModule,
 	],
 	controllers: [],
 	providers: [],

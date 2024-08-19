@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 import { PrismaClient } from '@prisma/client'
-import { pagesHomeSeed } from 'src/constant/pages/home/utils/pages-home.seed'
+import { constantSeed } from 'src/constant/utils/constant.seed'
 import { headerNavbarLinksSeed } from 'src/entities/header-navbar-link/utils/header-navbar-links.seed'
+import { valuesSeed } from 'src/entities/values/utils/header-navbar-links.seed'
 
 const prisma = new PrismaClient()
 
@@ -14,8 +15,15 @@ const main = async () => {
 	}
 
 	try {
-		await pagesHomeSeed(prisma)
-		console.log('pagesHomeSeed seeded')
+		await constantSeed(prisma)
+		console.log('constantSeed seeded')
+	} catch (e) {
+		console.error(e)
+	}
+
+	try {
+		await valuesSeed(prisma)
+		console.log('valuesSeed seeded')
 	} catch (e) {
 		console.error(e)
 	}

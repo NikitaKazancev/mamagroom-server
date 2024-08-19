@@ -5,36 +5,28 @@ import {
 	UploadedFile,
 	UseInterceptors,
 } from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
-import { diskStorage } from 'multer'
 import { FileService } from './file.service'
-
-const sanitizeFilename = (filename: string): string => {
-	return filename.replace(/[^a-z0-9.-]/gi, '_').toLowerCase()
-}
+import { FILE_PATHS } from './utils/file.constants'
+import { SaveFileByName } from './utils/save-file-by-name.interceptor'
 
 @Controller('files')
 export class FileController {
 	constructor(private readonly fileService: FileService) {}
 
-	@Get('slider-about-us')
-	findDestinationsSliderAboutUs() {
-		return this.fileService.findDestinationsSliderAboutUs()
+	@Post('pages/home/main-bg')
+	@UseInterceptors(SaveFileByName({ name: 'main-bg', folder: 'pages/home' }))
+	saveHomePageMainBg(@UploadedFile() file: Express.Multer.File) {
+		return { destination: file.destination }
 	}
 
-	@Post('slider-about-us')
-	@UseInterceptors(
-		FileInterceptor('file', {
-			storage: diskStorage({
-				destination: './static/slider-about-us', // Save to the static folder
-				filename: (req, file, cb) => {
-					const name = sanitizeFilename(file.originalname)
-					cb(null, name)
-				},
-			}),
-		})
-	)
-	saveFileSliderAboutUs(@UploadedFile() file: Express.Multer.File) {
+	@Get(FILE_PATHS.sliderAboutUs)
+	findSliderAboutUsDestinations() {
+		return this.fileService.findSliderAboutUsDestinations()
+	}
+
+	@Post(FILE_PATHS.sliderAboutUs)
+	@UseInterceptors(SaveFileByName({ folder: FILE_PATHS.sliderAboutUs }))
+	saveSliderAboutUsFile(@UploadedFile() file: Express.Multer.File) {
 		return { destination: file.destination }
 	}
 }

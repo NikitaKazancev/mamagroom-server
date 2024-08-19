@@ -5,3 +5,11 @@ export const prefix = (className: string, lang: string = '') => {
 
 	return `[${className}]:`
 }
+
+export const fileExtension = (fileName: string) => {
+	return fileName.split('.').pop()
+}
+
+export const toCamelCase = (str: string) => {
+	return str.replace(/-./g, match => match[1].toUpperCase())
+}
