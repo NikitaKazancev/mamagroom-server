@@ -10,6 +10,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Мы ставим здоровье и благополучие каждого питомца на первое место',
 				order: 1,
+				imageName: '1.png',
 			},
 			{
 				language: LANGUAGES.RUSSIAN,
@@ -17,6 +18,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Мы гарантируем высокие стандарты в каждой процедуре груминга',
 				order: 2,
+				imageName: '2.png',
 			},
 			{
 				language: LANGUAGES.RUSSIAN,
@@ -24,6 +26,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Мы создаем безопасную и комфортную среду для всех питомцев',
 				order: 3,
+				imageName: '3.png',
 			},
 			{
 				language: LANGUAGES.RUSSIAN,
@@ -31,6 +34,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Наша команда постоянно совершенствует свои навыки и знания',
 				order: 4,
+				imageName: '4.png',
 			},
 			{
 				language: LANGUAGES.RUSSIAN,
@@ -38,6 +42,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Мы учитываем уникальные потребности каждого клиента и его питомца',
 				order: 5,
+				imageName: '5.png',
 			},
 			{
 				language: LANGUAGES.RUSSIAN,
@@ -45,12 +50,14 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Мы относимся к животным с любовью, терпением и уважением',
 				order: 6,
+				imageName: '6.png',
 			},
 			{
 				language: LANGUAGES.ENGLISH,
 				title: 'Health Care',
 				description: 'We put the health and well-being of each pet first',
 				order: 1,
+				imageName: '1.png',
 			},
 			{
 				language: LANGUAGES.ENGLISH,
@@ -58,6 +65,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'We guarantee high standards in every grooming procedure',
 				order: 2,
+				imageName: '2.png',
 			},
 			{
 				language: LANGUAGES.ENGLISH,
@@ -65,6 +73,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'We create a safe and comfortable environment for all pets',
 				order: 3,
+				imageName: '3.png',
 			},
 			{
 				language: LANGUAGES.ENGLISH,
@@ -72,6 +81,7 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'Our team is constantly improving their skills and knowledge',
 				order: 4,
+				imageName: '4.png',
 			},
 			{
 				language: LANGUAGES.ENGLISH,
@@ -79,12 +89,14 @@ export const valuesSeed = async (prisma: PrismaClient) => {
 				description:
 					'We take into account the unique needs of each client and their pet',
 				order: 5,
+				imageName: '5.png',
 			},
 			{
 				language: LANGUAGES.ENGLISH,
 				title: 'Ethics and Respect',
 				description: 'We treat animals with love, patience and respect',
 				order: 6,
+				imageName: '6.png',
 			},
 		],
 	})

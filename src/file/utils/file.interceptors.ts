@@ -3,12 +3,14 @@ import { diskStorage } from 'multer'
 import { fileExtension } from 'src/utils/functions'
 import { sanitizeFilename } from './file.functions'
 
-export const SaveFileByName = ({
+export const SaveFile = ({
 	name,
 	folder,
+	byId,
 }: {
 	name?: string
 	folder?: string
+	byId?: boolean
 }) => {
 	return FileInterceptor('file', {
 		storage: diskStorage({
@@ -16,7 +18,9 @@ export const SaveFileByName = ({
 			filename: (req, file, cb) => {
 				const originalFileName = sanitizeFilename(file.originalname)
 				const ext = fileExtension(originalFileName)
-				cb(null, `${name || originalFileName}.${ext}`)
+
+				const fileName = byId ? req.query.id : name || originalFileName
+				cb(null, `${fileName}.${ext}`)
 			},
 		}),
 	})

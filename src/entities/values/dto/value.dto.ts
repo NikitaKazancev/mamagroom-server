@@ -2,7 +2,8 @@ import { IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class ValueDto {
 	@IsString()
-	name: string
+	@IsOptional()
+	title?: string
 
 	@IsString()
 	@IsOptional()
@@ -12,6 +13,11 @@ export class ValueDto {
 	@IsOptional()
 	parentLinkId?: string
 
+	@IsString()
+	@IsOptional()
+	imageName?: string
+
 	@IsNumber()
-	order: number
+	@IsOptional()
+	order?: number
 }

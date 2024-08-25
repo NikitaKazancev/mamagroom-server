@@ -2,6 +2,7 @@ model Value {
    id          String @id @unique @default(cuid())
    title       String @unique
    description String
+   imageName   String
    order       Int
 
    language  String   @default("ru")

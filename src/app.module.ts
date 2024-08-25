@@ -1,4 +1,6 @@
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
+import { APP_INTERCEPTOR } from '@nestjs/core'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { ConstantModule } from './constant/constant.module'
@@ -15,6 +17,11 @@ import { FileModule } from './file/file.module'
 			rootPath: join(__dirname, '..', '..', 'static'),
 			serveRoot: '/api/static',
 		}),
+		CacheModule.register({
+			// ttl: 300000, // 5 minutes
+			max: 1000,
+			isGlobal: true,
+		}),
 		ProcedureModule,
 		PriceModule,
 		BreedModule,
@@ -24,6 +31,11 @@ import { FileModule } from './file/file.module'
 		ValueModule,
 	],
 	controllers: [],
-	providers: [],
+	providers: [
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: CacheInterceptor,
+		},
+	],
 })
 export class AppModule {}
