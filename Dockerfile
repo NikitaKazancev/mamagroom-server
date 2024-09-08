@@ -5,6 +5,7 @@ WORKDIR /server
 COPY /src /server/src
 COPY /prisma /server/prisma
 COPY /secrets /server/secrets
+COPY /static /server/static
 # COPY .env /server/
 COPY .eslintrc.js /server/
 COPY nest-cli.json /server/
