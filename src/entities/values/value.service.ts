@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { FileService } from 'src/file/file.service'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { PrismaService } from 'src/prisma.service'
 import { FilterDto } from 'src/utils/dtos'
@@ -11,7 +10,6 @@ import { ValueRepository } from './value.repository'
 export class ValueService {
 	constructor(
 		private readonly repository: ValueRepository,
-		private readonly fileService: FileService,
 		private readonly prisma: PrismaService
 	) {}
 
@@ -25,16 +23,6 @@ export class ValueService {
 			...value,
 			imageName: `/static/${FILE_PATHS.values}/${value.imageName}`,
 		}))
-		// const files = this.fileService.findValuesDestinations()
-
-		// const res: typeof data & { imageSrc: string }[] = []
-
-		// data.forEach(value => {
-		// 	res.push({
-		// 		...value,
-		// 		imageSrc: files.find(f => f.includes(value.id)),
-		// 	})
-		// })
 
 		return data
 	}

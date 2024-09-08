@@ -1,15 +1,39 @@
-import { Controller, Get } from '@nestjs/common'
-import { Auth } from 'src/decorators/auth.decorator'
-import { CurrentUser } from 'src/decorators/current-user.decorator'
+import { HttpService } from '@nestjs/axios'
+import { Controller, Get, Req } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { AxiosError } from 'axios'
+import { catchError, firstValueFrom, Observable } from 'rxjs'
 import { UserService } from './user.service'
 
 @Controller('users')
 export class UserController {
-	constructor(private readonly service: UserService) {}
+	MICROSERVICE_AUTH_URL = ''
 
-	@Auth()
+	constructor(
+		private readonly configService: ConfigService,
+		private readonly service: UserService,
+		private readonly httpService: HttpService
+	) {
+		this.MICROSERVICE_AUTH_URL = this.configService.get(
+			'MICROSERVICE_AUTH_URL'
+		)
+	}
+
 	@Get('profile')
-	async getProfile(@CurrentUser('email') email: string) {
-		return this.service.findByEmail(email)
+	async getProfile(@Req() req) {
+		return await firstValueFrom(
+			this.httpService
+				.get(`${this.MICROSERVICE_AUTH_URL}/users/profile`, {
+					headers: {
+						authorization: req.headers.authorization,
+					},
+				})
+				.pipe(
+					catchError((error: AxiosError, caught: Observable<any>) => {
+						console.error(error)
+						return caught
+					})
+				)
+		).then(res => res.data)
 	}
 }

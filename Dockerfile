@@ -21,9 +21,9 @@ COPY bun.lockb /server/
 
 RUN apt-get update -y && apt-get install -y openssl
 
-RUN npm install
-# RUN npm install -g bun
-# RUN bun install
+# RUN npm install
+RUN npm install -g bun@1.1.22
+RUN bun install
 
 EXPOSE 8080
 

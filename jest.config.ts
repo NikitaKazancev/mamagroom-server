@@ -2,15 +2,15 @@ import type { Config } from '@jest/types'
 const config: Config.InitialOptions = {
 	preset: 'ts-jest',
 	testEnvironment: 'node',
-	rootDir: 'src',
 	testRegex: '.*\\.test\\.ts$',
+	roots: ['<rootDir>', 'src'],
+	moduleDirectories: ['node_modules', 'src'],
+	modulePaths: ['<rootDir>', 'src'],
 	moduleNameMapper: {
 		'^@src/(.*)$': '<rootDir>/$1',
 	},
 	collectCoverageFrom: ['./**/*.(t|j)s'],
-	coverageReporters: ['text', 'lcov'],
-	coveragePathIgnorePatterns: [
-		'/node_modules/', // Exclude node modules
-	],
+	coverageDirectory: '../coverage',
+	coveragePathIgnorePatterns: ['/node_modules/'],
 }
 export default config

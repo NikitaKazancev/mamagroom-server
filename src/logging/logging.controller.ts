@@ -1,6 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common'
-import { LoggingService } from 'src/logging/logging.service'
 import { LogType } from './dto/logging.dto'
+import { LoggingService } from './logging.service'
 
 @Controller('logs')
 export class LoggingController {
@@ -8,6 +8,6 @@ export class LoggingController {
 
 	@Get()
 	findAllBy(@Query('type') type: LogType, @Query('key') key: string) {
-		this.loggingService.findAllBy({ type, key })
+		return this.loggingService.findAllBy({ type, key })
 	}
 }

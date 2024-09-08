@@ -11,12 +11,4 @@ export class FileService {
 			fileName => `/static/${FILE_PATHS.sliderAboutUs}/${fileName}`
 		)
 	}
-
-	findValuesDestinations() {
-		const fileNames = readdirSync(`./static/${FILE_PATHS.values}`)
-
-		return fileNames.map(
-			fileName => `/static/${FILE_PATHS.values}/${fileName}`
-		)
-	}
 }
