@@ -1,39 +1,52 @@
-import { Controller, Get, Res } from '@nestjs/common'
+import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { AuthGuard } from '@nestjs/passport'
 import { Response } from 'express'
-import { LogType } from 'src/logging/dto/logging.dto'
-import { LoggingService } from 'src/logging/logging.service'
+import { AuthService } from './auth.service'
+import { GithubProfile, GoogleProfile } from './auth.types'
 
 @Controller('auth')
 export class AuthController {
-	MICROSERVICE_AUTH_URL = ''
+	CLIENT_OAUTH_REDIRECT_URL = ''
 
 	constructor(
-		private readonly configService: ConfigService,
-		private readonly loggingService: LoggingService
+		private readonly service: AuthService,
+		private readonly configService: ConfigService
 	) {
-		this.MICROSERVICE_AUTH_URL = this.configService.get(
-			'MICROSERVICE_AUTH_URL'
+		this.CLIENT_OAUTH_REDIRECT_URL = this.configService.get(
+			'CLIENT_OAUTH_REDIRECT_URL'
 		)
 	}
 
 	@Get('github')
-	async githubAuth(@Res({ passthrough: true }) res: Response) {
-		this.loggingService.save({
-			type: LogType.info,
-			key: 'Authentication',
-			message: 'redirect to GitHub OAuth',
-		})
-		res.redirect(`${this.MICROSERVICE_AUTH_URL}/github`)
+	@UseGuards(AuthGuard('github'))
+	async githubAuth() {}
+
+	@Get('github/redirect')
+	@UseGuards(AuthGuard('github'))
+	async githubAuthRedirect(
+		@Req() req: { user: GithubProfile },
+		@Res({ passthrough: true }) res: Response
+	) {
+		const user = await this.service.loginSocial(req)
+		const { accessToken } = await this.service.buildResponseObject(user)
+
+		return res.redirect(`${this.CLIENT_OAUTH_REDIRECT_URL}${accessToken}`)
 	}
 
 	@Get('google')
-	async googleAuth(@Res({ passthrough: true }) res: Response) {
-		this.loggingService.save({
-			type: LogType.info,
-			key: 'Authentication',
-			message: 'redirect to Google OAuth',
-		})
-		res.redirect(`${this.MICROSERVICE_AUTH_URL}/google`)
+	@UseGuards(AuthGuard('google'))
+	async googleAuth() {}
+
+	@Get('google/redirect')
+	@UseGuards(AuthGuard('google'))
+	async googleAuthRedirect(
+		@Req() req: { user: GoogleProfile },
+		@Res({ passthrough: true }) res: Response
+	) {
+		const user = await this.service.loginSocial(req)
+		const { accessToken } = await this.service.buildResponseObject(user)
+
+		return res.redirect(`${this.CLIENT_OAUTH_REDIRECT_URL}${accessToken}`)
 	}
 }

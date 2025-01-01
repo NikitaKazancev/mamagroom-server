@@ -1,0 +1,188 @@
+datasource db {
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
+}
+
+generator client {
+   provider        = "prisma-client-js"
+   binaryTargets   = ["native", "debian-openssl-3.0.x"]
+   previewFeatures = ["prismaSchemaFolder"]
+}
+
+model Breed {
+   id   String @id @unique @default(cuid())
+   name String @unique
+
+   language  String   @default("ru")
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   Price          Price[]
+   ResponseFromAI ResponseFromAI[]
+
+   @@map("breeds")
+}
+
+model Constant {
+   language String @default("ru")
+   type     String @default("")
+   name     String
+   value    String
+
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+
+   @@id([language, type, name])
+   @@map("constants")
+}
+
+model HeaderNavbarLink {
+   id       String             @id @unique @default(cuid())
+   name     String             @unique
+   link     String?
+   sublinks HeaderNavbarLink[] @relation("HeaderNavbarSubliks")
+   order    Int
+
+   language  String   @default("ru")
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   parentLinkId     String?
+   HeaderNavbarLink HeaderNavbarLink? @relation("HeaderNavbarSubliks", fields: [parentLinkId], references: [id])
+
+   @@map("header_navbar_links")
+}
+
+model Price {
+   procedureId String    @default("NULL") @map("procedure_id")
+   procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+   breedId     String    @default("NULL") @map("breed_id")
+   breed       Breed     @relation(fields: [breedId], references: [id], onDelete: Cascade)
+   size        Float     @default(0)
+   weight      Float     @default(0)
+
+   price Int
+
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   @@id([procedureId, breedId, size, weight])
+   @@map("prices")
+}
+
+model User {
+   id       String  @id @default(cuid())
+   email    String  @unique
+   name     String?
+   password String
+
+   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime   @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean    @default(true)
+   isDeleted Boolean    @default(false)
+   UserRole  UserRole[]
+
+   @@map("users")
+}
+
+model Role {
+   id   String @id @unique @default(cuid())
+   name String @unique
+
+   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime   @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean    @default(true)
+   isDeleted Boolean    @default(false)
+   UserRole  UserRole[]
+
+   @@map("roles")
+}
+
+model UserRole {
+   userId String @default("NULL") @map("user_id")
+   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+   roleId String @default("NULL") @map("role_id")
+   role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+   @@id([userId, roleId])
+   @@map("user_roles")
+}
+
+model Value {
+   id          String @id @unique @default(cuid())
+   title       String @unique
+   description String
+   imageName   String
+   order       Int
+
+   language  String   @default("ru")
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   @@map("values")
+}
+
+model Procedure {
+   id   String @id @unique @default(cuid())
+   name String @unique
+
+   description String?
+   order       Int     @unique
+
+   language  String   @default("ru")
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   Prices                          Price[]
+   ProcedureCategories             ProcedureCategory[]
+   ProcedureCategoriesOnProcedures ProcedureCategoriesOnProcedures[]
+
+   @@map("procedures")
+}
+
+model ProcedureCategory {
+   id   String @id @unique @default(cuid())
+   name String @unique
+
+   order Int @unique
+
+   language  String   @default("ru")
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   isUsed    Boolean  @default(true)
+   isDeleted Boolean  @default(false)
+
+   procedures                      Procedure[]
+   ProcedureCategoriesOnProcedures ProcedureCategoriesOnProcedures[]
+
+   @@map("procedure_categories")
+}
+
+model ProcedureCategoriesOnProcedures {
+   procedureId String
+   procedure   Procedure         @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+   categoryId  String 
+   category     ProcedureCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+   @@id([procedureId, categoryId])
+}
+
+model ResponseFromAI {
+   id              String @id @unique @default(cuid())
+   petDescription  String
+   detectedBreedId String
+   breed           Breed  @relation(fields: [detectedBreedId], references: [id], onDelete: Cascade)
+   response        String
+
+   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+}

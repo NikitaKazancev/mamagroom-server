@@ -14,7 +14,6 @@ import { ProcedureModule } from './entities/procedure/procedure.module'
 import { UserModule } from './entities/user/user.module'
 import { ValueModule } from './entities/values/value.module'
 import { FileModule } from './file/file.module'
-import { LoggingModule } from './logging/logging.module'
 
 @Module({
 	imports: [
@@ -39,7 +38,6 @@ import { LoggingModule } from './logging/logging.module'
 		ValueModule,
 		AuthModule,
 		UserModule,
-		LoggingModule,
 	],
 	controllers: [],
 	providers: [
