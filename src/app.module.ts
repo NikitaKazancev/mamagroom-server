@@ -1,5 +1,7 @@
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { APP_INTERCEPTOR } from '@nestjs/core'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { AuthModule } from './auth/auth.module'
@@ -24,11 +26,11 @@ import { FileModule } from './file/file.module'
 		ConfigModule.forRoot({
 			isGlobal: true,
 		}),
-		// CacheModule.register({
-		// 	ttl: 300000, // 5 minutes
-		// 	max: 1000,
-		// 	isGlobal: true,
-		// }),
+		CacheModule.register({
+			ttl: 1000,
+			max: 1000,
+			isGlobal: true,
+		}),
 		ProcedureModule,
 		PriceModule,
 		BreedModule,
@@ -44,10 +46,10 @@ import { FileModule } from './file/file.module'
 		GithubStrategy,
 		GoogleStrategy,
 		JwtStrategy,
-		// {
-		// 	provide: APP_INTERCEPTOR,
-		// 	useClass: CacheInterceptor,
-		// },
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: CacheInterceptor,
+		},
 	],
 })
 export class AppModule {}
