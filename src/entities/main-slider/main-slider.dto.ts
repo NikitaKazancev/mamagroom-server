@@ -1,6 +1,16 @@
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import {
+	IsBoolean,
+	IsIn,
+	IsNumber,
+	IsOptional,
+	IsString,
+} from 'class-validator'
+import { LANGUAGES_LIST, Language } from 'src/utils/constants'
 
 export class MainSliderDto {
+	@IsIn(LANGUAGES_LIST)
+	language: Language
+
 	@IsString()
 	@IsOptional()
 	imageName: string

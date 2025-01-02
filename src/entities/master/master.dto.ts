@@ -1,6 +1,10 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator'
+import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator'
+import { LANGUAGES_LIST, Language } from 'src/utils/constants'
 
 export class MasterDto {
+	@IsIn(LANGUAGES_LIST)
+	language: Language
+
 	@IsString()
 	name: string
 
