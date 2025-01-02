@@ -14,7 +14,7 @@ import { SaveFile } from 'src/file/utils/file.interceptors'
 import { MainSliderDto } from './main-slider.dto'
 import { MainSliderService } from './main-slider.service'
 
-@Controller('mainSliders')
+@Controller('main-slider')
 export class MainSliderController {
 	constructor(private readonly service: MainSliderService) {}
 

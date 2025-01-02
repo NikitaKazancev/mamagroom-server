@@ -1,18 +1,43 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
-import { ProcedureDto } from './dto/procedure.dto'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	Query,
+} from '@nestjs/common'
+import { Language } from 'src/utils/constants'
+import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
 
-@Controller('procedure')
+@Controller('procedures')
 export class ProcedureController {
-	constructor(private readonly procedureService: ProcedureService) {}
+	constructor(private readonly service: ProcedureService) {}
 
 	@Get()
-	findAll() {
-		return this.procedureService.findAll()
+	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+		return await this.service.findMany({ language, isDeleted })
+	}
+
+	@Get(':id')
+	async findById(@Param('id') id: string) {
+		return await this.service.findById(id)
 	}
 
 	@Post()
-	create(@Body() procedure: ProcedureDto) {
-		return this.procedureService.create(procedure)
+	async create(@Body() data: ProcedureDto) {
+		return await this.service.create(data)
+	}
+
+	@Put(':id')
+	async change(@Param('id') id: string, @Body() data: ProcedureDto) {
+		return await this.service.change(id, data)
+	}
+
+	@Delete(':id')
+	async delete(@Param('id') id: string) {
+		return await this.service.delete(id)
 	}
 }

@@ -1,38 +1,47 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
-import { ProcedureDBDto } from './dto/procedure-db.dto'
+import { FindManyFilter } from 'src/utils/dtos'
+import { ProcedureDto } from './procedure.dto'
 
 @Injectable()
 export class ProcedureRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findAll() {
+	findMany(filter: FindManyFilter & { name?: string }) {
 		return this.prisma.procedure.findMany({
-			orderBy: { order: 'asc' },
 			where: {
-				isDeleted: false,
+				...filter,
 			},
 		})
 	}
 
-	findById(procedureId: string) {
+	findById(id: string) {
 		return this.prisma.procedure.findUnique({
-			where: { id: procedureId, isDeleted: false },
+			where: {
+				id,
+			},
 		})
 	}
 
-	findLastOne() {
-		return this.prisma.procedure.findFirst({ orderBy: { order: 'desc' } })
+	create(procedure: ProcedureDto) {
+		return this.prisma.procedure.create({ data: procedure })
 	}
 
-	async create(procedure: ProcedureDBDto) {
-		try {
-			return await this.prisma.procedure.create({ data: procedure })
-		} catch (error) {
-			throw new HttpException(
-				'Procedure already exists',
-				HttpStatus.CONFLICT
-			)
-		}
+	change(id: string, procedure: ProcedureDto) {
+		return this.prisma.procedure.update({
+			where: {
+				id,
+			},
+			data: procedure,
+		})
+	}
+
+	markToDelete(id: string) {
+		return this.prisma.procedure.update({
+			where: {
+				id,
+			},
+			data: { isDeleted: true },
+		})
 	}
 }

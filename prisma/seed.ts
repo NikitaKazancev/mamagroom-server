@@ -4,6 +4,7 @@ import { breedSeed } from 'src/entities/breed/utils/breed.seed'
 import { headerNavbarLinkSeed } from 'src/entities/header-navbar-link/utils/header-navbar-link.seed'
 import { mainSliderSeed } from 'src/entities/main-slider/utils/main-slider.seed'
 import { masterSeed } from 'src/entities/master/utils/master.seed'
+import { procedureSeed } from 'src/entities/procedure/utils/procedure.seed'
 import { vacancySeed } from 'src/entities/vacancy/utils/vacancy.seed'
 import { valueSeed } from 'src/entities/value/utils/value.seed'
 
@@ -34,6 +35,13 @@ const main = async () => {
 	try {
 		await masterSeed(prisma)
 		console.log('master seeded')
+	} catch (e) {
+		console.error(e)
+	}
+
+	try {
+		await procedureSeed(prisma)
+		console.log('procedure seeded')
 	} catch (e) {
 		console.error(e)
 	}

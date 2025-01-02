@@ -1,31 +1,58 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
-import { ProcedureDto } from './dto/procedure.dto'
+import { FindManyFilter } from 'src/utils/dtos'
+import { conflict, notFound } from 'src/utils/errors'
+import { ProcedureDto } from './procedure.dto'
 import { ProcedureRepository } from './procedure.repository'
 
 @Injectable()
 export class ProcedureService {
-	constructor(
-		private readonly procedureRepository: ProcedureRepository,
-		private readonly prisma: PrismaService
-	) {}
+	constructor(private readonly repository: ProcedureRepository) {}
 
-	async findAll() {
-		return this.procedureRepository.findAll()
+	private async checkExistenceById(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, ProcedureService.name)
+		}
+
+		const procedure = await this.repository.findById(id)
+		if (!procedure) {
+			notFound(`procedure by id = ${id}`, ProcedureService.name)
+		}
+
+		return procedure
+	}
+
+	async findMany(filter: FindManyFilter) {
+		return await this.repository.findMany(filter)
+	}
+
+	async findById(id: string) {
+		return await this.checkExistenceById(id)
 	}
 
 	async create(procedure: ProcedureDto) {
-		let order = procedure.order
-		if (order === undefined) {
-			const lastProcedure = await this.procedureRepository.findLastOne()
-			if (!lastProcedure) {
-				order = 0
-			} else {
-				order = lastProcedure.order + 1
-			}
+		const procedureInDb = await this.repository.findMany({
+			name: procedure.name,
+		})
+
+		if (procedureInDb.length) {
+			conflict(
+				`procedure by name = ${procedure.name}`,
+				ProcedureService.name
+			)
 		}
 
-		const procedureDB = { ...procedure, order }
-		return this.procedureRepository.create(procedureDB)
+		return await this.repository.create(procedure)
+	}
+
+	async change(id: string, procedure: ProcedureDto) {
+		await this.checkExistenceById(id)
+
+		return await this.repository.change(id, procedure)
+	}
+
+	async delete(id: string) {
+		await this.checkExistenceById(id)
+
+		return await this.repository.markToDelete(id)
 	}
 }
