@@ -8,7 +8,7 @@ import { VacancyRepository } from './vacancy.repository'
 export class VacancyService {
 	constructor(private readonly repository: VacancyRepository) {}
 
-	private async checkExistenceById(id: string) {
+	async checkExistence(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, VacancyService.name)
 		}
@@ -26,7 +26,7 @@ export class VacancyService {
 	}
 
 	async findById(id: string) {
-		return await this.checkExistenceById(id)
+		return await this.checkExistence(id)
 	}
 
 	async create(vacancy: VacancyDto) {
@@ -42,13 +42,13 @@ export class VacancyService {
 	}
 
 	async change(id: string, vacancy: VacancyDto) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.change(id, vacancy)
 	}
 
 	async delete(id: string) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
 	}

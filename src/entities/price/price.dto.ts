@@ -3,28 +3,38 @@ import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
 export class PriceDto {
 	@IsOptional()
 	@IsString()
-	procedureId?: string
+	breedId: string
 
 	@IsOptional()
 	@IsString()
-	breedId?: string
+	procedureId: string
 
 	@IsOptional()
 	@IsNumber()
-	size?: number
+	weight: number
 
 	@IsOptional()
 	@IsNumber()
-	weight?: number
+	time: number
 
 	@IsNumber()
 	price: number
 
 	@IsOptional()
 	@IsBoolean()
-	isUsed?: boolean
-
-	@IsOptional()
-	@IsBoolean()
 	isDeleted?: boolean
+}
+
+export class PriceDimensionsDto {
+	@IsString()
+	breedId: string
+
+	@IsString()
+	procedureId: string
+
+	@IsNumber()
+	weight: number
+
+	@IsNumber()
+	time: number
 }

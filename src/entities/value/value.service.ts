@@ -13,7 +13,7 @@ export class ValueService {
 		return `/static/${FILE_PATHS.values}/${fileName}`
 	}
 
-	async checkExistenceById(id: string) {
+	async checkExistence(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, ValueService.name)
 		}
@@ -38,7 +38,7 @@ export class ValueService {
 	}
 
 	async findById(id: string) {
-		const data = await this.checkExistenceById(id)
+		const data = await this.checkExistence(id)
 
 		data.imageName = this.fullFileName(data.imageName)
 
@@ -72,7 +72,7 @@ export class ValueService {
 	}
 
 	async change(id: string, value: ValueDto, file?: Express.Multer.File) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		if (file) {
 			value.imageName = file?.filename
@@ -82,7 +82,7 @@ export class ValueService {
 	}
 
 	async delete(id: string) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
 	}

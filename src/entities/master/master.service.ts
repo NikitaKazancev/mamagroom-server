@@ -13,7 +13,7 @@ export class MasterService {
 		return `/static/${FILE_PATHS.masters}/${fileName}`
 	}
 
-	async checkExistenceById(id: string) {
+	async checkExistence(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, MasterService.name)
 		}
@@ -38,7 +38,7 @@ export class MasterService {
 	}
 
 	async findById(id: string) {
-		const data = await this.checkExistenceById(id)
+		const data = await this.checkExistence(id)
 
 		data.imageName = this.fullFileName(data.imageName)
 
@@ -62,7 +62,7 @@ export class MasterService {
 	}
 
 	async change(id: string, master: MasterDto, file?: Express.Multer.File) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		if (file) {
 			master.imageName = file?.filename
@@ -72,7 +72,7 @@ export class MasterService {
 	}
 
 	async delete(id: string) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
 	}

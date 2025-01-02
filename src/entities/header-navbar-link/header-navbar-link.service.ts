@@ -8,7 +8,7 @@ import { HeaderNavbarLinkRepository } from './header-navbar-link.repository'
 export class HeaderNavbarLinkService {
 	constructor(private readonly repository: HeaderNavbarLinkRepository) {}
 
-	async checkExistenceById(id: string) {
+	async checkExistence(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, HeaderNavbarLinkService.name)
 		}
@@ -29,12 +29,12 @@ export class HeaderNavbarLinkService {
 	}
 
 	async findById(id: string) {
-		return await this.checkExistenceById(id)
+		return await this.checkExistence(id)
 	}
 
 	async create(headerNavbarLink: HeaderNavbarLinkDto) {
 		if (headerNavbarLink.parentLinkId) {
-			await this.checkExistenceById(headerNavbarLink.parentLinkId)
+			await this.checkExistence(headerNavbarLink.parentLinkId)
 		}
 
 		const headerNavbarLinkInDb = await this.repository.findMany({
@@ -62,17 +62,17 @@ export class HeaderNavbarLinkService {
 	}
 
 	async change(id: string, headerNavbarLink: HeaderNavbarLinkDto) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		if (headerNavbarLink.parentLinkId) {
-			await this.checkExistenceById(headerNavbarLink.parentLinkId)
+			await this.checkExistence(headerNavbarLink.parentLinkId)
 		}
 
 		return await this.repository.change(id, headerNavbarLink)
 	}
 
 	async delete(id: string) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
 	}

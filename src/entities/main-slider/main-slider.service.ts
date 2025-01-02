@@ -12,7 +12,7 @@ export class MainSliderService {
 		return `/static/${FILE_PATHS.mainSlider}/${fileName}`
 	}
 
-	async checkExistenceById(id: string) {
+	async checkExistence(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, MainSliderService.name)
 		}
@@ -37,7 +37,7 @@ export class MainSliderService {
 	}
 
 	async findById(id: string) {
-		const data = await this.checkExistenceById(id)
+		const data = await this.checkExistence(id)
 
 		data.imageName = this.fullFileName(data.imageName)
 
@@ -67,7 +67,7 @@ export class MainSliderService {
 		mainSlider: MainSliderDto,
 		file?: Express.Multer.File
 	) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		if (file) {
 			mainSlider.imageName = file?.filename
@@ -77,7 +77,7 @@ export class MainSliderService {
 	}
 
 	async delete(id: string) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
 	}

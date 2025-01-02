@@ -8,7 +8,7 @@ import { ProcedureRepository } from './procedure.repository'
 export class ProcedureService {
 	constructor(private readonly repository: ProcedureRepository) {}
 
-	private async checkExistenceById(id: string) {
+	async checkExistence(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, ProcedureService.name)
 		}
@@ -26,7 +26,7 @@ export class ProcedureService {
 	}
 
 	async findById(id: string) {
-		return await this.checkExistenceById(id)
+		return await this.checkExistence(id)
 	}
 
 	async create(procedure: ProcedureDto) {
@@ -45,13 +45,13 @@ export class ProcedureService {
 	}
 
 	async change(id: string, procedure: ProcedureDto) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.change(id, procedure)
 	}
 
 	async delete(id: string) {
-		await this.checkExistenceById(id)
+		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
 	}

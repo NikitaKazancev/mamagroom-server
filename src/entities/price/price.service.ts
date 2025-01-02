@@ -1,28 +1,61 @@
 import { Injectable } from '@nestjs/common'
-import { BreedAPI } from 'src/entities/breed/utils/breed.api'
-import { ProcedureAPI } from 'src/entities/procedure/utils/procedure.api'
-import { PrismaService } from 'src/prisma.service'
-import { PriceDto } from './dto/price.dto'
+import { conflict, notFound } from 'src/utils/errors'
+import { BreedService } from '../breed/breed.service'
+import { ProcedureService } from '../procedure/procedure.service'
+import { PriceDimensionsDto, PriceDto } from './price.dto'
 import { PriceRepository } from './price.repository'
 
 @Injectable()
 export class PriceService {
 	constructor(
-		private readonly priceRepository: PriceRepository,
-		private readonly prisma: PrismaService,
-		private readonly breedAPI: BreedAPI,
-		private readonly procedureAPI: ProcedureAPI
+		private readonly repository: PriceRepository,
+		private readonly procedureService: ProcedureService,
+		private readonly breedService: BreedService
 	) {}
 
-	async findAll() {
-		return this.priceRepository.findAll()
+	async checkExistence(filter: PriceDimensionsDto) {
+		if (!filter) {
+			notFound(`dimensions are undefined`, PriceService.name)
+		}
+
+		const price = await this.repository.findUnique(filter)
+		if (!price) {
+			notFound(`price by dimensions = ${filter}`, PriceService.name)
+		}
+
+		return price
+	}
+
+	async findMany(filter: PriceDimensionsDto) {
+		return await this.repository.findMany(filter)
+	}
+
+	async findUnique(filter: PriceDimensionsDto) {
+		return await this.checkExistence(filter)
 	}
 
 	async create(price: PriceDto) {
-		await this.breedAPI.checkBreedExistence(price.breedId)
-		await this.procedureAPI.checkProcedureExistence(price.procedureId)
+		const priceInDb = await this.repository.findUnique(price)
 
-		const priceDB = { ...price }
-		return this.priceRepository.create(priceDB)
+		if (priceInDb) {
+			conflict(`price by dimensions = ${price}`, PriceService.name)
+		}
+
+		await this.procedureService.checkExistence(price.procedureId)
+		await this.breedService.checkExistence(price.breedId)
+
+		return await this.repository.create(price)
+	}
+
+	async change(price: PriceDto) {
+		await this.checkExistence(price)
+
+		return await this.repository.change(price, price)
+	}
+
+	async delete(filter: PriceDimensionsDto) {
+		await this.checkExistence(filter)
+
+		return await this.repository.delete(filter)
 	}
 }

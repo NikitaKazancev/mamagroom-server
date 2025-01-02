@@ -7,7 +7,7 @@ import { ConstantRepository } from './constant.repository'
 export class ConstantService {
 	constructor(private readonly repository: ConstantRepository) {}
 
-	private async checkExistenceById(filter: ConstantDimensionsDto) {
+	async checkExistence(filter: ConstantDimensionsDto) {
 		if (!filter) {
 			notFound(`dimensions are undefined`, ConstantService.name)
 		}
@@ -25,29 +25,27 @@ export class ConstantService {
 	}
 
 	async findUnique(filter: ConstantDimensionsDto) {
-		return await this.checkExistenceById(filter)
+		return await this.checkExistence(filter)
 	}
 
 	async create(constant: ConstantDto) {
-		const constantInDb = await this.repository.findMany({
-			name: constant.name,
-		})
+		const constantInDb = await this.repository.findUnique(constant)
 
-		if (constantInDb.length) {
-			conflict(`constant by name = ${constant.name}`, ConstantService.name)
+		if (constantInDb) {
+			conflict(`constant by dimensions = ${constant}`, ConstantService.name)
 		}
 
 		return await this.repository.create(constant)
 	}
 
 	async change(constant: ConstantDto) {
-		await this.checkExistenceById(constant)
+		await this.checkExistence(constant)
 
 		return await this.repository.change(constant, constant)
 	}
 
 	async delete(filter: ConstantDimensionsDto) {
-		await this.checkExistenceById(filter)
+		await this.checkExistence(filter)
 
 		return await this.repository.delete(filter)
 	}

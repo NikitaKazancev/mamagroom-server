@@ -1,18 +1,28 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
-import { PriceDto } from './dto/price.dto'
+import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
+import { PriceDimensionsDto, PriceDto } from './price.dto'
 import { PriceService } from './price.service'
 
 @Controller('prices')
 export class PriceController {
-	constructor(private readonly priceService: PriceService) {}
+	constructor(private readonly service: PriceService) {}
 
 	@Get()
-	findAll() {
-		return this.priceService.findAll()
+	async findMany(@Query() filter: PriceDimensionsDto) {
+		return await this.service.findMany(filter)
 	}
 
 	@Post()
-	create(@Body() price: PriceDto) {
-		return this.priceService.create(price)
+	async create(@Body() data: PriceDto) {
+		return await this.service.create(data)
+	}
+
+	@Put()
+	async change(@Body() data: PriceDto) {
+		return await this.service.change(data)
+	}
+
+	@Delete()
+	async delete(@Query() filter: PriceDimensionsDto) {
+		return await this.service.delete(filter)
 	}
 }
