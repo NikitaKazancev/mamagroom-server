@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { LANGUAGES } from 'src/utils/constants'
 
-export const headerNavbarLinksSeed = async (prisma: PrismaClient) => {
+export const headerNavbarLinkSeed = async (prisma: PrismaClient) => {
 	await prisma.headerNavbarLink.createMany({
 		data: [
 			{ language: LANGUAGES.ENGLISH, name: 'home', link: '/', order: 1 },

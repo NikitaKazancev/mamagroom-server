@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { LANGUAGES } from 'src/utils/constants'
 
-export const valuesSeed = async (prisma: PrismaClient) => {
+export const valueSeed = async (prisma: PrismaClient) => {
 	await prisma.value.createMany({
 		data: [
 			{
