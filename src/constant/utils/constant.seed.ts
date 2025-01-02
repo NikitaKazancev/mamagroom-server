@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client'
 import { LANGUAGES } from 'src/utils/constants'
 import { CONSTANT_NAMES, CONSTANT_TYPES } from './constant.types'
 
-/* eslint-disable no-console */
 export const constantSeed = async (prisma: PrismaClient) => {
 	await prisma.constant.createMany({
 		data: [

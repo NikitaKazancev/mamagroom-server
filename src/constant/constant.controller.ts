@@ -1,63 +1,28 @@
 import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
-import { Language, LANGUAGES_LIST } from 'src/utils/constants'
-import { badRequest } from 'src/utils/errors'
+import { ConstantDimensionsDto, ConstantDto } from './constant.dto'
 import { ConstantService } from './constant.service'
-import { ConstantDto } from './dto/constant.dto'
-import {
-	CONSTANT_NAMES_LIST,
-	CONSTANT_TYPES_LIST,
-} from './utils/constant.types'
 
 @Controller('constants')
 export class ConstantController {
-	constructor(private readonly constantService: ConstantService) {}
-
-	validateQueryParams({
-		language,
-		type,
-		name,
-	}: {
-		language: Language
-		type: string
-		name: string
-	}) {
-		if (language && LANGUAGES_LIST.indexOf(language) === -1)
-			badRequest('Invalid language', ConstantController.name, language)
-
-		if (type && CONSTANT_TYPES_LIST.indexOf(type) === -1)
-			badRequest('Invalid constant type', ConstantController.name)
-
-		if (name && CONSTANT_NAMES_LIST.indexOf(name) === -1)
-			badRequest('Invalid constant name', ConstantController.name)
-	}
+	constructor(private readonly service: ConstantService) {}
 
 	@Get()
-	findMany(
-		@Query('language') language: Language,
-		@Query('type') type: string,
-		@Query('name') name: string
-	) {
-		this.validateQueryParams({ language, type, name })
-		return this.constantService.findMany({ language, type })
+	async findMany(@Query() filter: ConstantDimensionsDto) {
+		return await this.service.findMany(filter)
 	}
 
 	@Post()
-	createOne(@Body() dto: ConstantDto) {
-		return this.constantService.createOne(dto)
+	async create(@Body() data: ConstantDto) {
+		return await this.service.create(data)
 	}
 
 	@Put()
-	changeOne(@Body() dto: ConstantDto) {
-		return this.constantService.changeOne(dto)
+	async change(@Body() data: ConstantDto) {
+		return await this.service.change(data)
 	}
 
 	@Delete()
-	deleteOne(
-		@Query('language') language: Language,
-		@Query('type') type: string,
-		@Query('name') name: string
-	) {
-		this.validateQueryParams({ language, type, name })
-		return this.constantService.deleteOne({ language, name, type })
+	async delete(@Query() filter: ConstantDimensionsDto) {
+		return await this.service.delete(filter)
 	}
 }

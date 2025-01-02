@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
-import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import { MasterDto } from './master.dto'
@@ -8,10 +7,7 @@ import { MasterRepository } from './master.repository'
 
 @Injectable()
 export class MasterService {
-	constructor(
-		private readonly repository: MasterRepository,
-		private readonly prisma: PrismaService
-	) {}
+	constructor(private readonly repository: MasterRepository) {}
 
 	private fullFileName(fileName: string) {
 		return `/static/${FILE_PATHS.masters}/${fileName}`

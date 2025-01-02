@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
-import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import { ValueDto } from './value.dto'
@@ -8,10 +7,7 @@ import { ValueRepository } from './value.repository'
 
 @Injectable()
 export class ValueService {
-	constructor(
-		private readonly repository: ValueRepository,
-		private readonly prisma: PrismaService
-	) {}
+	constructor(private readonly repository: ValueRepository) {}
 
 	private fullFileName(fileName: string) {
 		return `/static/${FILE_PATHS.values}/${fileName}`

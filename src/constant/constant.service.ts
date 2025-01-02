@@ -1,69 +1,54 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
-import { Language } from 'src/utils/constants'
 import { conflict, notFound } from 'src/utils/errors'
+import { ConstantDimensionsDto, ConstantDto } from './constant.dto'
 import { ConstantRepository } from './constant.repository'
-import { ConstantDto } from './dto/constant.dto'
-import { objectFromConstants } from './utils/functions'
 
 @Injectable()
 export class ConstantService {
-	constructor(
-		private readonly constantRepository: ConstantRepository,
-		private readonly prisma: PrismaService
-	) {}
+	constructor(private readonly repository: ConstantRepository) {}
 
-	async findMany({
-		language,
-		type,
-		names,
-	}: {
-		language: Language
-		type: string
-		names?: string[]
-	}) {
-		const data = await this.constantRepository.findMany({
-			language,
-			type,
-			names,
+	private async checkExistenceById(filter: ConstantDimensionsDto) {
+		if (!filter) {
+			notFound(`dimensions are undefined`, ConstantService.name)
+		}
+
+		const constant = await this.repository.findUnique(filter)
+		if (!constant) {
+			notFound(`constant by dimensions = ${filter}`, ConstantService.name)
+		}
+
+		return constant
+	}
+
+	async findMany(filter: ConstantDimensionsDto) {
+		return await this.repository.findMany(filter)
+	}
+
+	async findUnique(filter: ConstantDimensionsDto) {
+		return await this.checkExistenceById(filter)
+	}
+
+	async create(constant: ConstantDto) {
+		const constantInDb = await this.repository.findMany({
+			name: constant.name,
 		})
 
-		return objectFromConstants(data)
+		if (constantInDb.length) {
+			conflict(`constant by name = ${constant.name}`, ConstantService.name)
+		}
+
+		return await this.repository.create(constant)
 	}
 
-	async createOne(dto: ConstantDto) {
-		try {
-			return await this.constantRepository.createOne(dto)
-		} catch (error) {
-			conflict('Constant', ConstantService.name, dto.language)
-		}
+	async change(constant: ConstantDto) {
+		await this.checkExistenceById(constant)
+
+		return await this.repository.change(constant, constant)
 	}
 
-	async changeOne(dto: ConstantDto) {
-		try {
-			return await this.constantRepository.changeOne(dto)
-		} catch (error) {
-			notFound('Constant', ConstantService.name, dto.language)
-		}
-	}
+	async delete(filter: ConstantDimensionsDto) {
+		await this.checkExistenceById(filter)
 
-	async deleteOne({
-		language,
-		type,
-		name,
-	}: {
-		language: Language
-		type: string
-		name: string
-	}) {
-		try {
-			return await this.constantRepository.deleteOne({
-				language,
-				type,
-				name,
-			})
-		} catch (error) {
-			notFound('Constant', ConstantService.name, language)
-		}
+		return await this.repository.delete(filter)
 	}
 }
