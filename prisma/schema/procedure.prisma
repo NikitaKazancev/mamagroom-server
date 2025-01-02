@@ -1,8 +1,8 @@
-model Breed {
+model Procedure {
    id   String @id @unique @default(cuid())
    name String @unique
 
-   type BreedType @default(smallDog)
+   description String?
 
    language  String   @default("ru")
    createdAt DateTime @default(now()) @map("created_at")
@@ -10,17 +10,8 @@ model Breed {
    isUsed    Boolean  @default(true) @map("is_used")
    isDeleted Boolean  @default(false) @map("is_deleted")
 
-   Price          Price[]
-   responseFromAI ResponseFromAI[]
+   Prices                  Price[]
+   ResponseFromAIProcedure ResponseFromAIProcedure[]
 
-   @@map("breeds")
-}
-
-enum BreedType {
-   cat
-   smallDog  @map("small_dog")
-   mediumDog @map("medium_dog")
-   bigDog    @map("big_dog")
-
-   @@map("breed_types")
+   @@map("procedures")
 }

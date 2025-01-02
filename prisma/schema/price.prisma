@@ -1,18 +1,18 @@
 model Price {
-   procedureId String    @default("NULL") @map("procedure_id")
-   procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
    breedId     String    @default("NULL") @map("breed_id")
    breed       Breed     @relation(fields: [breedId], references: [id], onDelete: Cascade)
-   size        Float     @default(0)
+   procedureId String    @default("NULL") @map("procedure_id")
+   procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
    weight      Float     @default(0)
+   time        Float     @default(0)
 
    price Int
 
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
-   isUsed    Boolean  @default(true)
-   isDeleted Boolean  @default(false)
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt() @map("updated_at")
+   isUsed    Boolean  @default(true) @map("is_used")
+   isDeleted Boolean  @default(false) @map("is_deleted")
 
-   @@id([procedureId, breedId, size, weight])
+   @@id([breedId, procedureId, weight, time])
    @@map("prices")
 }

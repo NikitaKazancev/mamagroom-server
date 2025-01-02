@@ -14,8 +14,8 @@ model Breed {
    name String @unique
 
    language  String   @default("ru")
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
    isUsed    Boolean  @default(true)
    isDeleted Boolean  @default(false)
 
@@ -31,8 +31,8 @@ model Constant {
    name     String
    value    String
 
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
 
    @@id([language, type, name])
    @@map("constants")
@@ -46,8 +46,8 @@ model HeaderNavbarLink {
    order    Int
 
    language  String   @default("ru")
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
    isUsed    Boolean  @default(true)
    isDeleted Boolean  @default(false)
 
@@ -67,8 +67,8 @@ model Price {
 
    price Int
 
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
    isUsed    Boolean  @default(true)
    isDeleted Boolean  @default(false)
 
@@ -82,8 +82,8 @@ model User {
    name     String?
    password String
 
-   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime   @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime   @default(now()) @map("created_at")  
+   updatedAt DateTime   @updatedAt() @map("updated_at")  
    isUsed    Boolean    @default(true)
    isDeleted Boolean    @default(false)
    UserRole  UserRole[]
@@ -95,8 +95,8 @@ model Role {
    id   String @id @unique @default(cuid())
    name String @unique
 
-   createdAt DateTime   @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime   @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime   @default(now()) @map("created_at")  
+   updatedAt DateTime   @updatedAt() @map("updated_at")  
    isUsed    Boolean    @default(true)
    isDeleted Boolean    @default(false)
    UserRole  UserRole[]
@@ -122,8 +122,8 @@ model Value {
    order       Int
 
    language  String   @default("ru")
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
    isUsed    Boolean  @default(true)
    isDeleted Boolean  @default(false)
 
@@ -138,8 +138,8 @@ model Procedure {
    order       Int     @unique
 
    language  String   @default("ru")
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
    isUsed    Boolean  @default(true)
    isDeleted Boolean  @default(false)
 
@@ -157,8 +157,8 @@ model ProcedureCategory {
    order Int @unique
 
    language  String   @default("ru")
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
+   updatedAt DateTime @updatedAt() @map("updated_at")  
    isUsed    Boolean  @default(true)
    isDeleted Boolean  @default(false)
 
@@ -184,5 +184,5 @@ model ResponseFromAI {
    breed           Breed  @relation(fields: [detectedBreedId], references: [id], onDelete: Cascade)
    response        String
 
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
+   createdAt DateTime @default(now()) @map("created_at")  
 }

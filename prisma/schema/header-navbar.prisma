@@ -6,12 +6,12 @@ model HeaderNavbarLink {
    order    Int
 
    language  String   @default("ru")
-   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(2)
-   updatedAt DateTime @updatedAt() @map("updated_at") @db.Timestamptz(2)
-   isUsed    Boolean  @default(true)
-   isDeleted Boolean  @default(false)
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt() @map("updated_at")
+   isUsed    Boolean  @default(true) @map("is_used")
+   isDeleted Boolean  @default(false) @map("is_deleted")
 
-   parentLinkId     String?
+   parentLinkId     String?           @map("parent_link_id")
    HeaderNavbarLink HeaderNavbarLink? @relation("HeaderNavbarSubliks", fields: [parentLinkId], references: [id])
 
    @@map("header_navbar_links")
