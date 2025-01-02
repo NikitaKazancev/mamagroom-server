@@ -1,0 +1,11 @@
+model ResponseFromAI {
+   id              String @id @unique @default(cuid())
+   breedId         String @map("breed_id")
+   breed           Breed  @relation(fields: [breedId], references: [id], onDelete: Cascade)
+   userDescription String @map("user_description")
+
+   createdAt  DateTime    @default(now()) @map("created_at")
+   procedures Procedure[]
+
+   @@map("responses_from_ai")
+}

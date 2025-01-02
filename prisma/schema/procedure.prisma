@@ -9,8 +9,8 @@ model Procedure {
    updatedAt DateTime @updatedAt() @map("updated_at")
    isDeleted Boolean  @default(false) @map("is_deleted")
 
-   Prices                  Price[]
-   ResponseFromAIProcedure ResponseFromAIProcedure[]
+   Prices          Price[]
+   responsesFromAI ResponseFromAI[]
 
    @@map("procedures")
 }
