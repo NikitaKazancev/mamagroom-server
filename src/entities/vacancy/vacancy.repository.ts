@@ -36,11 +36,12 @@ export class VacancyRepository {
 		})
 	}
 
-	delete(id: string) {
-		return this.prisma.vacancy.delete({
+	markToDelete(id: string) {
+		return this.prisma.vacancy.update({
 			where: {
 				id,
 			},
+			data: { isDeleted: true },
 		})
 	}
 }

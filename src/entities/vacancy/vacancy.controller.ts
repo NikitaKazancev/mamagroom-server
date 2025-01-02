@@ -9,22 +9,16 @@ import {
 	Query,
 } from '@nestjs/common'
 import { Language } from 'src/utils/constants'
-import { validateLanguage } from 'src/utils/validation'
 import { VacancyDto } from './vacancy.dto'
-import { VacancyService } from './vacany.service'
+import { VacancyService } from './vacancy.service'
 
 @Controller('vacancies')
 export class VacancyController {
 	constructor(private readonly service: VacancyService) {}
 
 	@Get()
-	async findMany(
-		@Query() language: Language,
-		@Query() isUsed: boolean,
-		@Query() isDeleted: boolean
-	) {
-		validateLanguage(language)
-		return await this.service.findMany({ language, isUsed, isDeleted })
+	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+		return await this.service.findMany({ language, isDeleted })
 	}
 
 	@Get(':id')

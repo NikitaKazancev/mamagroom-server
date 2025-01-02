@@ -1,21 +1,55 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { FindManyFilter } from 'src/utils/dtos'
+import { conflict, notFound } from 'src/utils/errors'
+import { BreedDto } from './breed.dto'
 import { BreedRepository } from './breed.repository'
-import { BreedDto } from './dto/breed.dto'
 
 @Injectable()
 export class BreedService {
-	constructor(
-		private readonly breedRepository: BreedRepository,
-		private readonly prisma: PrismaService
-	) {}
+	constructor(private readonly repository: BreedRepository) {}
 
-	async findAll({ lang }: { lang: string }) {
-		return this.breedRepository.findAll({ lang })
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, BreedService.name)
+		}
+
+		const breed = await this.repository.findById(id)
+		if (!breed) {
+			notFound(`breed by id = ${id}`, BreedService.name)
+		}
+
+		return breed
+	}
+
+	async findMany(filter: FindManyFilter) {
+		return await this.repository.findMany(filter)
+	}
+
+	async findById(id: string) {
+		return await this.checkExistence(id)
 	}
 
 	async create(breed: BreedDto) {
-		const breedDB = { ...breed }
-		return this.breedRepository.create(breedDB)
+		const breedInDb = await this.repository.findMany({
+			name: breed.name,
+		})
+
+		if (breedInDb.length) {
+			conflict(`breed by name = ${breed.name}`, BreedService.name)
+		}
+
+		return await this.repository.create(breed)
+	}
+
+	async change(id: string, breed: BreedDto) {
+		await this.checkExistence(id)
+
+		return await this.repository.change(id, breed)
+	}
+
+	async delete(id: string) {
+		await this.checkExistence(id)
+
+		return await this.repository.markToDelete(id)
 	}
 }

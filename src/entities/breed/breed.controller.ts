@@ -1,18 +1,43 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Post,
+	Put,
+	Query,
+} from '@nestjs/common'
+import { Language } from 'src/utils/constants'
+import { BreedDto } from './breed.dto'
 import { BreedService } from './breed.service'
-import { BreedDto } from './dto/breed.dto'
 
 @Controller('breeds')
 export class BreedController {
-	constructor(private readonly breedService: BreedService) {}
+	constructor(private readonly service: BreedService) {}
 
 	@Get()
-	findAll(@Query('lang') lang: string) {
-		return this.breedService.findAll({ lang })
+	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+		return await this.service.findMany({ language, isDeleted })
+	}
+
+	@Get(':id')
+	async findById(@Param('id') id: string) {
+		return await this.service.findById(id)
 	}
 
 	@Post()
-	create(@Body() breed: BreedDto) {
-		return this.breedService.create(breed)
+	async create(@Body() data: BreedDto) {
+		return await this.service.create(data)
+	}
+
+	@Put(':id')
+	async change(@Param('id') id: string, @Body() data: BreedDto) {
+		return await this.service.change(id, data)
+	}
+
+	@Delete(':id')
+	async delete(@Param('id') id: string) {
+		return await this.service.delete(id)
 	}
 }

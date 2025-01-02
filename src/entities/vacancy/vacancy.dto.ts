@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator'
+import { IsBoolean, IsOptional, IsString } from 'class-validator'
 
 export class VacancyDto {
 	@IsString()
@@ -6,4 +6,8 @@ export class VacancyDto {
 
 	@IsString()
 	description: string
+
+	@IsBoolean()
+	@IsOptional()
+	isDeleted?: boolean
 }

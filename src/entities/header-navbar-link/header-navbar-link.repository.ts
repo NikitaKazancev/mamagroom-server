@@ -1,21 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
-import { FilterDto } from 'src/utils/dtos'
-import { HeaderNavbarLinkDto } from './dto/header-navbar-link.dto'
+import { FindManyFilter } from 'src/utils/dtos'
+import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
 
 @Injectable()
 export class HeaderNavbarLinkRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findOne(filter: FilterDto) {
-		return this.prisma.headerNavbarLink.findFirst({
-			where: {
-				...filter,
-			},
-		})
-	}
-
-	findMany(filter: FilterDto) {
+	findMany(filter: FindManyFilter & { name?: string }) {
 		return this.prisma.headerNavbarLink.findMany({
 			where: {
 				...filter,
@@ -46,47 +38,41 @@ export class HeaderNavbarLinkRepository {
 		})
 	}
 
-	createOne(dto: HeaderNavbarLinkDto) {
-		return this.prisma.headerNavbarLink.create({
-			data: {
-				name: dto.name,
-				link: dto.link,
-				parentLinkId: dto.parentLinkId,
-				order: dto.order,
+	findById(id: string) {
+		return this.prisma.headerNavbarLink.findUnique({
+			where: {
+				id,
 			},
 		})
 	}
 
-	changeOne(id: string, dto: HeaderNavbarLinkDto) {
+	findMaxOrder() {
+		return this.prisma.headerNavbarLink.aggregate({
+			_max: {
+				order: true,
+			},
+		})
+	}
+
+	create(dto: HeaderNavbarLinkDto) {
+		return this.prisma.headerNavbarLink.create({ data: dto })
+	}
+
+	change(id: string, dto: HeaderNavbarLinkDto) {
 		return this.prisma.headerNavbarLink.update({
-			data: {
-				name: dto.name,
-				link: dto.link,
-				parentLinkId: dto.parentLinkId,
-			},
 			where: {
 				id,
 			},
+			data: dto,
 		})
 	}
 
-	deleteOne(id: string) {
+	markToDelete(id: string) {
 		return this.prisma.headerNavbarLink.update({
-			data: {
-				isDeleted: true,
-				isUsed: false,
-			},
 			where: {
 				id,
 			},
-		})
-	}
-
-	deleteOnePermanently(id: string) {
-		return this.prisma.headerNavbarLink.deleteMany({
-			where: {
-				id,
-			},
+			data: { isDeleted: true },
 		})
 	}
 }

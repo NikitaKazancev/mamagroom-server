@@ -1,4 +1,6 @@
 export const FILE_PATHS = {
-	sliderAboutUs: 'pages/home/slider-about-us',
+	mainSlider: 'main-slider',
 	values: 'values',
+	mainBg: 'pages/home/main-bg',
+	masters: 'masters',
 }

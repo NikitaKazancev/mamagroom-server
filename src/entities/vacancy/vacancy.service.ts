@@ -6,14 +6,14 @@ import { VacancyRepository } from './vacancy.repository'
 
 @Injectable()
 export class VacancyService {
-	constructor(private readonly vacancyRepository: VacancyRepository) {}
+	constructor(private readonly repository: VacancyRepository) {}
 
-	private async checkVacancyExistenceById(id: string) {
+	private async checkExistenceById(id: string) {
 		if (!id) {
 			notFound(`id is undefined`, VacancyService.name)
 		}
 
-		const vacancy = await this.vacancyRepository.findById(id)
+		const vacancy = await this.repository.findById(id)
 		if (!vacancy) {
 			notFound(`vacancy by id = ${id}`, VacancyService.name)
 		}
@@ -22,15 +22,15 @@ export class VacancyService {
 	}
 
 	async findMany(filter: FindManyFilter) {
-		return await this.vacancyRepository.findMany(filter)
+		return await this.repository.findMany(filter)
 	}
 
 	async findById(id: string) {
-		return await this.checkVacancyExistenceById(id)
+		return await this.checkExistenceById(id)
 	}
 
 	async create(vacancy: VacancyDto) {
-		const vacancyInDb = await this.vacancyRepository.findMany({
+		const vacancyInDb = await this.repository.findMany({
 			name: vacancy.name,
 		})
 
@@ -38,18 +38,18 @@ export class VacancyService {
 			conflict(`vacancy by name = ${vacancy.name}`, VacancyService.name)
 		}
 
-		return await this.vacancyRepository.create(vacancy)
+		return await this.repository.create(vacancy)
 	}
 
 	async change(id: string, vacancy: VacancyDto) {
-		await this.checkVacancyExistenceById(id)
+		await this.checkExistenceById(id)
 
-		return await this.vacancyRepository.change(id, vacancy)
+		return await this.repository.change(id, vacancy)
 	}
 
 	async delete(id: string) {
-		await this.checkVacancyExistenceById(id)
+		await this.checkExistenceById(id)
 
-		return await this.vacancyRepository.delete(id)
+		return await this.repository.markToDelete(id)
 	}
 }

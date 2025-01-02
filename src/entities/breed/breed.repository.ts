@@ -1,32 +1,48 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
+import { BreedType } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
-import { BreedDBDto } from './dto/breed-db.dto'
+import { FindManyFilter } from 'src/utils/dtos'
+import { BreedDto } from './breed.dto'
 
 @Injectable()
 export class BreedRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findAll({ lang }: { lang: string }) {
+	findMany(filter: FindManyFilter & { name?: string; type?: BreedType }) {
 		return this.prisma.breed.findMany({
-			orderBy: { name: 'asc' },
 			where: {
-				isDeleted: false,
-				language: lang,
+				...filter,
 			},
 		})
 	}
 
-	findById(breedId: string) {
+	findById(id: string) {
 		return this.prisma.breed.findUnique({
-			where: { id: breedId, isDeleted: false },
+			where: {
+				id,
+			},
 		})
 	}
 
-	async create(breed: BreedDBDto) {
-		try {
-			return await this.prisma.breed.create({ data: breed })
-		} catch (error) {
-			throw new HttpException('Breed already exists', HttpStatus.CONFLICT)
-		}
+	create(breed: BreedDto) {
+		return this.prisma.breed.create({ data: breed })
+	}
+
+	change(id: string, breed: BreedDto) {
+		return this.prisma.breed.update({
+			where: {
+				id,
+			},
+			data: breed,
+		})
+	}
+
+	markToDelete(id: string) {
+		return this.prisma.breed.update({
+			where: {
+				id,
+			},
+			data: { isDeleted: true },
+		})
 	}
 }

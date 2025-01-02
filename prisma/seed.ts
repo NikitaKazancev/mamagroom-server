@@ -2,7 +2,7 @@
 import { PrismaClient } from '@prisma/client'
 import { constantSeed } from 'src/constant/utils/constant.seed'
 import { headerNavbarLinksSeed } from 'src/entities/header-navbar-link/utils/header-navbar-links.seed'
-import { valuesSeed } from 'src/entities/values/utils/value.seed'
+import { valuesSeed } from 'src/entities/value/utils/value.seed'
 
 const prisma = new PrismaClient()
 

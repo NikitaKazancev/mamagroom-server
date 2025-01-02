@@ -14,7 +14,7 @@ import { HeaderNavbarLinkModule } from './entities/header-navbar-link/header-nav
 import { PriceModule } from './entities/price/price.module'
 import { ProcedureModule } from './entities/procedure/procedure.module'
 import { UserModule } from './entities/user/user.module'
-import { ValueModule } from './entities/values/value.module'
+import { ValueModule } from './entities/value/value.module'
 import { FileModule } from './file/file.module'
 
 @Module({
