@@ -1,8 +1,7 @@
 import { Language } from './constants'
 
-export class FilterDto {
+export class FindManyFilter {
 	language?: Language
 	isUsed?: boolean
 	isDeleted?: boolean
-	id?: string
 }
