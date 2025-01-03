@@ -6,8 +6,13 @@ import { ResponseFromAIDto } from './response-from-ai.dto'
 export class ResponseFromAIRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany() {
+	findMany({ userDescription }: { userDescription?: string }) {
 		return this.prisma.responseFromAI.findMany({
+			where: {
+				userDescription: {
+					contains: userDescription,
+				},
+			},
 			include: {
 				procedures: {
 					select: {

@@ -16,7 +16,7 @@ export const toCamelCase = (str: string) => {
 	return str.replace(/-./g, match => match[1].toUpperCase())
 }
 
-export async function fetchImageToBase64(url) {
+export async function fetchImageToBase64(url: string) {
 	try {
 		const response = await axios.get(url, { responseType: 'arraybuffer' })
 		const buffer = Buffer.from(response.data, 'binary')

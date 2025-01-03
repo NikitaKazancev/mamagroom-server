@@ -1,23 +1,18 @@
-import axios from 'axios'
-import net from 'net'
-import tls from 'tls'
-import { URL } from 'url'
-
-// Прокси-сервер и его данные
-const proxyHost = '190.111.161.63'
-const proxyPort = 9451
-const proxyUsername = 'MRCJrj'
-const proxyPassword = 'ncNaYB'
-
-// API URL, к которому нужно подключиться
-const apiUrl = 'https://api.openai.com/v1/chat/completions'
-const parsedUrl = new URL(apiUrl)
-
-// API-ключ
-const apiKey =
-	'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'
+/* eslint-disable no-console */
+const axios = require('axios')
+const net = require('net')
+const tls = require('tls')
+const { URL } = require('url')
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+
+const proxyHost = ''
+const proxyPort = 0
+const proxyUsername = ''
+const proxyPassword = ''
+const apiUrl = 'https://api.openai.com/v1/chat/completions'
+const parsedUrl = new URL(apiUrl)
+const apiKey = ''
 
 async function fetchImageToBase64(url) {
 	try {
@@ -39,7 +34,7 @@ async function fetchImageToBase64(url) {
 				content: [
 					{
 						type: 'text',
-						text: 'Ты эксперт в области кинологии и собаководства. Назови мне необычную породу.',
+						text: 'Привет. Как дела?',
 					},
 					// {
 					// 	type: 'image_url',
@@ -55,9 +50,7 @@ async function fetchImageToBase64(url) {
 		// max_tokens: 300,
 	})
 
-	// Создаем HTTP туннель через прокси с помощью команды CONNECT
 	const proxyRequest = net.connect(proxyPort, proxyHost, () => {
-		// Команда CONNECT для прокси, указываем целевой хост и порт
 		proxyRequest.write(
 			`CONNECT ${parsedUrl.hostname}:443 HTTP/1.1\r\n` +
 				`Host: ${parsedUrl.hostname}\r\n` +
@@ -66,19 +59,15 @@ async function fetchImageToBase64(url) {
 		)
 	})
 
-	// Получаем ответ от прокси и устанавливаем HTTPS-соединение
 	proxyRequest.on('data', chunk => {
-		// Проверяем успешное соединение (HTTP/1.1 200 Connection established)
 		if (chunk.toString().includes('200 Connection established')) {
-			// Устанавливаем HTTPS-соединение через прокси-туннель
 			const tlsSocket = tls.connect(
 				{
 					host: parsedUrl.hostname,
 					socket: proxyRequest,
-					servername: parsedUrl.hostname, // для проверки SNI
+					servername: parsedUrl.hostname,
 				},
 				() => {
-					// Отправляем POST-запрос через туннель
 					tlsSocket.write(
 						`POST ${parsedUrl.pathname} HTTP/1.1\r\n` +
 							`Host: ${parsedUrl.hostname}\r\n` +
@@ -91,7 +80,6 @@ async function fetchImageToBase64(url) {
 				}
 			)
 
-			// Получаем ответ от API
 			tlsSocket.on('data', data => {
 				console.log(data.toString())
 			})

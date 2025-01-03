@@ -1,49 +1,66 @@
 /* eslint-disable no-console */
 import { Injectable } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import net from 'net'
 import { BreedService } from 'src/entities/breed/breed.service'
 import { ProcedureService } from 'src/entities/procedure/procedure.service'
-import tls from 'tls'
-import { URL } from 'url'
+import { AIService } from './ai/ai.service'
+import { ResponseFromAIService } from './response-from-ai/response-from-ai.service'
 
 @Injectable()
 export class IntegrationService {
-	openai: {
-		proxyHost: string
-		proxyPort: number
-		proxyUsername: string
-		proxyPassword: string
-		apiUrl: URL
-		apiKey: string
-		response: string
-	}
-
 	constructor(
 		private readonly breedService: BreedService,
 		private readonly procedureService: ProcedureService,
-		private readonly configService: ConfigService
-	) {
-		this.openai = {
-			apiKey: configService.get('OPENAI_API_KEY'),
-			apiUrl: new URL('https://api.openai.com/v1/chat/completions'),
-			proxyHost: configService.get('PROXY_HOST'),
-			proxyPort: Number(configService.get('PROXY_PORT')),
-			proxyUsername: configService.get('PROXY_USERNAME'),
-			proxyPassword: configService.get('PROXY_PASSWORD'),
-			response: undefined,
-		}
-	}
+		private readonly responseFromAIService: ResponseFromAIService,
+		private readonly aiService: AIService
+	) {}
 
-	async proceduresByUserDescription(userDescription: string) {
-		const breedsInDb: { name: string }[] = await this.breedService.findMany(
-			{ isDeleted: false, language: 'ru' },
-			{ name: true }
+	async procedureIdsByUserDescription(userDescription: string) {
+		if (!userDescription) {
+			return []
+		}
+
+		const dataInDb = await this.responseFromAIService.findMany({
+			userDescription,
+		})
+		if (dataInDb.length) {
+			return dataInDb[0].procedures.map(procedure => procedure.id)
+		}
+
+		const detectedBreed =
+			await this.detectedBreedByUserDescription(userDescription)
+
+		if (!detectedBreed) {
+			await this.responseFromAIService.create({
+				breedId: detectedBreed.id,
+				userDescription,
+				procedureIds: [],
+			})
+
+			return []
+		}
+
+		const procedureIds = await this.detectedProcedureByUserDescription(
+			userDescription,
+			detectedBreed
 		)
 
-		const breeds = breedsInDb.map(breed => breed.name)
+		await this.responseFromAIService.create({
+			breedId: detectedBreed.id,
+			userDescription,
+			procedureIds,
+		})
 
-		let requestText = `
+		return procedureIds
+	}
+
+	private async detectedBreedByUserDescription(userDescription: string) {
+		const breedsInDb: { name: string; id: string }[] =
+			await this.breedService.findMany(
+				{ isDeleted: false, language: 'ru' },
+				{ name: true, id: true }
+			)
+
+		const requestText = `
 		Ты эксперт в области кинологии и собаководства.
 		Прочти описание пользователя и выдели из него породу собаки:
 
@@ -51,131 +68,67 @@ export class IntegrationService {
 
 
 		В качестве ответа отправь ТОЛЬКО НОМЕР ПОРОДЫ:
-		${breeds.join('\n')}
+		${breedsInDb.map((breed, i) => `${i + 1}. ${breed.name}`).join('\n')}
 
 
-		Если подходящей породы не оказалось, отправь номер той породы, которая ближе всего подходит по описанию пользователя.
+		P.S. Если подходящей породы не оказалось, отправь номер той породы, которая ближе всего подходит по описанию пользователя.
 		`
 
-		const response = await this.requestToOpenAI(requestText)
+		const response = await this.aiService.request({ text: requestText })
 		if (!response) {
-			return []
+			return undefined
 		}
 
 		const detectedBreedIndex = Number(response) - 1
-		if (detectedBreedIndex < 0 || detectedBreedIndex >= breeds.length) {
-			return []
+		if (detectedBreedIndex < 0 || detectedBreedIndex >= breedsInDb.length) {
+			return undefined
 		}
 
-		const breed = breeds[detectedBreedIndex]
+		return {
+			id: breedsInDb[detectedBreedIndex].id,
+			name: breedsInDb[detectedBreedIndex].name,
+		}
+	}
 
-		const proceduresInDb = await this.procedureService.findMany(
-			{ isDeleted: false, language: 'ru' },
-			{ name: true }
+	private async detectedProcedureByUserDescription(
+		userDescription: string,
+		detectedBreed: { id: string; name: string }
+	) {
+		const proceduresInDb = await this.procedureService.findByBreed(
+			detectedBreed.id
 		)
+		if (proceduresInDb.length <= 3) {
+			return proceduresInDb.map(procedure => procedure.id)
+		}
 
-		requestText = `
+		const requestText = `
 		Ты эксперт в области кинологии и собаководства.
-		Прочти описание пользователя и предложи 2-3 подходящие услуги для породы ${breed}:
+		Прочти описание пользователя и предложи 2-3 подходящие услуги для породы ${detectedBreed.name}:
 
 		"""${userDescription}"""
 
 
-		В качестве ответа отправь ТОЛЬКО НОМЕРА УСЛУГ:
-		${breeds.join('\n')}
-
-
-		Если подходящей породы не оказалось, отправь номер той породы, которая ближе всего подходит по описанию пользователя.
+		В качестве ответа отправь ТОЛЬКО НОМЕРА УСЛУГ ЧЕРЕЗ ПРОБЕЛ:
+		${proceduresInDb.map((procedure, i) => `${i + 1}. ${procedure.name}`).join('\n')}
 		`
-	}
 
-	async requestToOpenAI(text: string) {
-		this.openai.response = undefined
+		const response = await this.aiService.request({ text: requestText })
+		if (!response) {
+			return []
+		}
 
-		return await new Promise<string | undefined>((resolve, reject) => {
-			this.requestToOpenAIWithProxy(text)
+		const detectedProcedureIndexes = response
+			.split(' ')
+			.map(index => Number(index) - 1)
+			.filter(index => index > 0 && index <= proceduresInDb.length)
+		if (!detectedProcedureIndexes.length) {
+			return []
+		}
 
-			let time = 0
-			const interval = setInterval(() => {
-				if (this.openai.response) {
-					clearInterval(interval)
-					resolve(this.openai.response)
-				}
-
-				time += 200
-				if (time >= 10000) {
-					clearInterval(interval)
-					reject(undefined)
-				}
-			}, 200)
-		})
-	}
-
-	requestToOpenAIWithProxy(text: string) {
-		const proxyRequest = net.connect(
-			this.openai.proxyPort,
-			this.openai.proxyHost,
-			() => {
-				proxyRequest.write(
-					`CONNECT ${this.openai.apiUrl.hostname}:443 HTTP/1.1\r\n` +
-						`Host: ${this.openai.apiUrl.hostname}\r\n` +
-						`Proxy-Authorization: Basic ${Buffer.from(this.openai.proxyUsername + ':' + this.openai.proxyPassword).toString('base64')}\r\n` +
-						`\r\n`
-				)
-			}
+		const detectedProcedures = proceduresInDb.filter((_, i) =>
+			detectedProcedureIndexes.includes(i)
 		)
 
-		const content = JSON.stringify({
-			model: 'gpt-4o',
-			messages: [
-				{
-					role: 'user',
-					content: [
-						{
-							type: 'text',
-							text,
-						},
-					],
-				},
-			],
-		})
-
-		proxyRequest.on('data', chunk => {
-			if (chunk.toString().includes('200 Connection established')) {
-				const tlsSocket = tls.connect(
-					{
-						host: this.openai.apiUrl.hostname,
-						socket: proxyRequest,
-						servername: this.openai.apiUrl.hostname,
-					},
-					() => {
-						tlsSocket.write(
-							`POST ${this.openai.apiUrl.pathname} HTTP/1.1\r\n` +
-								`Host: ${this.openai.apiUrl.hostname}\r\n` +
-								`Authorization: Bearer ${this.openai.apiKey}\r\n` +
-								`Content-Type: application/json\r\n` +
-								`Content-Length: ${Buffer.byteLength(content, 'utf8')}\r\n` +
-								`\r\n` +
-								content
-						)
-					}
-				)
-
-				tlsSocket.on('data', data => {
-					console.log(data.toString())
-					this.openai.response = data.toString()
-				})
-
-				tlsSocket.on('error', err => {
-					console.error('Ошибка в HTTPS-соединении:', err)
-				})
-			} else {
-				console.error('Ошибка при установке туннеля через прокси')
-			}
-		})
-
-		proxyRequest.on('error', err => {
-			console.error('Ошибка подключения к прокси:', err)
-		})
+		return detectedProcedures.map(procedure => procedure.id)
 	}
 }

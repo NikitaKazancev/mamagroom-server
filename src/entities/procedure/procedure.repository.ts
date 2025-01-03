@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Procedure } from '@prisma/client'
+import { findProceduresByBreed } from '@prisma/client/sql'
 import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { ProcedureDto } from './procedure.dto'
@@ -26,6 +27,10 @@ export class ProcedureRepository {
 				id,
 			},
 		})
+	}
+
+	findByBreed(breedId: string) {
+		return this.prisma.$queryRawTyped(findProceduresByBreed(breedId))
 	}
 
 	create(procedure: ProcedureDto) {

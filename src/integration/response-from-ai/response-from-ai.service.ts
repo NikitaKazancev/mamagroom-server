@@ -20,8 +20,8 @@ export class ResponseFromAIService {
 		return responseFromAI
 	}
 
-	async findMany() {
-		return await this.repository.findMany()
+	async findMany({ userDescription }: { userDescription?: string } = {}) {
+		return await this.repository.findMany({ userDescription })
 	}
 
 	async findById(id: string) {

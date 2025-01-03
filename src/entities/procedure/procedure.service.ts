@@ -33,6 +33,10 @@ export class ProcedureService {
 		return await this.checkExistence(id)
 	}
 
+	async findByBreed(breedId: string) {
+		return await this.repository.findByBreed(breedId)
+	}
+
 	async create(procedure: ProcedureDto) {
 		const procedureInDb = await this.repository.findMany({
 			name: procedure.name,
