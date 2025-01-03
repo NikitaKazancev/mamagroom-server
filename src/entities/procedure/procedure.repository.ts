@@ -21,6 +21,16 @@ export class ProcedureRepository {
 		})
 	}
 
+	findByIds(ids: string[]) {
+		return this.prisma.procedure.findMany({
+			where: {
+				id: {
+					in: ids,
+				},
+			},
+		})
+	}
+
 	findById(id: string) {
 		return this.prisma.procedure.findUnique({
 			where: {

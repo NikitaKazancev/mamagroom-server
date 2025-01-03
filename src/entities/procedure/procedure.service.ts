@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Procedure } from '@prisma/client'
+import { IntegrationService } from 'src/integration/integration.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import { ProcedureDto } from './procedure.dto'
@@ -7,7 +8,10 @@ import { ProcedureRepository } from './procedure.repository'
 
 @Injectable()
 export class ProcedureService {
-	constructor(private readonly repository: ProcedureRepository) {}
+	constructor(
+		private readonly repository: ProcedureRepository,
+		private readonly integrationService: IntegrationService
+	) {}
 
 	async checkExistence(id: string) {
 		if (!id) {
@@ -31,6 +35,21 @@ export class ProcedureService {
 
 	async findById(id: string) {
 		return await this.checkExistence(id)
+	}
+
+	async findByUserData(description?: string, file?: Express.Multer.File) {
+		const procedureIds = await this.integrationService.procedureIdsByUserData(
+			{
+				userDescription: description,
+				imageName: file.filename,
+			}
+		)
+
+		if (!procedureIds.length) {
+			return []
+		}
+
+		return await this.repository.findByIds(procedureIds)
 	}
 
 	async findByBreed(breedId: string) {

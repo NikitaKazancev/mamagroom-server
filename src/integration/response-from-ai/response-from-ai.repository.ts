@@ -42,6 +42,7 @@ export class ResponseFromAIRepository {
 		return this.prisma.responseFromAI.create({
 			data: {
 				userDescription: responseFromAI.userDescription,
+				imageName: responseFromAI.imageName,
 				breedId: responseFromAI.breedId,
 				procedures: {
 					connect: responseFromAI.procedureIds.map(id => ({ id })),
@@ -57,6 +58,7 @@ export class ResponseFromAIRepository {
 			},
 			data: {
 				userDescription: responseFromAI.userDescription,
+				imageName: responseFromAI.imageName,
 				breedId: responseFromAI.breedId,
 				procedures: {
 					connect: responseFromAI.procedureIds.map(id => ({ id })),

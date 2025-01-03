@@ -7,7 +7,11 @@ import {
 	Post,
 	Put,
 	Query,
+	UploadedFile,
+	UseInterceptors,
 } from '@nestjs/common'
+import { FILE_PATHS } from 'src/file/utils/file.constants'
+import { SaveFile } from 'src/file/utils/file.interceptors'
 import { Language } from 'src/utils/constants'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
@@ -24,6 +28,15 @@ export class ProcedureController {
 	@Get(':id')
 	async findById(@Param('id') id: string) {
 		return await this.service.findById(id)
+	}
+
+	@Post()
+	@UseInterceptors(SaveFile({ folder: FILE_PATHS.forAI }))
+	async findByUserData(
+		@Body() { description }: { description?: string },
+		@UploadedFile() file?: Express.Multer.File
+	) {
+		return await this.service.findByUserData(description, file)
 	}
 
 	@Post()

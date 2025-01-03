@@ -7,6 +7,9 @@ export class ResponseFromAIDto {
 	@IsString()
 	userDescription: string
 
+	@IsString()
+	imageName: string
+
 	@IsArray()
 	procedureIds: string[]
 }

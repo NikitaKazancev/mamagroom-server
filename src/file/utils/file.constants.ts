@@ -3,4 +3,5 @@ export const FILE_PATHS = {
 	values: 'values',
 	mainBg: 'pages/home/main-bg',
 	masters: 'masters',
+	forAI: 'for-ai',
 }
