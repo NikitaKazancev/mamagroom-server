@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { Procedure } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { ProcedureDto } from './procedure.dto'
@@ -7,11 +8,15 @@ import { ProcedureDto } from './procedure.dto'
 export class ProcedureRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany(filter: FindManyFilter & { name?: string }) {
+	findMany(
+		filter: FindManyFilter & { name?: string },
+		selection?: BooleanMappedType<Procedure>
+	) {
 		return this.prisma.procedure.findMany({
 			where: {
 				...filter,
 			},
+			select: selection,
 		})
 	}
 

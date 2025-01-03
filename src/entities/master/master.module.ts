@@ -9,6 +9,6 @@ import { MasterService } from './master.service'
 	controllers: [MasterController],
 	providers: [MasterService, MasterRepository, PrismaService],
 	imports: [forwardRef(() => FileModule)],
-	exports: [MasterRepository],
+	exports: [MasterService],
 })
 export class MasterModule {}

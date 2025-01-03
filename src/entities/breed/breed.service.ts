@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { Breed } from '@prisma/client'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import { BreedDto } from './breed.dto'
@@ -21,8 +22,11 @@ export class BreedService {
 		return breed
 	}
 
-	async findMany(filter: FindManyFilter) {
-		return await this.repository.findMany(filter)
+	async findMany(
+		filter: FindManyFilter,
+		selection?: BooleanMappedType<Breed>
+	) {
+		return await this.repository.findMany(filter, selection)
 	}
 
 	async findById(id: string) {

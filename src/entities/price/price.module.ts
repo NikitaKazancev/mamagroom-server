@@ -10,5 +10,6 @@ import { PriceService } from './price.service'
 	imports: [ProcedureModule, BreedModule],
 	controllers: [PriceController],
 	providers: [PrismaService, PriceService, PriceRepository],
+	exports: [PriceService],
 })
 export class PriceModule {}

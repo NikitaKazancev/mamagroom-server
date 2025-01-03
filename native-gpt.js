@@ -4,17 +4,18 @@ import tls from 'tls'
 import { URL } from 'url'
 
 // Прокси-сервер и его данные
-const proxyHost = '51.89.184.221'
-const proxyPort = 1010
-const proxyUsername = '642b79'
-const proxyPassword = 'c42332'
+const proxyHost = '190.111.161.63'
+const proxyPort = 9451
+const proxyUsername = 'MRCJrj'
+const proxyPassword = 'ncNaYB'
 
 // API URL, к которому нужно подключиться
 const apiUrl = 'https://api.openai.com/v1/chat/completions'
 const parsedUrl = new URL(apiUrl)
 
 // API-ключ
-const apiKey = process.env.OPENAI_API_KEY
+const apiKey =
+	'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'
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -38,20 +39,20 @@ async function fetchImageToBase64(url) {
 				content: [
 					{
 						type: 'text',
-						text: 'Ты эксперт в области кинологии и собаководства. Какая порода собаки изображена на приложенной картинке? В качестве ответа отправь только название породы',
+						text: 'Ты эксперт в области кинологии и собаководства. Назови мне необычную породу.',
 					},
-					{
-						type: 'image_url',
-						image_url: {
-							url: await fetchImageToBase64(
-								'https://mamagroom.ru/api/static/pages/home/main-bg.jpg'
-							),
-						},
-					},
+					// {
+					// 	type: 'image_url',
+					// 	image_url: {
+					// 		url: await fetchImageToBase64(
+					// 			'https://mamagroom.ru/api/static/pages/home/main-bg.jpg'
+					// 		),
+					// 	},
+					// },
 				],
 			},
 		],
-		max_tokens: 300,
+		// max_tokens: 300,
 	})
 
 	// Создаем HTTP туннель через прокси с помощью команды CONNECT
@@ -107,30 +108,3 @@ async function fetchImageToBase64(url) {
 		console.error('Ошибка подключения к прокси:', err)
 	})
 })()
-
-// // curl https://api.openai.com/v1/chat/completions \
-// //   -H "Content-Type: application/json" \
-// //   -H "Authorization: Bearer $OPENAI_API_KEY" \
-// //   -d '{
-// //     "model": "gpt-4o-mini",
-// //     "messages": [
-// //       {
-// //         "role": "user",
-// //         "content": [
-// //           {
-// //             "type": "text",
-// //             "text": "What’s in this image?"
-// //           },
-// //           {
-// //             "type": "image_url",
-// //             "image_url": {
-// //               "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
-// //             }
-// //           }
-// //         ]
-// //       }
-// //     ],
-// //     "max_tokens": 300
-// //   }'
-
-// // curl https://api.openai.com/v1/chat/completions -H "Content-Type: application/json" -H "Authorization: Bearer $OPEN_AI_API_KEY" -d '{ "model": "gpt-4o-mini","messages": [{"role": "user","content": [{"type": "text","text": "What's in this image?"},{"type": "image_url","image_url": {"url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"}}]}],"max_tokens": 300}'

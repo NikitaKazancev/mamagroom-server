@@ -7,6 +7,6 @@ import { BreedService } from './breed.service'
 @Module({
 	controllers: [BreedController],
 	providers: [PrismaService, BreedService, BreedRepository],
-	exports: [],
+	exports: [BreedService],
 })
 export class BreedModule {}

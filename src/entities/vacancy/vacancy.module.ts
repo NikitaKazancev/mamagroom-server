@@ -8,6 +8,6 @@ import { VacancyService } from './vacancy.service'
 	controllers: [VacancyController],
 	providers: [PrismaService, VacancyService, VacancyRepository],
 	imports: [],
-	exports: [],
+	exports: [VacancyService],
 })
 export class VacancyModule {}

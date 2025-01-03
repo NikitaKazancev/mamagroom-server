@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { BreedType } from '@prisma/client'
+import { Breed, BreedType } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { BreedDto } from './breed.dto'
@@ -8,11 +8,15 @@ import { BreedDto } from './breed.dto'
 export class BreedRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany(filter: FindManyFilter & { name?: string; type?: BreedType }) {
+	findMany(
+		filter: FindManyFilter & { name?: string; type?: BreedType },
+		selection?: BooleanMappedType<Breed>
+	) {
 		return this.prisma.breed.findMany({
 			where: {
 				...filter,
 			},
+			select: selection,
 		})
 	}
 

@@ -11,5 +11,6 @@ import { HeaderNavbarLinkService } from './header-navbar-link.service'
 		HeaderNavbarLinkRepository,
 		PrismaService,
 	],
+	exports: [HeaderNavbarLinkService],
 })
 export class HeaderNavbarLinkModule {}

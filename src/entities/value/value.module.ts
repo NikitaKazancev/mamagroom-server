@@ -9,6 +9,6 @@ import { ValueService } from './value.service'
 	controllers: [ValueController],
 	providers: [ValueService, ValueRepository, PrismaService],
 	imports: [forwardRef(() => FileModule)],
-	exports: [ValueRepository],
+	exports: [ValueService],
 })
 export class ValueModule {}

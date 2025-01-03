@@ -9,6 +9,6 @@ import { MainSliderService } from './main-slider.service'
 	controllers: [MainSliderController],
 	providers: [MainSliderService, MainSliderRepository, PrismaService],
 	imports: [forwardRef(() => FileModule)],
-	exports: [MainSliderRepository],
+	exports: [MainSliderService],
 })
 export class MainSliderModule {}
