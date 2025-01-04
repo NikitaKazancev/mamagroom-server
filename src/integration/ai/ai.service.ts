@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { OpenAIModel, OpenAIService } from './openai.service'
-import { SberAIModel, SberService } from './sber.service'
-import { YandexAIModel, YandexService } from './yandex.service'
-
-type AIModel = OpenAIModel | YandexAIModel | SberAIModel
+import { AIModel, IServiceAI } from './ai.types'
+import { OpenAIService } from './openai.service'
+import { SberService } from './sber.service'
+import { YandexService } from './yandex.service'
 
 @Injectable()
 export class AIService {
@@ -39,20 +38,22 @@ export class AIService {
 			this.currentModel = this.nextModel()
 		}
 
-		if (imageUrl) {
-			this.setModelToWorkWithImages()
-		}
+		this.setAIService(this.yandexService)
 
-		if (this.openAIService.isOpenAIModel(this.currentModel)) {
-			return await this.openAIService.request({
-				systemText,
-				text,
-				imageUrl,
-				model: this.currentModel,
-			})
-		}
+		// if (imageUrl) {
+		// 	this.setModelToWorkWithImages()
+		// }
 
-		if (this.yandexService.isYandexAIModel(this.currentModel)) {
+		// if (this.openAIService.isOpenAIModel(this.currentModel)) {
+		// 	return await this.openAIService.request({
+		// 		systemText,
+		// 		text,
+		// 		imageUrl,
+		// 		model: this.currentModel,
+		// 	})
+		// }
+
+		if (this.yandexService.isCorrectAIModel(this.currentModel)) {
 			return await this.yandexService.request({
 				systemText,
 				text,
@@ -60,7 +61,7 @@ export class AIService {
 			})
 		}
 
-		if (this.sberService.isSberAIModel(this.currentModel)) {
+		if (this.sberService.isCorrectAIModel(this.currentModel)) {
 			return await this.sberService.request({
 				systemText,
 				text,
@@ -78,7 +79,19 @@ export class AIService {
 	}
 
 	private setModelToWorkWithImages() {
-		while (this.yandexService.isYandexAIModel(this.currentModel)) {
+		while (this.yandexService.isCorrectAIModel(this.currentModel)) {
+			this.currentModel = this.nextModel()
+		}
+	}
+
+	private skipAIService(aiService: IServiceAI) {
+		while (aiService.isCorrectAIModel(this.currentModel)) {
+			this.currentModel = this.nextModel()
+		}
+	}
+
+	private setAIService(aiService: IServiceAI) {
+		while (!aiService.isCorrectAIModel(this.currentModel)) {
 			this.currentModel = this.nextModel()
 		}
 	}

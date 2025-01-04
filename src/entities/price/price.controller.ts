@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
 import { PriceDimensionsDto, PriceDto } from './price.dto'
 import { PriceService } from './price.service'
+import { Role } from '@prisma/client'
+import { Auth } from 'src/auth/decorators/auth.decorator'
 
 @Controller('prices')
 export class PriceController {
@@ -12,16 +14,19 @@ export class PriceController {
 	}
 
 	@Post()
+	@Auth(Role.pricePost)
 	async create(@Body() data: PriceDto) {
 		return await this.service.create(data)
 	}
 
 	@Put()
+	@Auth(Role.pricePut)
 	async change(@Body() data: PriceDto) {
 		return await this.service.change(data)
 	}
 
 	@Delete()
+	@Auth(Role.priceDelete)
 	async delete(@Query() filter: PriceDimensionsDto) {
 		return await this.service.delete(filter)
 	}

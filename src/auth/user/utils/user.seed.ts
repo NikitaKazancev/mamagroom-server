@@ -1,16 +1,13 @@
 import { PrismaClient, Role } from '@prisma/client'
+import { hash } from 'argon2'
 
 export const userSeed = async (prisma: PrismaClient) => {
 	await prisma.user.create({
 		data: {
 			email: 'my@nikita-kazantsev.ru',
 			name: 'Nikita Kazantsev',
-			password: process.env.ADMIN_PASSWORD,
-			roles: {
-				create: {
-					role: Role.fullAccess,
-				},
-			},
+			password: await hash(process.env.ADMIN_PASSWORD),
+			roles: [Role.fullAccess],
 		},
 	})
 
@@ -18,10 +15,8 @@ export const userSeed = async (prisma: PrismaClient) => {
 		data: {
 			email: 'user@ya.ru',
 			name: 'Test User',
-			password: '123',
-			roles: {
-				create: [{ role: Role.postBreed }],
-			},
+			password: await hash('123'),
+			roles: [Role.postBreed],
 		},
 	})
 }

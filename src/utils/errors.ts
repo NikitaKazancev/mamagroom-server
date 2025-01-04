@@ -2,6 +2,7 @@ import {
 	BadRequestException,
 	ConflictException,
 	NotFoundException,
+	UnauthorizedException,
 } from '@nestjs/common'
 import { prefix } from './functions'
 
@@ -19,4 +20,12 @@ export const badRequest = (
 	lang?: string
 ) => {
 	throw new BadRequestException(`${prefix(className, lang)} ${message}`)
+}
+
+export const unauthorized = (
+	message: string,
+	className: string,
+	lang?: string
+) => {
+	throw new UnauthorizedException(`${prefix(className, lang)} ${message}`)
 }

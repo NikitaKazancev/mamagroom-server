@@ -9,6 +9,8 @@ import {
 	Query,
 } from '@nestjs/common'
 import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators'
+import { Role } from '@prisma/client'
+import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { Language } from 'src/utils/constants'
@@ -30,6 +32,7 @@ export class MasterController {
 	}
 
 	@Post()
+	@Auth(Role.masterPost)
 	@UseInterceptors(SaveFile({ folder: FILE_PATHS.masters }))
 	async create(
 		@Body() data: MasterDto,
@@ -39,6 +42,7 @@ export class MasterController {
 	}
 
 	@Put(':id')
+	@Auth(Role.masterPut)
 	@UseInterceptors(SaveFile({ folder: FILE_PATHS.masters }))
 	async change(
 		@Param('id') id: string,
@@ -49,6 +53,7 @@ export class MasterController {
 	}
 
 	@Delete(':id')
+	@Auth(Role.masterDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
 	}

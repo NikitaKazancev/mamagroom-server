@@ -8,6 +8,8 @@ import {
 	Put,
 	Query,
 } from '@nestjs/common'
+import { Role } from '@prisma/client'
+import { Auth } from 'src/auth/decorators/auth.decorator'
 import { Language } from 'src/utils/constants'
 import { VacancyDto } from './vacancy.dto'
 import { VacancyService } from './vacancy.service'
@@ -27,16 +29,19 @@ export class VacancyController {
 	}
 
 	@Post()
+	@Auth(Role.vacancyPost)
 	async create(@Body() data: VacancyDto) {
 		return await this.service.create(data)
 	}
 
 	@Put(':id')
+	@Auth(Role.vacancyPut)
 	async change(@Param('id') id: string, @Body() data: VacancyDto) {
 		return await this.service.change(id, data)
 	}
 
 	@Delete(':id')
+	@Auth(Role.vacancyDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
 	}

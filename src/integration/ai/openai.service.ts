@@ -4,11 +4,10 @@ import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import { FileService } from 'src/file/file.service'
-
-export type OpenAIModel = 'gpt-4o' | 'gpt-4o-mini' | 'gpt-3.5-turbo'
+import { IServiceAI, OpenAIModel } from './ai.types'
 
 @Injectable()
-export class OpenAIService {
+export class OpenAIService implements IServiceAI {
 	data: {
 		apiUrl: string
 		apiKey: string
@@ -33,7 +32,7 @@ export class OpenAIService {
 	}
 
 	models: OpenAIModel[] = ['gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo']
-	isOpenAIModel(model: string): model is OpenAIModel {
+	isCorrectAIModel(model: string): model is OpenAIModel {
 		return this.models.includes(model as OpenAIModel)
 	}
 

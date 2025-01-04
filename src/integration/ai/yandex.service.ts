@@ -2,16 +2,10 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-
-export type YandexAIModel =
-	| 'yandexgpt-lite'
-	| 'yandexgpt'
-	| 'yandexgpt-32k'
-	| 'llama-lite'
-	| 'llama'
+import { IServiceAI, YandexAIModel } from './ai.types'
 
 @Injectable()
-export class YandexService {
+export class YandexService implements IServiceAI {
 	data: {
 		apiUrl: string
 		folderId: string
@@ -34,7 +28,7 @@ export class YandexService {
 		'llama-lite',
 		'llama',
 	]
-	isYandexAIModel(model: string): model is YandexAIModel {
+	isCorrectAIModel(model: string): model is YandexAIModel {
 		return this.models.includes(model as YandexAIModel)
 	}
 

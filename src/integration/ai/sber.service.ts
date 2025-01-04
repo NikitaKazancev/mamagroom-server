@@ -5,11 +5,10 @@ import axios from 'axios'
 import FormData from 'form-data'
 import fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
-
-export type SberAIModel = 'GigaChat' | 'GigaChat-Pro' | 'GigaChat-Max'
+import { IServiceAI, SberAIModel } from './ai.types'
 
 @Injectable()
-export class SberService {
+export class SberService implements IServiceAI {
 	data: {
 		authUrl: string
 		filesUrl: string
@@ -27,7 +26,7 @@ export class SberService {
 	}
 
 	models: SberAIModel[] = ['GigaChat', 'GigaChat-Pro', 'GigaChat-Max']
-	isSberAIModel(model: string): model is SberAIModel {
+	isCorrectAIModel(model: string): model is SberAIModel {
 		return this.models.includes(model as SberAIModel)
 	}
 

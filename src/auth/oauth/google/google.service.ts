@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { SocialUser } from 'src/auth/auth.service'
+import { OAuthUser } from 'src/auth/auth.service'
 import { UserDto } from 'src/auth/user/user.dto'
 
 export interface GoogleUser {
@@ -11,7 +11,7 @@ export interface GoogleUser {
 
 @Injectable()
 export class GoogleService {
-	isGoogleUser(user: SocialUser): user is GoogleUser {
+	isGoogleUser(user: OAuthUser): user is GoogleUser {
 		return 'firstName' in user && 'lastName' in user
 	}
 
@@ -20,6 +20,7 @@ export class GoogleService {
 			email: user.email,
 			name: `${user.firstName} ${user.lastName}`,
 			password: '',
+			roles: [],
 		}
 	}
 }

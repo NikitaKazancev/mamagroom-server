@@ -9,6 +9,8 @@ import {
 	Query,
 } from '@nestjs/common'
 import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators'
+import { Role } from '@prisma/client'
+import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { MainSliderDto } from './main-slider.dto'
@@ -29,6 +31,7 @@ export class MainSliderController {
 	}
 
 	@Post()
+	@Auth(Role.mainSliderPost)
 	@UseInterceptors(SaveFile({ folder: FILE_PATHS.mainSlider }))
 	async create(
 		@Body() data: MainSliderDto,
@@ -38,6 +41,7 @@ export class MainSliderController {
 	}
 
 	@Put(':id')
+	@Auth(Role.mainSliderPut)
 	@UseInterceptors(SaveFile({ folder: FILE_PATHS.mainSlider }))
 	async change(
 		@Param('id') id: string,
@@ -48,6 +52,7 @@ export class MainSliderController {
 	}
 
 	@Delete(':id')
+	@Auth(Role.mainSliderDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
 	}

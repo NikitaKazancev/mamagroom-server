@@ -4,27 +4,50 @@ model User {
    name     String?
    password String
 
-   createdAt DateTime    @default(now()) @map("created_at")
-   updatedAt DateTime    @updatedAt() @map("updated_at")
-   isDeleted Boolean     @default(false) @map("is_deleted")
-   roles     UserRoles[]
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt() @map("updated_at")
+   isDeleted Boolean  @default(false) @map("is_deleted")
+   roles     Role[]
 
    @@map("users")
 }
 
 enum Role {
    fullAccess
-   postBreed
-   postMaster
+   userPost
+   userPut
+   userDelete
+   breedPost
+   breedPut
+   breedDelete
+   constantPost
+   constantPut
+   constantDelete
+   headerNavbarLinkPost
+   headerNavbarLinkPut
+   headerNavbarLinkDelete
+   mainSliderPost
+   mainSliderPut
+   mainSliderDelete
+   masterPost
+   masterPut
+   masterDelete
+   pricePost
+   pricePut
+   priceDelete
+   procedurePost
+   procedurePut
+   procedureDelete
+   vacancyPost
+   vacancyPut
+   vacancyDelete
+   valuePost
+   valuePut
+   valueDelete
+   filePostPut
+   responseFromAIPost
+   responseFromAIPut
+   responseFromAIDelete
 
    @@map("roles")
-}
-
-model UserRoles {
-   userId String @map("user_id")
-   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-   role   Role
-
-   @@id([userId, role])
-   @@map("user_roles")
 }

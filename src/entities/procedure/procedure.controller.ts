@@ -15,6 +15,8 @@ import { SaveFile } from 'src/file/utils/file.interceptors'
 import { Language } from 'src/utils/constants'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
+import { Role } from '@prisma/client'
+import { Auth } from 'src/auth/decorators/auth.decorator'
 
 @Controller('procedures')
 export class ProcedureController {
@@ -40,16 +42,19 @@ export class ProcedureController {
 	}
 
 	@Post()
+	@Auth(Role.procedurePost)
 	async create(@Body() data: ProcedureDto) {
 		return await this.service.create(data)
 	}
 
 	@Put(':id')
+	@Auth(Role.procedurePut)
 	async change(@Param('id') id: string, @Body() data: ProcedureDto) {
 		return await this.service.change(id, data)
 	}
 
 	@Delete(':id')
+	@Auth(Role.procedureDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
 	}

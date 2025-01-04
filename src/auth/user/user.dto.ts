@@ -1,7 +1,15 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator'
+import { Role } from '@prisma/client'
+import {
+	IsArray,
+	IsBoolean,
+	IsEmail,
+	IsIn,
+	IsOptional,
+	IsString,
+} from 'class-validator'
 
 export class UserDto {
-	@IsString()
+	@IsEmail()
 	email: string
 
 	@IsString()
@@ -9,6 +17,10 @@ export class UserDto {
 
 	@IsString()
 	password: string
+
+	@IsArray()
+	@IsIn(Object.values(Role))
+	roles: Role[]
 
 	@IsOptional()
 	@IsBoolean()

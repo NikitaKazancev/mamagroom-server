@@ -5,7 +5,9 @@ import { UserModule } from 'src/auth/user/user.module'
 import { PrismaService } from 'src/prisma.service'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
+import { GithubService } from './oauth/github/github.service'
 import { GithubStrategy } from './oauth/github/github.strategy'
+import { GoogleService } from './oauth/google/google.service'
 import { GoogleStrategy } from './oauth/google/google.strategy'
 
 @Module({
@@ -20,7 +22,14 @@ import { GoogleStrategy } from './oauth/google/google.strategy'
 		UserModule,
 	],
 	controllers: [AuthController],
-	providers: [PrismaService, AuthService, GithubStrategy, GoogleStrategy],
+	providers: [
+		PrismaService,
+		AuthService,
+		GithubStrategy,
+		GoogleStrategy,
+		GithubService,
+		GoogleService,
+	],
 	exports: [AuthService],
 })
 export class AuthModule {}

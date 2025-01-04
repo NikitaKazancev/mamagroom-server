@@ -20,13 +20,6 @@ export class UserRepository {
 			where: {
 				id,
 			},
-			include: {
-				roles: {
-					select: {
-						role: true,
-					},
-				},
-			},
 		})
 	}
 
@@ -35,18 +28,13 @@ export class UserRepository {
 			where: {
 				email,
 			},
-			include: {
-				roles: {
-					select: {
-						role: true,
-					},
-				},
-			},
 		})
 	}
 
 	create(user: UserDto) {
-		return this.prisma.user.create({ data: user })
+		return this.prisma.user.create({
+			data: user,
+		})
 	}
 
 	change(id: string, user: UserDto) {

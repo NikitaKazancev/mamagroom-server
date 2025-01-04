@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { SocialUser } from 'src/auth/auth.service'
+import { OAuthUser } from 'src/auth/auth.service'
 import { UserDto } from 'src/auth/user/user.dto'
 
 export interface GithubUser {
@@ -10,7 +10,7 @@ export interface GithubUser {
 
 @Injectable()
 export class GithubService {
-	isGithubUser(user: SocialUser): user is GithubUser {
+	isGithubUser(user: OAuthUser): user is GithubUser {
 		return 'username' in user
 	}
 
@@ -19,6 +19,7 @@ export class GithubService {
 			email: user.email,
 			name: user.username,
 			password: '',
+			roles: [],
 		}
 	}
 }

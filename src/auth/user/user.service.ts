@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common'
+import { hash } from 'argon2'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import { UserDto } from './user.dto'
@@ -30,8 +31,7 @@ export class UserService {
 	}
 
 	async findByEmail(email: string) {
-		const res = await this.repository.findByEmail(email)
-		return { ...res, roles: res.roles.map(role => role.role) }
+		return await this.repository.findByEmail(email)
 	}
 
 	async findOrCreate(user: UserDto) {
@@ -40,23 +40,24 @@ export class UserService {
 			return userInDb
 		}
 
-		const createdUser = await this.repository.create(user)
-		return { ...createdUser, roles: [] }
+		user.password = await hash(user.password)
+		return await this.repository.create(user)
 	}
 
 	async create(user: UserDto) {
 		const userInDb = await this.findByEmail(user.email)
-
 		if (userInDb) {
 			conflict(`user by email = ${user.email}`, UserService.name)
 		}
 
+		user.password = await hash(user.password)
 		return await this.repository.create(user)
 	}
 
 	async change(id: string, user: UserDto) {
 		await this.checkExistence(id)
 
+		user.password = await hash(user.password)
 		return await this.repository.change(id, user)
 	}
 
