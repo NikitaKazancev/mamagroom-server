@@ -1,24 +1,26 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
-import { getJwtConfig } from 'src/config/jwt.config'
-import { UserModule } from 'src/entities/user/user.module'
+import { UserModule } from 'src/auth/user/user.module'
 import { PrismaService } from 'src/prisma.service'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
-import { GithubStrategy } from './strategies/github.strategy'
-import { GoogleStrategy } from './strategies/google.strategy'
+import { GithubStrategy } from './oauth/github/github.strategy'
+import { GoogleStrategy } from './oauth/google/google.strategy'
 
 @Module({
 	imports: [
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			inject: [ConfigService],
-			useFactory: getJwtConfig,
+			useFactory: async (configService: ConfigService) => ({
+				secret: configService.get('JWT_SECRET'),
+			}),
 		}),
 		UserModule,
 	],
 	controllers: [AuthController],
 	providers: [PrismaService, AuthService, GithubStrategy, GoogleStrategy],
+	exports: [AuthService],
 })
 export class AuthModule {}

@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { Strategy } from 'passport-github2'
 import { VerifyCallback } from 'passport-google-oauth20'
-import { GithubProfile } from '../auth.types'
+import { GithubUser } from './github.service'
 
 @Injectable()
 export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
@@ -23,7 +23,7 @@ export class GithubStrategy extends PassportStrategy(Strategy, 'github') {
 		done: VerifyCallback
 	): Promise<any> {
 		const { username, emails } = profile
-		const user: GithubProfile = {
+		const user: GithubUser = {
 			email: emails[0].value,
 			username,
 			accessToken,

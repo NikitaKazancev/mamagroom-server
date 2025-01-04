@@ -5,17 +5,22 @@ import { APP_INTERCEPTOR } from '@nestjs/core'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { AuthModule } from './auth/auth.module'
-import { GithubStrategy } from './auth/strategies/github.strategy'
-import { GoogleStrategy } from './auth/strategies/google.strategy'
-import { JwtStrategy } from './auth/strategies/jwt.strategy'
-import { ConstantModule } from './constant/constant.module'
+import { JwtStrategy } from './auth/jwt/jwt.strategy'
+import { GithubStrategy } from './auth/oauth/github/github.strategy'
+import { GoogleStrategy } from './auth/oauth/google/google.strategy'
+import { UserModule } from './auth/user/user.module'
 import { BreedModule } from './entities/breed/breed.module'
+import { ConstantModule } from './entities/constant/constant.module'
 import { HeaderNavbarLinkModule } from './entities/header-navbar-link/header-navbar-link.module'
+import { MainSliderModule } from './entities/main-slider/main-slider.module'
+import { MasterModule } from './entities/master/master.module'
 import { PriceModule } from './entities/price/price.module'
 import { ProcedureModule } from './entities/procedure/procedure.module'
-import { UserModule } from './entities/user/user.module'
+import { VacancyModule } from './entities/vacancy/vacancy.module'
 import { ValueModule } from './entities/value/value.module'
 import { FileModule } from './file/file.module'
+import { IntegrationModule } from './integration/integration.module'
+import { ResponseFromAIModule } from './integration/response-from-ai/response-from-ai.module'
 
 @Module({
 	imports: [
@@ -31,13 +36,18 @@ import { FileModule } from './file/file.module'
 			max: 1000,
 			isGlobal: true,
 		}),
-		ProcedureModule,
-		PriceModule,
 		BreedModule,
 		ConstantModule,
-		FileModule,
 		HeaderNavbarLinkModule,
+		MainSliderModule,
+		MasterModule,
+		PriceModule,
+		ProcedureModule,
+		VacancyModule,
 		ValueModule,
+		FileModule,
+		IntegrationModule,
+		ResponseFromAIModule,
 		AuthModule,
 		UserModule,
 	],

@@ -7,15 +7,15 @@ model User {
    createdAt DateTime    @default(now()) @map("created_at")
    updatedAt DateTime    @updatedAt() @map("updated_at")
    isDeleted Boolean     @default(false) @map("is_deleted")
-   UserRoles UserRoles[]
+   roles     UserRoles[]
 
    @@map("users")
 }
 
 enum Role {
-   user
-   manager
-   admin
+   fullAccess
+   postBreed
+   postMaster
 
    @@map("roles")
 }
@@ -23,7 +23,7 @@ enum Role {
 model UserRoles {
    userId String @map("user_id")
    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-   role   Role   @default(user)
+   role   Role
 
    @@id([userId, role])
    @@map("user_roles")

@@ -9,7 +9,7 @@ model Breed {
    updatedAt DateTime @updatedAt() @map("updated_at")
    isDeleted Boolean  @default(false) @map("is_deleted")
 
-   Price          Price[]
+   price          Price[]
    responseFromAI ResponseFromAI[]
 
    @@map("breeds")

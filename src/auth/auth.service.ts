@@ -1,36 +1,50 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@prisma/client'
-import { UserService } from 'src/entities/user/user.service'
-import { SocialProfile } from './auth.types'
+import { UserService } from 'src/auth/user/user.service'
+import { badRequest } from 'src/utils/errors'
+import { GithubService, GithubUser } from './oauth/github/github.service'
+import { GoogleService, GoogleUser } from './oauth/google/google.service'
+
+export type SocialUser = GoogleUser | GithubUser
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private userService: UserService,
-		private jwt: JwtService
+		private readonly userService: UserService,
+		private readonly githubService: GithubService,
+		private readonly googleService: GoogleService,
+		private readonly jwtService: JwtService
 	) {}
 
-	async loginSocial(req: { user: SocialProfile }) {
-		if (!req.user) {
-			throw new BadRequestException('User not found by social media')
+	async loginSocial(user: SocialUser) {
+		if (!user)
+			badRequest('user is undefined by social media', AuthService.name)
+
+		let userDto = undefined
+		if (this.googleService.isGoogleUser(user)) {
+			userDto = this.googleService.convertToGeneralUser(user)
+		} else if (this.githubService.isGithubUser(user)) {
+			userDto = this.githubService.convertToGeneralUser(user)
 		}
 
-		return this.userService.findOrCreateSocial(req.user)
+		const userInDb = await this.userService.findOrCreate(userDto)
+		return this.withNewToken(userInDb)
 	}
 
-	async buildResponseObject(user: User) {
-		const tokens = await this.issueTokens(user.email)
-		return { user, ...tokens }
+	withNewToken(userData: User & { roles: string[] }) {
+		return {
+			...userData,
+			token: this.newToken(userData.email, userData.roles),
+		}
 	}
 
-	private async issueTokens(email: string) {
-		const accessToken = this.jwt.sign(
-			{ email },
+	private newToken(email: string, roles: string[]) {
+		return this.jwtService.sign(
+			{ email, roles },
 			{
-				expiresIn: '1h',
+				expiresIn: '7d',
 			}
 		)
-		return { accessToken }
 	}
 }

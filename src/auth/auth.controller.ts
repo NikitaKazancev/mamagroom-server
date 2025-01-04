@@ -3,7 +3,8 @@ import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
 import { Response } from 'express'
 import { AuthService } from './auth.service'
-import { GithubProfile, GoogleProfile } from './auth.types'
+import { GithubUser } from './oauth/github/github.service'
+import { GoogleUser } from './oauth/google/google.service'
 
 @Controller('auth')
 export class AuthController {
@@ -25,13 +26,13 @@ export class AuthController {
 	@Get('github/redirect')
 	@UseGuards(AuthGuard('github'))
 	async githubAuthRedirect(
-		@Req() req: { user: GithubProfile },
+		@Req() req: { user: GithubUser },
 		@Res({ passthrough: true }) res: Response
 	) {
-		const user = await this.service.loginSocial(req)
-		const { accessToken } = await this.service.buildResponseObject(user)
-
-		return res.redirect(`${this.CLIENT_OAUTH_REDIRECT_URL}${accessToken}`)
+		const userData = await this.service.loginSocial(req.user)
+		return res.redirect(
+			`${this.CLIENT_OAUTH_REDIRECT_URL}?token=${userData.token}`
+		)
 	}
 
 	@Get('google')
@@ -41,12 +42,12 @@ export class AuthController {
 	@Get('google/redirect')
 	@UseGuards(AuthGuard('google'))
 	async googleAuthRedirect(
-		@Req() req: { user: GoogleProfile },
+		@Req() req: { user: GoogleUser },
 		@Res({ passthrough: true }) res: Response
 	) {
-		const user = await this.service.loginSocial(req)
-		const { accessToken } = await this.service.buildResponseObject(user)
-
-		return res.redirect(`${this.CLIENT_OAUTH_REDIRECT_URL}${accessToken}`)
+		const userData = await this.service.loginSocial(req.user)
+		return res.redirect(
+			`${this.CLIENT_OAUTH_REDIRECT_URL}?token=${userData.token}`
+		)
 	}
 }
