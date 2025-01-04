@@ -7,7 +7,7 @@ export class PriceController {
 	constructor(private readonly service: PriceService) {}
 
 	@Get()
-	async findMany(@Query() filter: PriceDimensionsDto) {
+	async findMany(@Query() filter: Partial<PriceDimensionsDto>) {
 		return await this.service.findMany(filter)
 	}
 

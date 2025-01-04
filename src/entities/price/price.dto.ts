@@ -26,15 +26,19 @@ export class PriceDto {
 }
 
 export class PriceDimensionsDto {
+	@IsOptional()
 	@IsString()
 	breedId: string
 
+	@IsOptional()
 	@IsString()
 	procedureId: string
 
+	@IsOptional()
 	@IsNumber()
 	weight: number
 
+	@IsOptional()
 	@IsNumber()
 	time: number
 }

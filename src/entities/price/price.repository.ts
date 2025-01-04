@@ -42,21 +42,4 @@ export class PriceRepository {
 			},
 		})
 	}
-
-	// findAll() {
-	// 	return this.prisma.price.findMany({
-	// 		orderBy: { procedure: { order: 'asc' } },
-	// 		where: {
-	// 			isDeleted: false,
-	// 		},
-	// 	})
-	// }
-
-	// async create(price: PriceDBDto) {
-	// 	try {
-	// 		return await this.prisma.price.create({ data: price })
-	// 	} catch (error) {
-	// 		throw new HttpException('Price already exists', HttpStatus.CONFLICT)
-	// 	}
-	// }
 }

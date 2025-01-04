@@ -26,7 +26,7 @@ export class PriceService {
 		return price
 	}
 
-	async findMany(filter: PriceDimensionsDto) {
+	async findMany(filter: Partial<PriceDimensionsDto>) {
 		return await this.repository.findMany(filter)
 	}
 
