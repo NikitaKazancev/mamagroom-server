@@ -115,7 +115,7 @@ export class SberService implements IServiceAI {
 		return await axios(config)
 			.then(response => response.data?.id)
 			.catch(error => {
-				console.log(error)
+				console.error(error)
 				return undefined
 			})
 	}
@@ -176,7 +176,7 @@ export class SberService implements IServiceAI {
 		return await axios(config)
 			.then(response => response.data?.choices[0]?.message?.content)
 			.catch(error => {
-				console.log(error)
+				console.error(error)
 				return undefined
 			})
 	}

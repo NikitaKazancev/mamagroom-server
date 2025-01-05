@@ -78,8 +78,6 @@ export class HeaderNavbarLinkRepository {
 			},
 		})
 
-		console.log(headerNavbarLinkInDb)
-
 		return await this.prisma.$transaction(async prisma => {
 			if (headerNavbarLinkInDb) {
 				await prisma.headerNavbarLink.updateMany({
