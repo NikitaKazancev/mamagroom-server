@@ -1,12 +1,71 @@
 import { Injectable } from '@nestjs/common'
+import { HeaderNavbarLink } from '@prisma/client'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
-import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
+import {
+	HeaderNavbarLinkDto,
+	RequiredHeaderNavbarLinkDto,
+} from './header-navbar-link.dto'
 import { HeaderNavbarLinkRepository } from './header-navbar-link.repository'
 
 @Injectable()
 export class HeaderNavbarLinkService {
 	constructor(private readonly repository: HeaderNavbarLinkRepository) {}
+
+	async findMany(filter: FindManyFilter) {
+		return await this.repository.findMany(filter)
+	}
+
+	async findById(id: string) {
+		return await this.checkExistence(id)
+	}
+
+	async create(headerNavbarLink: HeaderNavbarLinkDto) {
+		await this.checkUniqFields(headerNavbarLink)
+
+		if (headerNavbarLink.parentLinkId) {
+			await this.checkExistence(headerNavbarLink.parentLinkId)
+		}
+
+		headerNavbarLink.order = undefined
+
+		const filledHeaderNavbarLink =
+			await this.fillRequiredFields(headerNavbarLink)
+
+		return await this.repository.create(filledHeaderNavbarLink)
+	}
+
+	async change(id: string, headerNavbarLink: HeaderNavbarLinkDto) {
+		const headerNavbarLinkInDb = await this.checkExistence(id)
+
+		if (headerNavbarLink.parentLinkId != headerNavbarLinkInDb.parentLinkId) {
+			await this.checkExistence(headerNavbarLink.parentLinkId)
+		}
+
+		if (headerNavbarLinkInDb.name !== headerNavbarLink.name) {
+			await this.checkUniqFields(headerNavbarLink)
+		}
+
+		const filledHeaderNavbarLink = await this.fillRequiredFieldsByObject(
+			headerNavbarLink,
+			headerNavbarLinkInDb
+		)
+
+		if (headerNavbarLink.order !== headerNavbarLinkInDb.order) {
+			return await this.repository.changeWithOrder(
+				id,
+				filledHeaderNavbarLink
+			)
+		}
+
+		return await this.repository.change(id, filledHeaderNavbarLink)
+	}
+
+	async delete(id: string) {
+		await this.checkExistence(id)
+
+		return await this.repository.markToDelete(id)
+	}
 
 	async checkExistence(id: string) {
 		if (!id) {
@@ -24,56 +83,47 @@ export class HeaderNavbarLinkService {
 		return headerNavbarLink
 	}
 
-	async findMany(filter: FindManyFilter) {
-		return await this.repository.findMany(filter)
-	}
+	private async checkUniqFields(headerNavbarLink: HeaderNavbarLinkDto) {
+		const headerNavbarLinkInDb = await this.repository.findByName(
+			headerNavbarLink.name
+		)
 
-	async findById(id: string) {
-		return await this.checkExistence(id)
-	}
-
-	async create(headerNavbarLink: HeaderNavbarLinkDto) {
-		if (headerNavbarLink.parentLinkId) {
-			await this.checkExistence(headerNavbarLink.parentLinkId)
-		}
-
-		const headerNavbarLinkInDb = await this.repository.findMany({
-			name: headerNavbarLink.name,
-		})
-
-		if (headerNavbarLinkInDb.length) {
+		if (headerNavbarLinkInDb) {
 			conflict(
 				`headerNavbarLink by name = ${headerNavbarLink.name}`,
 				HeaderNavbarLinkService.name
 			)
 		}
 
-		if (!headerNavbarLink.order) {
+		return headerNavbarLinkInDb
+	}
+
+	private async fillRequiredFields(
+		headerNavbarLink: HeaderNavbarLinkDto
+	): Promise<RequiredHeaderNavbarLinkDto> {
+		let order = headerNavbarLink.order
+		if (!order) {
 			const aggregation = await this.repository.findMaxOrder()
 
 			if (!aggregation) {
-				headerNavbarLink.order = 1
+				order = 1
 			} else {
-				headerNavbarLink.order = aggregation._max.order + 1
+				order = aggregation._max.order + 1
 			}
 		}
 
-		return await this.repository.create(headerNavbarLink)
+		return { ...headerNavbarLink, order }
 	}
 
-	async change(id: string, headerNavbarLink: HeaderNavbarLinkDto) {
-		await this.checkExistence(id)
-
-		if (headerNavbarLink.parentLinkId) {
-			await this.checkExistence(headerNavbarLink.parentLinkId)
+	private async fillRequiredFieldsByObject(
+		headerNavbarLink: HeaderNavbarLinkDto,
+		headerNavbarLinkInDb: HeaderNavbarLink
+	): Promise<RequiredHeaderNavbarLinkDto> {
+		let order = headerNavbarLink.order
+		if (!order) {
+			order = headerNavbarLinkInDb.order
 		}
 
-		return await this.repository.change(id, headerNavbarLink)
-	}
-
-	async delete(id: string) {
-		await this.checkExistence(id)
-
-		return await this.repository.markToDelete(id)
+		return { ...headerNavbarLink, order }
 	}
 }

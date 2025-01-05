@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import { FileService } from 'src/file/file.service'
-import { IServiceAI, OpenAIModel } from './ai.types'
+import { AIRequestBody, AIResponse, IServiceAI, OpenAIModel } from './ai.types'
 
 @Injectable()
 export class OpenAIService implements IServiceAI {
@@ -31,7 +31,7 @@ export class OpenAIService implements IServiceAI {
 		}
 	}
 
-	models: OpenAIModel[] = ['gpt-4o', 'gpt-4o-mini', 'gpt-3.5-turbo']
+	models: OpenAIModel[] = ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo']
 	isCorrectAIModel(model: string): model is OpenAIModel {
 		return this.models.includes(model as OpenAIModel)
 	}
@@ -41,12 +41,7 @@ export class OpenAIService implements IServiceAI {
 		text,
 		imageUrl,
 		model,
-	}: {
-		systemText: string
-		text: string
-		imageUrl?: string
-		model?: OpenAIModel
-	}): Promise<string | undefined> {
+	}: AIRequestBody<OpenAIModel>): Promise<AIResponse> {
 		let content:
 			| string
 			| (
@@ -69,6 +64,8 @@ export class OpenAIService implements IServiceAI {
 				]
 
 				modelType = 'gpt-4o'
+			} else if (!text) {
+				return { data: undefined, model: model || 'gpt-4o' }
 			} else {
 				content = text
 				modelType = model || 'gpt-4o'
@@ -97,14 +94,22 @@ export class OpenAIService implements IServiceAI {
 		}
 
 		return await axios(config)
-			.then(response => response.data?.choices[0]?.message?.content)
+			.then(response => {
+				return {
+					data: response.data?.choices[0]?.message?.content,
+					model: modelType,
+				}
+			})
 			.catch(error => {
 				console.error('Ошибка при запросе:', error.message)
 				if (error.response) {
 					console.error('Ответ от сервера:', error.response.data)
 				}
 
-				return undefined
+				return {
+					data: undefined,
+					model: modelType,
+				}
 			})
 	}
 }

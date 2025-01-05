@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import {
 	IsBoolean,
 	IsIn,
@@ -5,7 +6,8 @@ import {
 	IsOptional,
 	IsString,
 } from 'class-validator'
-import { LANGUAGES_LIST, Language } from 'src/utils/constants'
+import { Language, LANGUAGES_LIST } from 'src/utils/constants'
+import { RequiredFields } from 'src/utils/types'
 
 export class ValueDto {
 	@IsIn(LANGUAGES_LIST)
@@ -19,13 +21,17 @@ export class ValueDto {
 
 	@IsString()
 	@IsOptional()
-	imageName: string
+	imageName?: string
 
 	@IsNumber()
 	@IsOptional()
-	order: number
+	@Type(() => Number)
+	order?: number
 
 	@IsOptional()
 	@IsBoolean()
+	@Type(() => Boolean)
 	isDeleted?: boolean
 }
+
+export type RequiredValueDto = RequiredFields<ValueDto, 'order' | 'imageName'>

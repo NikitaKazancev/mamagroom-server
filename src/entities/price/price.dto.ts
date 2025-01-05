@@ -1,23 +1,26 @@
+import { Type } from 'class-transformer'
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import { RequiredFields } from 'src/utils/types'
 
 export class PriceDto {
-	@IsOptional()
 	@IsString()
 	breedId: string
 
-	@IsOptional()
 	@IsString()
 	procedureId: string
 
-	@IsOptional()
 	@IsNumber()
-	weight: number
-
 	@IsOptional()
-	@IsNumber()
-	time: number
+	@Type(() => Number)
+	weight?: number
 
 	@IsNumber()
+	@IsOptional()
+	@Type(() => Number)
+	time?: number
+
+	@IsNumber()
+	@Type(() => Number)
 	price: number
 
 	@IsOptional()
@@ -25,20 +28,8 @@ export class PriceDto {
 	isDeleted?: boolean
 }
 
-export class PriceDimensionsDto {
-	@IsOptional()
-	@IsString()
-	breedId: string
-
-	@IsOptional()
-	@IsString()
-	procedureId: string
-
-	@IsOptional()
-	@IsNumber()
-	weight: number
-
-	@IsOptional()
-	@IsNumber()
-	time: number
-}
+export type RequiredPriceDto = RequiredFields<PriceDto, 'weight' | 'time'>
+export type PriceDimensions = Pick<
+	Required<PriceDto>,
+	'breedId' | 'procedureId' | 'weight' | 'time'
+>

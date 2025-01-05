@@ -1,16 +1,31 @@
-import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
-import { PriceDimensionsDto, PriceDto } from './price.dto'
-import { PriceService } from './price.service'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	ParseIntPipe,
+	Post,
+	Put,
+	Query,
+} from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
+import { OptionalParseNumberPipe } from 'src/pipes/oprional-parse-number.pipe'
+import { PriceDto } from './price.dto'
+import { PriceService } from './price.service'
 
 @Controller('prices')
 export class PriceController {
 	constructor(private readonly service: PriceService) {}
 
 	@Get()
-	async findMany(@Query() filter: Partial<PriceDimensionsDto>) {
-		return await this.service.findMany(filter)
+	async findMany(
+		@Query('breedId') breedId?: string,
+		@Query('procedureId') procedureId?: string,
+		@Query('weight', OptionalParseNumberPipe) weight?: number,
+		@Query('time', OptionalParseNumberPipe) time?: number
+	) {
+		return await this.service.findMany({ breedId, procedureId, weight, time })
 	}
 
 	@Post()
@@ -27,7 +42,12 @@ export class PriceController {
 
 	@Delete()
 	@Auth(Role.priceDelete)
-	async delete(@Query() filter: PriceDimensionsDto) {
-		return await this.service.delete(filter)
+	async delete(
+		@Query('breedId') breedId: string,
+		@Query('procedureId') procedureId: string,
+		@Query('weight', ParseIntPipe) weight: number,
+		@Query('time', ParseIntPipe) time: number
+	) {
+		return await this.service.delete({ breedId, procedureId, weight, time })
 	}
 }

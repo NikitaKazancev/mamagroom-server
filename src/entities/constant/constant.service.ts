@@ -7,46 +7,61 @@ import { ConstantRepository } from './constant.repository'
 export class ConstantService {
 	constructor(private readonly repository: ConstantRepository) {}
 
-	async checkExistence(filter: ConstantDimensionsDto) {
-		if (!filter) {
-			notFound(`dimensions are undefined`, ConstantService.name)
-		}
-
-		const constant = await this.repository.findUnique(filter)
-		if (!constant) {
-			notFound(`constant by dimensions = ${filter}`, ConstantService.name)
-		}
-
-		return constant
+	async findMany(dimensions: ConstantDimensionsDto) {
+		return await this.repository.findMany(dimensions)
 	}
 
-	async findMany(filter: ConstantDimensionsDto) {
-		return await this.repository.findMany(filter)
-	}
-
-	async findUnique(filter: ConstantDimensionsDto) {
-		return await this.checkExistence(filter)
+	async findUnique(dimensions: ConstantDimensionsDto) {
+		return await this.checkExistence(dimensions)
 	}
 
 	async create(constant: ConstantDto) {
-		const constantInDb = await this.repository.findUnique(constant)
-
+		const dimensions = this.dimensions(constant)
+		const constantInDb = await this.repository.findUnique(dimensions)
 		if (constantInDb) {
-			conflict(`constant by dimensions = ${constant}`, ConstantService.name)
+			conflict(
+				`constant by dimensions = ${dimensions}`,
+				ConstantService.name
+			)
 		}
 
 		return await this.repository.create(constant)
 	}
 
 	async change(constant: ConstantDto) {
-		await this.checkExistence(constant)
+		const dimensions = this.dimensions(constant)
+		await this.checkExistence(dimensions)
 
-		return await this.repository.change(constant, constant)
+		return await this.repository.change(dimensions, constant)
 	}
 
-	async delete(filter: ConstantDimensionsDto) {
-		await this.checkExistence(filter)
+	async delete(dimensions: ConstantDimensionsDto) {
+		await this.checkExistence(dimensions)
 
-		return await this.repository.delete(filter)
+		return await this.repository.delete(dimensions)
+	}
+
+	async checkExistence(dimensions: ConstantDimensionsDto) {
+		if (!dimensions) {
+			notFound(`dimensions are undefined`, ConstantService.name)
+		}
+
+		const constant = await this.repository.findUnique(dimensions)
+		if (!constant) {
+			notFound(
+				`constant by dimensions = ${dimensions}`,
+				ConstantService.name
+			)
+		}
+
+		return constant
+	}
+
+	private dimensions(constant: ConstantDto): ConstantDimensionsDto {
+		return {
+			language: constant.language,
+			type: constant.type,
+			name: constant.name,
+		}
 	}
 }

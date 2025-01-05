@@ -1,16 +1,21 @@
 import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
-import { ConstantDimensionsDto, ConstantDto } from './constant.dto'
-import { ConstantService } from './constant.service'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
+import { Language } from 'src/utils/constants'
+import { ConstantDto } from './constant.dto'
+import { ConstantService } from './constant.service'
 
 @Controller('constants')
 export class ConstantController {
 	constructor(private readonly service: ConstantService) {}
 
 	@Get()
-	async findMany(@Query() filter: ConstantDimensionsDto) {
-		return await this.service.findMany(filter)
+	async findMany(
+		@Query('language') language?: Language,
+		@Query('type') type?: string,
+		@Query('name') name?: string
+	) {
+		return await this.service.findMany({ language, type, name })
 	}
 
 	@Post()
@@ -27,7 +32,11 @@ export class ConstantController {
 
 	@Delete()
 	@Auth(Role.constantDelete)
-	async delete(@Query() filter: ConstantDimensionsDto) {
-		return await this.service.delete(filter)
+	async delete(
+		@Query('language') language?: Language,
+		@Query('type') type?: string,
+		@Query('name') name?: string
+	) {
+		return await this.service.delete({ language, type, name })
 	}
 }

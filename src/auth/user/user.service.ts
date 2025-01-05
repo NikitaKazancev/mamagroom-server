@@ -9,19 +9,6 @@ import { UserRepository } from './user.repository'
 export class UserService {
 	constructor(private readonly repository: UserRepository) {}
 
-	async checkExistence(id: string) {
-		if (!id) {
-			notFound(`id is undefined`, UserService.name)
-		}
-
-		const user = await this.repository.findById(id)
-		if (!user) {
-			notFound(`user by id = ${id}`, UserService.name)
-		}
-
-		return user
-	}
-
 	async findMany(filter: FindManyFilter) {
 		return await this.repository.findMany(filter)
 	}
@@ -45,19 +32,21 @@ export class UserService {
 	}
 
 	async create(user: UserDto) {
-		const userInDb = await this.findByEmail(user.email)
-		if (userInDb) {
-			conflict(`user by email = ${user.email}`, UserService.name)
-		}
+		await this.checkUniqFields(user)
 
 		user.password = await hash(user.password)
+
 		return await this.repository.create(user)
 	}
 
 	async change(id: string, user: UserDto) {
-		await this.checkExistence(id)
+		const userInDb = await this.checkExistence(id)
+		if (userInDb.email !== user.email) {
+			await this.checkUniqFields(user)
+		}
 
 		user.password = await hash(user.password)
+
 		return await this.repository.change(id, user)
 	}
 
@@ -65,5 +54,28 @@ export class UserService {
 		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
+	}
+
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, UserService.name)
+		}
+
+		const user = await this.repository.findById(id)
+		if (!user) {
+			notFound(`user by id = ${id}`, UserService.name)
+		}
+
+		return user
+	}
+
+	private async checkUniqFields(user: UserDto) {
+		const userInDb = await this.repository.findByEmail(user.email)
+
+		if (userInDb) {
+			conflict(`user by email = ${user.email}`, UserService.name)
+		}
+
+		return userInDb
 	}
 }

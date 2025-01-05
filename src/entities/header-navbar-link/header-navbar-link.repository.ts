@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
-import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
+import { RequiredHeaderNavbarLinkDto } from './header-navbar-link.dto'
 
 @Injectable()
 export class HeaderNavbarLinkRepository {
@@ -16,19 +16,10 @@ export class HeaderNavbarLinkRepository {
 			orderBy: {
 				order: 'asc',
 			},
-			select: {
-				id: true,
-				name: true,
-				link: true,
-
+			include: {
 				sublinks: {
 					where: {
 						...filter,
-					},
-					select: {
-						id: true,
-						name: true,
-						link: true,
 					},
 					orderBy: {
 						order: 'asc',
@@ -46,6 +37,14 @@ export class HeaderNavbarLinkRepository {
 		})
 	}
 
+	findByName(name: string) {
+		return this.prisma.headerNavbarLink.findUnique({
+			where: {
+				name,
+			},
+		})
+	}
+
 	findMaxOrder() {
 		return this.prisma.headerNavbarLink.aggregate({
 			_max: {
@@ -54,16 +53,60 @@ export class HeaderNavbarLinkRepository {
 		})
 	}
 
-	create(dto: HeaderNavbarLinkDto) {
+	create(dto: RequiredHeaderNavbarLinkDto) {
 		return this.prisma.headerNavbarLink.create({ data: dto })
 	}
 
-	change(id: string, dto: HeaderNavbarLinkDto) {
+	change(id: string, dto: RequiredHeaderNavbarLinkDto) {
 		return this.prisma.headerNavbarLink.update({
 			where: {
 				id,
 			},
 			data: dto,
+		})
+	}
+
+	async changeWithOrder(id: string, dto: RequiredHeaderNavbarLinkDto) {
+		const headerNavbarLinkInDb = await this.prisma.headerNavbarLink.count({
+			where: {
+				id: {
+					not: id,
+				},
+				language: dto.language,
+				parentLinkId: dto.parentLinkId,
+				order: dto.order,
+			},
+		})
+
+		console.log(headerNavbarLinkInDb)
+
+		return await this.prisma.$transaction(async prisma => {
+			if (headerNavbarLinkInDb) {
+				await prisma.headerNavbarLink.updateMany({
+					where: {
+						id: {
+							not: id,
+						},
+						language: dto.language,
+						parentLinkId: dto.parentLinkId,
+						order: {
+							gte: dto.order,
+						},
+					},
+					data: {
+						order: {
+							increment: 1,
+						},
+					},
+				})
+			}
+
+			return await prisma.headerNavbarLink.update({
+				where: {
+					id,
+				},
+				data: dto,
+			})
 		})
 	}
 

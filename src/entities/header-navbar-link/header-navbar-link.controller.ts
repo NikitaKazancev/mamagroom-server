@@ -13,13 +13,17 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { Language } from 'src/utils/constants'
 import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
 import { HeaderNavbarLinkService } from './header-navbar-link.service'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('header-navbar-links')
 export class HeaderNavbarLinkController {
 	constructor(private readonly service: HeaderNavbarLinkService) {}
 
 	@Get()
-	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+	async findMany(
+		@Query('language') language?: Language,
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
 		return await this.service.findMany({ language, isDeleted })
 	}
 

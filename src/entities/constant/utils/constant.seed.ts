@@ -115,5 +115,6 @@ export const constantSeed = async (prisma: PrismaClient) => {
 				value: 'our values',
 			},
 		],
+		skipDuplicates: true,
 	})
 }

@@ -3,7 +3,6 @@ import {
 	IsArray,
 	IsBoolean,
 	IsEmail,
-	IsIn,
 	IsOptional,
 	IsString,
 } from 'class-validator'
@@ -13,14 +12,15 @@ export class UserDto {
 	email: string
 
 	@IsString()
-	name: string
-
-	@IsString()
 	password: string
 
+	@IsString()
+	@IsOptional()
+	name?: string
+
 	@IsArray()
-	@IsIn(Object.values(Role))
-	roles: Role[]
+	@IsOptional()
+	roles?: Role[]
 
 	@IsOptional()
 	@IsBoolean()

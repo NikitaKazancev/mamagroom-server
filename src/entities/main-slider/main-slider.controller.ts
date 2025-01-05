@@ -13,6 +13,7 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { MainSliderDto } from './main-slider.dto'
 import { MainSliderService } from './main-slider.service'
 
@@ -21,7 +22,9 @@ export class MainSliderController {
 	constructor(private readonly service: MainSliderService) {}
 
 	@Get()
-	async findMany(@Query() isDeleted?: boolean) {
+	async findMany(
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
 		return await this.service.findMany({ isDeleted })
 	}
 
@@ -37,6 +40,7 @@ export class MainSliderController {
 		@Body() data: MainSliderDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		this.castDataPropsTypes(data)
 		return await this.service.create(data, file)
 	}
 
@@ -48,6 +52,7 @@ export class MainSliderController {
 		@Body() data: MainSliderDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		this.castDataPropsTypes(data)
 		return await this.service.change(id, data, file)
 	}
 
@@ -55,5 +60,10 @@ export class MainSliderController {
 	@Auth(Role.mainSliderDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
+	}
+
+	private castDataPropsTypes(data: MainSliderDto) {
+		data.order = Number(data.order)
+		data.isDeleted = Boolean(data.isDeleted)
 	}
 }

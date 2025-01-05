@@ -1,15 +1,9 @@
-import { IsArray, IsString } from 'class-validator'
+import { AIModel } from '../ai/ai.types'
 
 export class ResponseFromAIDto {
-	@IsString()
-	breedId: string
-
-	@IsString()
-	userDescription: string
-
-	@IsString()
-	imageName: string
-
-	@IsArray()
+	model?: AIModel
+	userDescription?: string
+	breedId?: string
+	imageName?: string
 	procedureIds: string[]
 }

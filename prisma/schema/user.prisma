@@ -14,6 +14,8 @@ model User {
 
 enum Role {
    fullAccess
+   deleteMarkedForDeletion
+   userGet
    userPost
    userPut
    userDelete
@@ -45,6 +47,7 @@ enum Role {
    valuePut
    valueDelete
    filePostPut
+   responseFromAIGet
    responseFromAIPost
    responseFromAIPut
    responseFromAIDelete

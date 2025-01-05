@@ -99,5 +99,6 @@ export const valueSeed = async (prisma: PrismaClient) => {
 				imageName: '6.png',
 			},
 		],
+		skipDuplicates: true,
 	})
 }

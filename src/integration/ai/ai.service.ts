@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { AIModel, IServiceAI } from './ai.types'
+import { AIModel, AIResponse, IServiceAI } from './ai.types'
 import { OpenAIService } from './openai.service'
 import { SberService } from './sber.service'
 import { YandexService } from './yandex.service'
@@ -31,30 +31,30 @@ export class AIService {
 		systemText: string
 		imageUrl?: string
 		model?: AIModel
-	}): Promise<string | undefined> {
+	}): Promise<AIResponse> {
 		if (model) {
 			this.currentModel = model
 		} else {
 			this.currentModel = this.nextModel()
 		}
 
-		this.setAIService(this.yandexService)
+		let res: AIResponse
 
-		// if (imageUrl) {
-		// 	this.setModelToWorkWithImages()
-		// }
+		if (imageUrl) {
+			this.setModelToWorkWithImages()
+		}
 
-		// if (this.openAIService.isOpenAIModel(this.currentModel)) {
-		// 	return await this.openAIService.request({
-		// 		systemText,
-		// 		text,
-		// 		imageUrl,
-		// 		model: this.currentModel,
-		// 	})
-		// }
+		if (this.openAIService.isCorrectAIModel(this.currentModel)) {
+			res = await this.openAIService.request({
+				systemText,
+				text,
+				imageUrl,
+				model: this.currentModel,
+			})
+		}
 
 		if (this.yandexService.isCorrectAIModel(this.currentModel)) {
-			return await this.yandexService.request({
+			res = await this.yandexService.request({
 				systemText,
 				text,
 				model: this.currentModel,
@@ -62,13 +62,16 @@ export class AIService {
 		}
 
 		if (this.sberService.isCorrectAIModel(this.currentModel)) {
-			return await this.sberService.request({
+			res = await this.sberService.request({
 				systemText,
 				text,
 				imageUrl,
 				model: this.currentModel,
 			})
 		}
+
+		console.log(res)
+		return res
 	}
 
 	private nextModel() {

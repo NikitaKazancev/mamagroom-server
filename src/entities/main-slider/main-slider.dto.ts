@@ -1,25 +1,24 @@
-import {
-	IsBoolean,
-	IsIn,
-	IsNumber,
-	IsOptional,
-	IsString,
-} from 'class-validator'
-import { LANGUAGES_LIST, Language } from 'src/utils/constants'
+import { Type } from 'class-transformer'
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import { RequiredFields } from 'src/utils/types'
 
 export class MainSliderDto {
-	@IsIn(LANGUAGES_LIST)
-	language: Language
-
 	@IsString()
 	@IsOptional()
-	imageName: string
+	imageName?: string
 
 	@IsNumber()
 	@IsOptional()
-	order: number
+	@Type(() => Number)
+	order?: number
 
-	@IsOptional()
 	@IsBoolean()
+	@IsOptional()
+	@Type(() => Boolean)
 	isDeleted?: boolean
 }
+
+export type RequiredMainSliderDto = RequiredFields<
+	MainSliderDto,
+	'order' | 'imageName'
+>

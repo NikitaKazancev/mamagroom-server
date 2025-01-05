@@ -2,7 +2,12 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-import { IServiceAI, YandexAIModel } from './ai.types'
+import {
+	AIRequestBody,
+	AIResponse,
+	IServiceAI,
+	YandexAIModel,
+} from './ai.types'
 
 @Injectable()
 export class YandexService implements IServiceAI {
@@ -36,19 +41,14 @@ export class YandexService implements IServiceAI {
 		systemText,
 		text,
 		model,
-	}: {
-		systemText: string
-		text: string
-		model?: YandexAIModel
-	}): Promise<string | undefined> {
+	}: AIRequestBody<YandexAIModel>): Promise<AIResponse> {
 		const modelType: YandexAIModel = model || 'yandexgpt'
 
 		const requestData = {
 			modelUri: `gpt://${this.data.folderId}/${modelType}`,
 			completionOptions: {
 				stream: false,
-				temperature: 0,
-				maxTokens: 2000,
+				temperature: 0.3,
 			},
 			messages: [
 				{
@@ -74,16 +74,22 @@ export class YandexService implements IServiceAI {
 		}
 
 		return await axios(config)
-			.then(
-				response => response.data?.result?.alternatives?.[0]?.message?.text
-			)
+			.then(response => {
+				return {
+					model: modelType,
+					data: response.data?.result?.alternatives?.[0]?.message?.text,
+				}
+			})
 			.catch(error => {
 				console.error('Ошибка при запросе:', error.message)
 				if (error.response) {
 					console.error('Ответ от сервера:', error.response.data)
 				}
 
-				return undefined
+				return {
+					model: modelType,
+					data: undefined,
+				}
 			})
 	}
 }

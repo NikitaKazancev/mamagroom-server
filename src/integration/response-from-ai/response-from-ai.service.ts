@@ -7,19 +7,6 @@ import { ResponseFromAIRepository } from './response-from-ai.repository'
 export class ResponseFromAIService {
 	constructor(private readonly repository: ResponseFromAIRepository) {}
 
-	async checkExistence(id: string) {
-		if (!id) {
-			notFound(`id is undefined`, ResponseFromAIService.name)
-		}
-
-		const responseFromAI = await this.repository.findById(id)
-		if (!responseFromAI) {
-			notFound(`responseFromAI by id = ${id}`, ResponseFromAIService.name)
-		}
-
-		return responseFromAI
-	}
-
 	async findMany({ userDescription }: { userDescription?: string } = {}) {
 		return await this.repository.findMany({ userDescription })
 	}
@@ -32,15 +19,22 @@ export class ResponseFromAIService {
 		return await this.repository.create(responseFromAI)
 	}
 
-	async change(id: string, responseFromAI: ResponseFromAIDto) {
-		await this.checkExistence(id)
-
-		return await this.repository.change(id, responseFromAI)
-	}
-
 	async delete(id: string) {
 		await this.checkExistence(id)
 
 		return await this.repository.delete(id)
+	}
+
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, ResponseFromAIService.name)
+		}
+
+		const responseFromAI = await this.repository.findById(id)
+		if (!responseFromAI) {
+			notFound(`responseFromAI by id = ${id}`, ResponseFromAIService.name)
+		}
+
+		return responseFromAI
 	}
 }

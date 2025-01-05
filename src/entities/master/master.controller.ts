@@ -13,6 +13,7 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
 import { MasterDto } from './master.dto'
 import { MasterService } from './master.service'
@@ -22,7 +23,10 @@ export class MasterController {
 	constructor(private readonly service: MasterService) {}
 
 	@Get()
-	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+	async findMany(
+		@Query('language') language?: Language,
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
 		return await this.service.findMany({ language, isDeleted })
 	}
 
@@ -38,6 +42,7 @@ export class MasterController {
 		@Body() data: MasterDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		this.castDataPropsTypes(data)
 		return await this.service.create(data, file)
 	}
 
@@ -49,6 +54,7 @@ export class MasterController {
 		@Body() data: MasterDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		this.castDataPropsTypes(data)
 		return await this.service.change(id, data, file)
 	}
 
@@ -56,5 +62,9 @@ export class MasterController {
 	@Auth(Role.masterDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
+	}
+
+	private castDataPropsTypes(data: MasterDto) {
+		data.isDeleted = Boolean(data.isDeleted)
 	}
 }

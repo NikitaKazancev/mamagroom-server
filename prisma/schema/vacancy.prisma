@@ -1,7 +1,7 @@
 model Vacancy {
-   id          String @id @default(cuid())
-   name        String @unique
-   description String
+   id          String  @id @default(cuid())
+   name        String  @unique
+   description String?
 
    language  String   @default("ru")
    createdAt DateTime @default(now()) @map("created_at")

@@ -1,29 +1,14 @@
 import { Injectable } from '@nestjs/common'
+import { MainSlider } from '@prisma/client'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
+import { IMAGE_NOT_FOUND_URL } from 'src/utils/constants'
 import { notFound } from 'src/utils/errors'
-import { MainSliderDto } from './main-slider.dto'
+import { MainSliderDto, RequiredMainSliderDto } from './main-slider.dto'
 import { MainSliderRepository } from './main-slider.repository'
 
 @Injectable()
 export class MainSliderService {
 	constructor(private readonly repository: MainSliderRepository) {}
-
-	private fullFileName(fileName: string) {
-		return `/static/${FILE_PATHS.mainSlider}/${fileName}`
-	}
-
-	async checkExistence(id: string) {
-		if (!id) {
-			notFound(`id is undefined`, MainSliderService.name)
-		}
-
-		const mainSlider = await this.repository.findById(id)
-		if (!mainSlider) {
-			notFound(`mainSlider by id = ${id}`, MainSliderService.name)
-		}
-
-		return mainSlider
-	}
 
 	async findMany({ isDeleted }: { isDeleted?: boolean }) {
 		let data = await this.repository.findMany({ isDeleted })
@@ -49,17 +34,11 @@ export class MainSliderService {
 			mainSlider.imageName = file?.filename
 		}
 
-		if (!mainSlider.order) {
-			const aggregation = await this.repository.findMaxOrder()
+		mainSlider.imageName = undefined
+		mainSlider.order = undefined
 
-			if (!aggregation) {
-				mainSlider.order = 1
-			} else {
-				mainSlider.order = aggregation._max.order + 1
-			}
-		}
-
-		return await this.repository.create(mainSlider)
+		const filledMainSlider = await this.fillRequiredFields(mainSlider)
+		return await this.repository.create(filledMainSlider)
 	}
 
 	async change(
@@ -67,18 +46,84 @@ export class MainSliderService {
 		mainSlider: MainSliderDto,
 		file?: Express.Multer.File
 	) {
-		await this.checkExistence(id)
+		const mainSliderInDb = await this.checkExistence(id)
 
+		mainSlider.imageName = undefined
 		if (file) {
 			mainSlider.imageName = file?.filename
 		}
 
-		return await this.repository.change(id, mainSlider)
+		const filledMainSlider = await this.fillRequiredFieldsByObject(
+			mainSlider,
+			mainSliderInDb
+		)
+
+		if (filledMainSlider.order !== mainSliderInDb.order) {
+			return await this.repository.changeWithOrder(id, filledMainSlider)
+		}
+
+		return await this.repository.change(id, filledMainSlider)
 	}
 
 	async delete(id: string) {
 		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
+	}
+
+	private fullFileName(fileName: string) {
+		return `/static/${FILE_PATHS.mainSlider}/${fileName}`
+	}
+
+	private async fillRequiredFields(
+		mainSlider: MainSliderDto
+	): Promise<RequiredMainSliderDto> {
+		let order = mainSlider.order
+		if (!order) {
+			const aggregation = await this.repository.findMaxOrder()
+
+			if (!aggregation) {
+				order = 1
+			} else {
+				order = aggregation._max.order + 1
+			}
+		}
+
+		let imageName = mainSlider.imageName
+		if (!imageName) {
+			imageName = IMAGE_NOT_FOUND_URL
+		}
+
+		return { ...mainSlider, order, imageName }
+	}
+
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, MainSliderService.name)
+		}
+
+		const mainSlider = await this.repository.findById(id)
+		if (!mainSlider) {
+			notFound(`mainSlider by id = ${id}`, MainSliderService.name)
+		}
+
+		return mainSlider
+	}
+
+	private async fillRequiredFieldsByObject(
+		mainSlider: MainSliderDto,
+		mainSliderInDb: MainSlider
+	): Promise<RequiredMainSliderDto> {
+		let order = mainSlider.order
+		if (!order) {
+			order = mainSliderInDb.order
+		}
+
+		let imageName = mainSlider.imageName
+		if (!imageName) {
+			imageName = mainSliderInDb.imageName
+		}
+
+		return { ...mainSlider, order, imageName }
 	}
 }

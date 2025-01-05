@@ -38,5 +38,6 @@ export const vacancySeed = async (prisma: PrismaClient) => {
 				description: 'Just be my friend, so I can talk to someone',
 			},
 		],
+		skipDuplicates: true,
 	})
 }

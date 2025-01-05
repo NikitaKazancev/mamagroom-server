@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { conflict, notFound } from 'src/utils/errors'
 import { BreedService } from '../breed/breed.service'
 import { ProcedureService } from '../procedure/procedure.service'
-import { PriceDimensionsDto, PriceDto } from './price.dto'
+import { PriceDimensions, PriceDto, RequiredPriceDto } from './price.dto'
 import { PriceRepository } from './price.repository'
 
 @Injectable()
@@ -13,49 +13,76 @@ export class PriceService {
 		private readonly breedService: BreedService
 	) {}
 
-	async checkExistence(filter: PriceDimensionsDto) {
-		if (!filter) {
+	async findMany(dimensions?: Partial<PriceDimensions>) {
+		return await this.repository.findMany(dimensions)
+	}
+
+	async findUnique(dimensions: PriceDimensions) {
+		return await this.checkExistence(dimensions)
+	}
+
+	async create(price: PriceDto) {
+		const filledPrice = this.fillRequiredFields(price)
+
+		const dimensions = this.dimensions(filledPrice)
+		const priceInDb = await this.repository.findUnique(dimensions)
+		if (priceInDb) {
+			conflict(`price by dimensions = ${dimensions}`, PriceService.name)
+		}
+
+		await this.procedureService.checkExistence(filledPrice.procedureId)
+		await this.breedService.checkExistence(filledPrice.breedId)
+
+		return await this.repository.create(filledPrice)
+	}
+
+	async change(price: PriceDto) {
+		const filledPrice = this.fillRequiredFields(price)
+		const dimensions = this.dimensions(filledPrice)
+		const priceInDb = await this.checkExistence(dimensions)
+
+		if (filledPrice.procedureId !== priceInDb.procedureId) {
+			await this.procedureService.checkExistence(filledPrice.procedureId)
+		}
+		if (filledPrice.breedId !== priceInDb.breedId) {
+			await this.breedService.checkExistence(filledPrice.breedId)
+		}
+
+		return await this.repository.change(dimensions, filledPrice)
+	}
+
+	async delete(dimensions: PriceDimensions) {
+		await this.checkExistence(dimensions)
+
+		return await this.repository.delete(dimensions)
+	}
+
+	async checkExistence(dimensions: PriceDimensions) {
+		if (!dimensions) {
 			notFound(`dimensions are undefined`, PriceService.name)
 		}
 
-		const price = await this.repository.findUnique(filter)
+		const price = await this.repository.findUnique(dimensions)
 		if (!price) {
-			notFound(`price by dimensions = ${filter}`, PriceService.name)
+			notFound(`price by dimensions = ${dimensions}`, PriceService.name)
 		}
 
 		return price
 	}
 
-	async findMany(filter: Partial<PriceDimensionsDto>) {
-		return await this.repository.findMany(filter)
-	}
-
-	async findUnique(filter: PriceDimensionsDto) {
-		return await this.checkExistence(filter)
-	}
-
-	async create(price: PriceDto) {
-		const priceInDb = await this.repository.findUnique(price)
-
-		if (priceInDb) {
-			conflict(`price by dimensions = ${price}`, PriceService.name)
+	private dimensions(price: PriceDto): PriceDimensions {
+		return {
+			breedId: price.breedId,
+			procedureId: price.procedureId,
+			weight: price.weight,
+			time: price.time,
 		}
-
-		await this.procedureService.checkExistence(price.procedureId)
-		await this.breedService.checkExistence(price.breedId)
-
-		return await this.repository.create(price)
 	}
 
-	async change(price: PriceDto) {
-		await this.checkExistence(price)
+	private fillRequiredFields(price: PriceDto): RequiredPriceDto {
+		const time = price.time || 0
+		const weight = price.weight || 0
 
-		return await this.repository.change(price, price)
-	}
-
-	async delete(filter: PriceDimensionsDto) {
-		await this.checkExistence(filter)
-
-		return await this.repository.delete(filter)
+		return { ...price, time, weight }
 	}
 }

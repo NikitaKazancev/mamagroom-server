@@ -1,7 +1,8 @@
 model ResponseFromAI {
    id              String  @id @unique @default(cuid())
-   breedId         String  @map("breed_id")
-   breed           Breed   @relation(fields: [breedId], references: [id], onDelete: Cascade)
+   model           String?
+   breedId         String? @map("breed_id")
+   breed           Breed?  @relation(fields: [breedId], references: [id], onDelete: Cascade)
    userDescription String? @map("user_description")
    imageName       String?
 

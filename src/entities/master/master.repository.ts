@@ -23,6 +23,14 @@ export class MasterRepository {
 		})
 	}
 
+	findByName(name: string) {
+		return this.prisma.master.findUnique({
+			where: {
+				name,
+			},
+		})
+	}
+
 	create(master: MasterDto) {
 		return this.prisma.master.create({ data: master })
 	}

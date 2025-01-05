@@ -9,23 +9,6 @@ import { MasterRepository } from './master.repository'
 export class MasterService {
 	constructor(private readonly repository: MasterRepository) {}
 
-	private fullFileName(fileName: string) {
-		return `/static/${FILE_PATHS.masters}/${fileName}`
-	}
-
-	async checkExistence(id: string) {
-		if (!id) {
-			notFound(`id is undefined`, MasterService.name)
-		}
-
-		const master = await this.repository.findById(id)
-		if (!master) {
-			notFound(`master by id = ${id}`, MasterService.name)
-		}
-
-		return master
-	}
-
 	async findMany(filter: FindManyFilter) {
 		let data = await this.repository.findMany(filter)
 
@@ -46,14 +29,9 @@ export class MasterService {
 	}
 
 	async create(master: MasterDto, file?: Express.Multer.File) {
-		const masterInDb = await this.repository.findMany({
-			name: master.name,
-		})
+		await this.checkUniqFields(master)
 
-		if (masterInDb.length) {
-			conflict(`master by name = ${master.name}`, MasterService.name)
-		}
-
+		master.imageName = undefined
 		if (file) {
 			master.imageName = file?.filename
 		}
@@ -62,8 +40,12 @@ export class MasterService {
 	}
 
 	async change(id: string, master: MasterDto, file?: Express.Multer.File) {
-		await this.checkExistence(id)
+		const masterInDb = await this.checkExistence(id)
+		if (masterInDb.name !== master.name) {
+			await this.checkUniqFields(master)
+		}
 
+		master.imageName = undefined
 		if (file) {
 			master.imageName = file?.filename
 		}
@@ -75,5 +57,32 @@ export class MasterService {
 		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
+	}
+
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, MasterService.name)
+		}
+
+		const master = await this.repository.findById(id)
+		if (!master) {
+			notFound(`master by id = ${id}`, MasterService.name)
+		}
+
+		return master
+	}
+
+	private fullFileName(fileName: string) {
+		return `/static/${FILE_PATHS.masters}/${fileName}`
+	}
+
+	private async checkUniqFields(master: MasterDto) {
+		const masterInDb = await this.repository.findByName(master.name)
+
+		if (masterInDb) {
+			conflict(`master by name = ${master.name}`, MasterService.name)
+		}
+
+		return masterInDb
 	}
 }

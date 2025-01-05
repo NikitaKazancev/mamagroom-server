@@ -125,5 +125,6 @@ export const procedureSeed = async (prisma: PrismaClient) => {
 					'Includes massage, application of moisturizing masks and soothing products to improve the condition of the skin and coat, as well as relieve stress.',
 			},
 		],
+		skipDuplicates: true,
 	})
 }

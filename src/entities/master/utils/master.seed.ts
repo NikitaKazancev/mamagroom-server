@@ -29,5 +29,6 @@ export const masterSeed = async (prisma: PrismaClient) => {
 				imageName: '2.png',
 			},
 		],
+		skipDuplicates: true,
 	})
 }

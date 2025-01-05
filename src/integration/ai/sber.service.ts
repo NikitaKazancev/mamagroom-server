@@ -2,10 +2,10 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
-import FormData from 'form-data'
-import fs from 'fs'
+import * as FormData from 'form-data'
+import * as fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
-import { IServiceAI, SberAIModel } from './ai.types'
+import { AIRequestBody, AIResponse, IServiceAI, SberAIModel } from './ai.types'
 
 @Injectable()
 export class SberService implements IServiceAI {
@@ -35,32 +35,38 @@ export class SberService implements IServiceAI {
 		text,
 		imageUrl,
 		model,
-	}: {
-		systemText: string
-		text: string
-		imageUrl?: string
-		model?: SberAIModel
-	}) {
+	}: AIRequestBody<SberAIModel>): Promise<AIResponse> {
 		const accessToken = await this.fetchAccessToken()
 		if (!accessToken) {
-			return undefined
+			return {
+				model,
+				data: undefined,
+			}
 		}
 
 		let imageId: string
 		if (imageUrl) {
 			imageId = await this.sendImage(accessToken, imageUrl)
 			if (!imageId) {
-				return undefined
+				return {
+					model,
+					data: undefined,
+				}
 			}
 		}
 
-		return await this.sendQuestionRequest({
+		const data = await this.sendQuestionRequest({
 			systemText,
 			text,
 			imageId,
 			model,
 			accessToken,
 		})
+
+		return {
+			model,
+			data,
+		}
 	}
 
 	private async fetchAccessToken(): Promise<string | undefined> {

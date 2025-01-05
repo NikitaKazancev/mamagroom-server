@@ -1,10 +1,10 @@
 model Price {
-   breedId     String    @default("NULL") @map("breed_id")
+   breedId     String    @map("breed_id")
    breed       Breed     @relation(fields: [breedId], references: [id], onDelete: Cascade)
-   procedureId String    @default("NULL") @map("procedure_id")
+   procedureId String    @map("procedure_id")
    procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
-   weight      Float     @default(0)
-   time        Float     @default(0)
+   weight      Float
+   time        Float
 
    price Int
 

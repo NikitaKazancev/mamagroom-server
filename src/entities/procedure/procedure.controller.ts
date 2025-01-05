@@ -10,35 +10,36 @@ import {
 	UploadedFile,
 	UseInterceptors,
 } from '@nestjs/common'
+import { Role } from '@prisma/client'
+import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
-import { Role } from '@prisma/client'
-import { Auth } from 'src/auth/decorators/auth.decorator'
 
 @Controller('procedures')
 export class ProcedureController {
 	constructor(private readonly service: ProcedureService) {}
 
 	@Get()
-	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+	@UseInterceptors(SaveFile({ folder: FILE_PATHS.forAI }))
+	async findMany(
+		@Body() data: { description?: string },
+		@UploadedFile() file?: Express.Multer.File,
+		@Query('language') language?: Language,
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
+		if (data.description || file) {
+			return await this.service.findByUserData(data.description, file)
+		}
 		return await this.service.findMany({ language, isDeleted })
 	}
 
 	@Get(':id')
 	async findById(@Param('id') id: string) {
 		return await this.service.findById(id)
-	}
-
-	@Post()
-	@UseInterceptors(SaveFile({ folder: FILE_PATHS.forAI }))
-	async findByUserData(
-		@Body() { description }: { description?: string },
-		@UploadedFile() file?: Express.Multer.File
-	) {
-		return await this.service.findByUserData(description, file)
 	}
 
 	@Post()

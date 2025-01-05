@@ -19,7 +19,6 @@ export class GithubService {
 			email: user.email,
 			name: user.username,
 			password: '',
-			roles: [],
 		}
 	}
 }

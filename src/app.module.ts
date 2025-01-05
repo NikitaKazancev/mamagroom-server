@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config'
 import { APP_INTERCEPTOR } from '@nestjs/core'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
+import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
 import { JwtStrategy } from './auth/jwt/jwt.strategy'
 import { GithubStrategy } from './auth/oauth/github/github.strategy'
@@ -21,6 +22,7 @@ import { ValueModule } from './entities/value/value.module'
 import { FileModule } from './file/file.module'
 import { IntegrationModule } from './integration/integration.module'
 import { ResponseFromAIModule } from './integration/response-from-ai/response-from-ai.module'
+import { PrismaService } from './prisma.service'
 
 @Module({
 	imports: [
@@ -51,7 +53,7 @@ import { ResponseFromAIModule } from './integration/response-from-ai/response-fr
 		AuthModule,
 		UserModule,
 	],
-	controllers: [],
+	controllers: [AppController],
 	providers: [
 		GithubStrategy,
 		GoogleStrategy,
@@ -60,6 +62,7 @@ import { ResponseFromAIModule } from './integration/response-from-ai/response-fr
 			provide: APP_INTERCEPTOR,
 			useClass: CacheInterceptor,
 		},
+		PrismaService,
 	],
 })
 export class AppModule {}

@@ -1,44 +1,44 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
-import { PriceDimensionsDto, PriceDto } from './price.dto'
+import { PriceDimensions, RequiredPriceDto } from './price.dto'
 
 @Injectable()
 export class PriceRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany(filter: Partial<PriceDimensionsDto>) {
+	findMany(dimensions?: Partial<PriceDimensions>) {
 		return this.prisma.price.findMany({
 			where: {
-				...filter,
+				...dimensions,
 			},
 		})
 	}
 
-	findUnique(filter: PriceDimensionsDto) {
+	findUnique(dimensions: PriceDimensions) {
 		return this.prisma.price.findUnique({
 			where: {
-				breedId_procedureId_weight_time: filter,
+				breedId_procedureId_weight_time: dimensions,
 			},
 		})
 	}
 
-	create(price: PriceDto) {
+	create(price: RequiredPriceDto) {
 		return this.prisma.price.create({ data: price })
 	}
 
-	change(filter: PriceDimensionsDto, price: PriceDto) {
+	change(dimensions: PriceDimensions, price: RequiredPriceDto) {
 		return this.prisma.price.update({
 			where: {
-				breedId_procedureId_weight_time: filter,
+				breedId_procedureId_weight_time: dimensions,
 			},
 			data: price,
 		})
 	}
 
-	delete(filter: PriceDimensionsDto) {
+	delete(dimensions: PriceDimensions) {
 		return this.prisma.price.delete({
 			where: {
-				breedId_procedureId_weight_time: filter,
+				breedId_procedureId_weight_time: dimensions,
 			},
 		})
 	}

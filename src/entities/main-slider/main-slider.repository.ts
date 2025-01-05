@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
-import { MainSliderDto } from './main-slider.dto'
+import { MainSliderDto, RequiredMainSliderDto } from './main-slider.dto'
 
 @Injectable()
 export class MainSliderRepository {
@@ -33,7 +33,7 @@ export class MainSliderRepository {
 		})
 	}
 
-	create(mainSlider: MainSliderDto) {
+	create(mainSlider: RequiredMainSliderDto) {
 		return this.prisma.mainSlider.create({ data: mainSlider })
 	}
 
@@ -43,6 +43,44 @@ export class MainSliderRepository {
 				id,
 			},
 			data: mainSlider,
+		})
+	}
+
+	async changeWithOrder(id: string, mainSlider: RequiredMainSliderDto) {
+		const mainSliderInDb = await this.prisma.mainSlider.count({
+			where: {
+				id: {
+					not: id,
+				},
+				order: mainSlider.order,
+			},
+		})
+
+		return await this.prisma.$transaction(async prisma => {
+			if (mainSliderInDb) {
+				await prisma.mainSlider.updateMany({
+					where: {
+						id: {
+							not: id,
+						},
+						order: {
+							gte: mainSlider.order,
+						},
+					},
+					data: {
+						order: {
+							increment: 1,
+						},
+					},
+				})
+			}
+
+			return await prisma.mainSlider.update({
+				where: {
+					id,
+				},
+				data: mainSlider,
+			})
 		})
 	}
 

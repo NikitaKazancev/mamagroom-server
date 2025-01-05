@@ -1,8 +1,8 @@
 model Master {
-   id          String @id @default(cuid())
-   name        String @unique
-   description String
-   imageName   String @map("image_name")
+   id          String  @id @default(cuid())
+   name        String  @unique
+   description String?
+   imageName   String? @map("image_name")
 
    language  String   @default("ru")
    createdAt DateTime @default(now()) @map("created_at")

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Breed, BreedType } from '@prisma/client'
 import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
+import { BooleanMappedType } from 'src/utils/types'
 import { BreedDto } from './breed.dto'
 
 @Injectable()
@@ -24,6 +25,14 @@ export class BreedRepository {
 		return this.prisma.breed.findUnique({
 			where: {
 				id,
+			},
+		})
+	}
+
+	findByName(name: string) {
+		return this.prisma.breed.findUnique({
+			where: {
+				name,
 			},
 		})
 	}

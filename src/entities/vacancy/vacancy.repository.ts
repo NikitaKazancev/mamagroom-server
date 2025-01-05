@@ -23,6 +23,14 @@ export class VacancyRepository {
 		})
 	}
 
+	findByName(name: string) {
+		return this.prisma.vacancy.findUnique({
+			where: {
+				name,
+			},
+		})
+	}
+
 	create(vacancy: VacancyDto) {
 		return this.prisma.vacancy.create({ data: vacancy })
 	}

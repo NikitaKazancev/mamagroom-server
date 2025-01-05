@@ -12,35 +12,40 @@ import { Role } from '@prisma/client'
 import { Auth } from '../decorators/auth.decorator'
 import { UserDto } from './user.dto'
 import { UserService } from './user.service'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('users')
 export class UserController {
 	constructor(private readonly service: UserService) {}
 
 	@Get()
-	async findMany(@Query() isDeleted?: boolean) {
+	@Auth(Role.userGet)
+	async findMany(
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
 		return await this.service.findMany({ isDeleted })
 	}
 
 	@Get(':id')
+	@Auth(Role.userGet)
 	async findById(@Param('id') id: string) {
 		return await this.service.findById(id)
 	}
 
-	@Auth(Role.userPost)
 	@Post()
+	@Auth(Role.userPost)
 	async create(@Body() data: UserDto) {
 		return await this.service.create(data)
 	}
 
-	@Auth(Role.userPut)
 	@Put(':id')
+	@Auth(Role.userPut)
 	async change(@Param('id') id: string, @Body() data: UserDto) {
 		return await this.service.change(id, data)
 	}
 
-	@Auth(Role.userDelete)
 	@Delete(':id')
+	@Auth(Role.userDelete)
 	async delete(@Param('id') id: string) {
 		return await this.service.delete(id)
 	}

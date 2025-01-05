@@ -41,22 +41,7 @@ export class ResponseFromAIRepository {
 	create(responseFromAI: ResponseFromAIDto) {
 		return this.prisma.responseFromAI.create({
 			data: {
-				userDescription: responseFromAI.userDescription,
-				imageName: responseFromAI.imageName,
-				breedId: responseFromAI.breedId,
-				procedures: {
-					connect: responseFromAI.procedureIds.map(id => ({ id })),
-				},
-			},
-		})
-	}
-
-	change(id: string, responseFromAI: ResponseFromAIDto) {
-		return this.prisma.responseFromAI.update({
-			where: {
-				id,
-			},
-			data: {
+				model: responseFromAI.model,
 				userDescription: responseFromAI.userDescription,
 				imageName: responseFromAI.imageName,
 				breedId: responseFromAI.breedId,

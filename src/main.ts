@@ -9,17 +9,15 @@ async function bootstrap() {
 	app.setGlobalPrefix('api')
 	app.use(cookieParser())
 	app.enableCors({
-		origin: [
-			'http://localhost',
-			'http://mamagroom.ru',
-			'https://mamagroom.ru',
-			'http://mamagroom.ru:443',
-			'https://mamagroom.ru:443',
-		],
+		origin: ['http://localhost', 'https://mamagroom.ru'],
 		credentials: true,
 		exposedHeaders: ['set-cookie'],
 	})
-	app.useGlobalPipes(new ValidationPipe())
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+		})
+	)
 
 	await app.listen(8080)
 }

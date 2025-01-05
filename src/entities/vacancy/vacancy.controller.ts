@@ -13,13 +13,17 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { Language } from 'src/utils/constants'
 import { VacancyDto } from './vacancy.dto'
 import { VacancyService } from './vacancy.service'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('vacancies')
 export class VacancyController {
 	constructor(private readonly service: VacancyService) {}
 
 	@Get()
-	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+	async findMany(
+		@Query('language') language?: Language,
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
 		return await this.service.findMany({ language, isDeleted })
 	}
 

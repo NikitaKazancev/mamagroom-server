@@ -6,18 +6,18 @@ import { ConstantDimensionsDto, ConstantDto } from './constant.dto'
 export class ConstantRepository {
 	constructor(private readonly prisma: PrismaService) {}
 
-	findMany(filter: Partial<ConstantDimensionsDto>) {
+	findMany(dimensions: Partial<ConstantDimensionsDto>) {
 		return this.prisma.constant.findMany({
 			where: {
-				...filter,
+				...dimensions,
 			},
 		})
 	}
 
-	findUnique(filter: ConstantDimensionsDto) {
+	findUnique(dimensions: ConstantDimensionsDto) {
 		return this.prisma.constant.findUnique({
 			where: {
-				language_type_name: filter,
+				language_type_name: dimensions,
 			},
 		})
 	}
@@ -26,19 +26,19 @@ export class ConstantRepository {
 		return this.prisma.constant.create({ data: constant })
 	}
 
-	change(filter: ConstantDimensionsDto, constant: ConstantDto) {
+	change(dimensions: ConstantDimensionsDto, constant: ConstantDto) {
 		return this.prisma.constant.update({
 			where: {
-				language_type_name: filter,
+				language_type_name: dimensions,
 			},
 			data: constant,
 		})
 	}
 
-	delete(filter: ConstantDimensionsDto) {
+	delete(dimensions: ConstantDimensionsDto) {
 		return this.prisma.constant.delete({
 			where: {
-				language_type_name: filter,
+				language_type_name: dimensions,
 			},
 		})
 	}

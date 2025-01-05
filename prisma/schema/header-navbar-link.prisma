@@ -11,7 +11,7 @@ model HeaderNavbarLink {
    isDeleted Boolean  @default(false) @map("is_deleted")
 
    parentLinkId     String?           @map("parent_link_id")
-   headerNavbarLink HeaderNavbarLink? @relation("HeaderNavbarSubliks", fields: [parentLinkId], references: [id])
+   headerNavbarLink HeaderNavbarLink? @relation("HeaderNavbarSubliks", fields: [parentLinkId], references: [id], onDelete: Cascade)
 
    @@map("header_navbar_links")
 }

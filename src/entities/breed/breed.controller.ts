@@ -13,13 +13,17 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { Language } from 'src/utils/constants'
 import { BreedDto } from './breed.dto'
 import { BreedService } from './breed.service'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('breeds')
 export class BreedController {
 	constructor(private readonly service: BreedService) {}
 
 	@Get()
-	async findMany(@Query() language?: Language, @Query() isDeleted?: boolean) {
+	async findMany(
+		@Query('language') language?: Language,
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+	) {
 		return await this.service.findMany({ language, isDeleted })
 	}
 

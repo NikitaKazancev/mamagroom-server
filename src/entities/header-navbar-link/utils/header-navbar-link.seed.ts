@@ -29,6 +29,7 @@ export const headerNavbarLinkSeed = async (prisma: PrismaClient) => {
 				order: 5,
 			},
 		],
+		skipDuplicates: true,
 	})
 
 	let link = await prisma.headerNavbarLink.findFirst({
@@ -58,6 +59,7 @@ export const headerNavbarLinkSeed = async (prisma: PrismaClient) => {
 				order: 2,
 			},
 		],
+		skipDuplicates: true,
 	})
 
 	await prisma.headerNavbarLink.createMany({
@@ -87,6 +89,7 @@ export const headerNavbarLinkSeed = async (prisma: PrismaClient) => {
 				order: 5,
 			},
 		],
+		skipDuplicates: true,
 	})
 
 	link = await prisma.headerNavbarLink.findFirst({
@@ -116,5 +119,6 @@ export const headerNavbarLinkSeed = async (prisma: PrismaClient) => {
 				order: 2,
 			},
 		],
+		skipDuplicates: true,
 	})
 }

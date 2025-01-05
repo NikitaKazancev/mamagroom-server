@@ -3,6 +3,7 @@ import { Procedure } from '@prisma/client'
 import { findProceduresByBreed } from '@prisma/client/sql'
 import { PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
+import { BooleanMappedType } from 'src/utils/types'
 import { ProcedureDto } from './procedure.dto'
 
 @Injectable()
@@ -35,6 +36,14 @@ export class ProcedureRepository {
 		return this.prisma.procedure.findUnique({
 			where: {
 				id,
+			},
+		})
+	}
+
+	findByName(name: string) {
+		return this.prisma.procedure.findUnique({
+			where: {
+				name,
 			},
 		})
 	}

@@ -9,9 +9,10 @@ export class VacancyDto {
 	name: string
 
 	@IsString()
-	description: string
-
-	@IsBoolean()
 	@IsOptional()
+	description?: string
+
+	@IsOptional()
+	@IsBoolean()
 	isDeleted?: boolean
 }

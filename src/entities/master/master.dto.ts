@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import { IsBoolean, IsIn, IsOptional, IsString } from 'class-validator'
 import { LANGUAGES_LIST, Language } from 'src/utils/constants'
 
@@ -9,13 +10,15 @@ export class MasterDto {
 	name: string
 
 	@IsString()
-	description: string
+	@IsOptional()
+	description?: string
 
 	@IsString()
 	@IsOptional()
-	imageName: string
+	imageName?: string
 
 	@IsOptional()
 	@IsBoolean()
+	@Type(() => Boolean)
 	isDeleted?: boolean
 }

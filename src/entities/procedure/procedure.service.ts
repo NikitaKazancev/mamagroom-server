@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common'
+import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Procedure } from '@prisma/client'
 import { IntegrationService } from 'src/integration/integration.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
+import { BooleanMappedType } from 'src/utils/types'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureRepository } from './procedure.repository'
 
@@ -10,21 +11,9 @@ import { ProcedureRepository } from './procedure.repository'
 export class ProcedureService {
 	constructor(
 		private readonly repository: ProcedureRepository,
+		@Inject(forwardRef(() => IntegrationService))
 		private readonly integrationService: IntegrationService
 	) {}
-
-	async checkExistence(id: string) {
-		if (!id) {
-			notFound(`id is undefined`, ProcedureService.name)
-		}
-
-		const procedure = await this.repository.findById(id)
-		if (!procedure) {
-			notFound(`procedure by id = ${id}`, ProcedureService.name)
-		}
-
-		return procedure
-	}
 
 	async findMany(
 		filter: FindManyFilter,
@@ -41,7 +30,7 @@ export class ProcedureService {
 		const procedureIds = await this.integrationService.procedureIdsByUserData(
 			{
 				userDescription: description,
-				imageName: file.filename,
+				imageName: file?.filename,
 			}
 		)
 
@@ -57,22 +46,16 @@ export class ProcedureService {
 	}
 
 	async create(procedure: ProcedureDto) {
-		const procedureInDb = await this.repository.findMany({
-			name: procedure.name,
-		})
-
-		if (procedureInDb.length) {
-			conflict(
-				`procedure by name = ${procedure.name}`,
-				ProcedureService.name
-			)
-		}
+		await this.checkUniqFields(procedure)
 
 		return await this.repository.create(procedure)
 	}
 
 	async change(id: string, procedure: ProcedureDto) {
-		await this.checkExistence(id)
+		const procedureInDb = await this.checkExistence(id)
+		if (procedureInDb.name !== procedure.name) {
+			await this.checkUniqFields(procedure)
+		}
 
 		return await this.repository.change(id, procedure)
 	}
@@ -81,5 +64,31 @@ export class ProcedureService {
 		await this.checkExistence(id)
 
 		return await this.repository.markToDelete(id)
+	}
+
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, ProcedureService.name)
+		}
+
+		const procedure = await this.repository.findById(id)
+		if (!procedure) {
+			notFound(`procedure by id = ${id}`, ProcedureService.name)
+		}
+
+		return procedure
+	}
+
+	private async checkUniqFields(procedure: ProcedureDto) {
+		const procedureInDb = await this.repository.findByName(procedure.name)
+
+		if (procedureInDb) {
+			conflict(
+				`procedure by name = ${procedure.name}`,
+				ProcedureService.name
+			)
+		}
+
+		return procedureInDb
 	}
 }

@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import {
 	IsBoolean,
 	IsIn,
@@ -6,6 +7,7 @@ import {
 	IsString,
 } from 'class-validator'
 import { LANGUAGES_LIST, Language } from 'src/utils/constants'
+import { RequiredFields } from 'src/utils/types'
 
 export class HeaderNavbarLinkDto {
 	@IsIn(LANGUAGES_LIST)
@@ -16,7 +18,8 @@ export class HeaderNavbarLinkDto {
 
 	@IsNumber()
 	@IsOptional()
-	order: number
+	@Type(() => Number)
+	order?: number
 
 	@IsString()
 	@IsOptional()
@@ -30,3 +33,8 @@ export class HeaderNavbarLinkDto {
 	@IsBoolean()
 	isDeleted?: boolean
 }
+
+export type RequiredHeaderNavbarLinkDto = RequiredFields<
+	HeaderNavbarLinkDto,
+	'order'
+>
