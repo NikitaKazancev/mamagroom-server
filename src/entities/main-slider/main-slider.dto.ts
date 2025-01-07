@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsNumber, IsOptional, IsString } from 'class-validator'
 import { RequiredFields } from 'src/utils/types'
 
 export class MainSliderDto {
@@ -12,9 +12,7 @@ export class MainSliderDto {
 	@Type(() => Number)
 	order?: number
 
-	@IsBoolean()
 	@IsOptional()
-	@Type(() => Boolean)
 	isDeleted?: boolean
 }
 

@@ -1,11 +1,5 @@
 import { Type } from 'class-transformer'
-import {
-	IsBoolean,
-	IsIn,
-	IsNumber,
-	IsOptional,
-	IsString,
-} from 'class-validator'
+import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator'
 import { Language, LANGUAGES_LIST } from 'src/utils/constants'
 import { RequiredFields } from 'src/utils/types'
 
@@ -29,8 +23,6 @@ export class ValueDto {
 	order?: number
 
 	@IsOptional()
-	@IsBoolean()
-	@Type(() => Boolean)
 	isDeleted?: boolean
 }
 

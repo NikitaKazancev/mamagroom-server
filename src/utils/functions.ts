@@ -12,10 +12,6 @@ export const fileExtension = (fileName: string) => {
 	return fileName.split('.').pop()
 }
 
-export const toCamelCase = (str: string) => {
-	return str.replace(/-./g, match => match[1].toUpperCase())
-}
-
 export async function fetchImageToBase64(url: string) {
 	try {
 		const response = await axios.get(url, { responseType: 'arraybuffer' })
@@ -25,4 +21,9 @@ export async function fetchImageToBase64(url: string) {
 		console.error('Error fetching the image:', error.message)
 		throw error
 	}
+}
+
+export const toBoolean = (value: unknown): boolean => {
+	if (value === 'false') return false
+	return Boolean(value)
 }

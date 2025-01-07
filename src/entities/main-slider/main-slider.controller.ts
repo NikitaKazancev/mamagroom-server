@@ -14,6 +14,7 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
+import { toBoolean } from 'src/utils/functions'
 import { MainSliderDto } from './main-slider.dto'
 import { MainSliderService } from './main-slider.service'
 
@@ -64,6 +65,6 @@ export class MainSliderController {
 
 	private castDataPropsTypes(data: MainSliderDto) {
 		data.order = Number(data.order)
-		data.isDeleted = Boolean(data.isDeleted)
+		data.isDeleted = toBoolean(data.isDeleted)
 	}
 }

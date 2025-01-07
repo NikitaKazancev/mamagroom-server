@@ -15,6 +15,7 @@ import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
+import { toBoolean } from 'src/utils/functions'
 import { MasterDto } from './master.dto'
 import { MasterService } from './master.service'
 
@@ -65,6 +66,6 @@ export class MasterController {
 	}
 
 	private castDataPropsTypes(data: MasterDto) {
-		data.isDeleted = Boolean(data.isDeleted)
+		data.isDeleted = toBoolean(data.isDeleted)
 	}
 }

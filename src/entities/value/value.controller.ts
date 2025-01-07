@@ -15,6 +15,7 @@ import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
+import { toBoolean } from 'src/utils/functions'
 import { ValueDto } from './value.dto'
 import { ValueService } from './value.service'
 
@@ -66,6 +67,6 @@ export class ValueController {
 
 	private castDataPropsTypes(data: ValueDto) {
 		data.order = Number(data.order)
-		data.isDeleted = Boolean(data.isDeleted)
+		data.isDeleted = toBoolean(data.isDeleted)
 	}
 }
