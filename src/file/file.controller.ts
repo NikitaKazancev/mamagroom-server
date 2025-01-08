@@ -1,15 +1,29 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common'
+import {
+	Controller,
+	Get,
+	Post,
+	Query,
+	UploadedFile,
+	UseInterceptors,
+} from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { FILE_PATHS } from './utils/file.constants'
+import { FileService } from './file.service'
+import { EXTERNAL_PATHS, FileName, FilePath } from './utils/file.constants'
 import { SaveFile } from './utils/file.interceptors'
 
 @Controller('files')
 export class FileController {
-	constructor() {}
+	constructor(private readonly fileService: FileService) {}
 
-	@Post(FILE_PATHS.mainBg)
+	@Get()
+	findOne(@Query('path') path: FilePath, @Query('name') name: FileName) {
+		const fileUrl = this.fileService.findOne(path, name)
+		return { fileUrl }
+	}
+
+	@Post(EXTERNAL_PATHS.mainBg)
 	@Auth(Role.filePostPut)
-	@UseInterceptors(SaveFile({ name: 'main-bg', folder: 'pages/home' }))
+	@UseInterceptors(SaveFile({ name: 'main-bg', path: 'pages/home' }))
 	saveHomePageMainBg(@UploadedFile() file: Express.Multer.File) {}
 }

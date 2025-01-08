@@ -11,7 +11,6 @@ import {
 import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { toBoolean } from 'src/utils/functions'
@@ -36,7 +35,7 @@ export class MainSliderController {
 
 	@Post()
 	@Auth(Role.mainSliderPost)
-	@UseInterceptors(SaveFile({ folder: FILE_PATHS.mainSlider }))
+	@UseInterceptors(SaveFile({ path: 'main-slider' }))
 	async create(
 		@Body() data: MainSliderDto,
 		@UploadedFile() file?: Express.Multer.File
@@ -47,7 +46,7 @@ export class MainSliderController {
 
 	@Put(':id')
 	@Auth(Role.mainSliderPut)
-	@UseInterceptors(SaveFile({ folder: FILE_PATHS.mainSlider }))
+	@UseInterceptors(SaveFile({ path: 'main-slider' }))
 	async change(
 		@Param('id') id: string,
 		@Body() data: MainSliderDto,

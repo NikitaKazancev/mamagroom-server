@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
@@ -24,7 +23,7 @@ export class ProcedureController {
 	constructor(private readonly service: ProcedureService) {}
 
 	@Get()
-	@UseInterceptors(SaveFile({ folder: FILE_PATHS.forAI }))
+	@UseInterceptors(SaveFile({ path: 'for-ai' }))
 	async findMany(
 		@Body() data: { description?: string },
 		@UploadedFile() file?: Express.Multer.File,

@@ -11,7 +11,6 @@ import {
 import { UploadedFile, UseInterceptors } from '@nestjs/common/decorators'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
@@ -38,7 +37,7 @@ export class ValueController {
 
 	@Post()
 	@Auth(Role.valuePost)
-	@UseInterceptors(SaveFile({ folder: FILE_PATHS.values }))
+	@UseInterceptors(SaveFile({ path: 'values' }))
 	async create(
 		@Body() data: ValueDto,
 		@UploadedFile() file?: Express.Multer.File
@@ -49,7 +48,7 @@ export class ValueController {
 
 	@Put(':id')
 	@Auth(Role.valuePut)
-	@UseInterceptors(SaveFile({ folder: FILE_PATHS.values }))
+	@UseInterceptors(SaveFile({ path: 'values' }))
 	async change(
 		@Param('id') id: string,
 		@Body() data: ValueDto,

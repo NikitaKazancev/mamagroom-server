@@ -53,7 +53,7 @@ export class MainSliderService {
 			mainSlider.imageName = file?.filename
 		}
 
-		const filledMainSlider = await this.fillRequiredFieldsByObject(
+		const filledMainSlider = this.fillRequiredFieldsByObject(
 			mainSlider,
 			mainSliderInDb
 		)
@@ -110,10 +110,10 @@ export class MainSliderService {
 		return mainSlider
 	}
 
-	private async fillRequiredFieldsByObject(
+	private fillRequiredFieldsByObject(
 		mainSlider: MainSliderDto,
 		mainSliderInDb: MainSlider
-	): Promise<RequiredMainSliderDto> {
+	) {
 		let order = mainSlider.order
 		if (!order) {
 			order = mainSliderInDb.order

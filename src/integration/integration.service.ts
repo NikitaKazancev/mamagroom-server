@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
-import * as path from 'path'
 import { BreedService } from 'src/entities/breed/breed.service'
 import { ProcedureService } from 'src/entities/procedure/procedure.service'
+import { FileService } from 'src/file/file.service'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { AIService } from './ai/ai.service'
 import { ResponseFromAIService } from './response-from-ai/response-from-ai.service'
@@ -19,7 +19,8 @@ export class IntegrationService {
 		@Inject(forwardRef(() => ProcedureService))
 		private readonly procedureService: ProcedureService,
 		private readonly responseFromAIService: ResponseFromAIService,
-		private readonly aiService: AIService
+		private readonly aiService: AIService,
+		private readonly fileService: FileService
 	) {}
 
 	async procedureIdsByUserData({
@@ -35,15 +36,7 @@ export class IntegrationService {
 
 		let imageUrl: string | undefined
 		if (imageName) {
-			imageUrl = path.join(
-				__dirname,
-				'..',
-				'..',
-				'..',
-				'static',
-				FILE_PATHS.forAI,
-				imageName
-			)
+			imageUrl = this.fileService.fullFileUrl(FILE_PATHS.forAI, imageName)
 		}
 
 		if (userDescription) {

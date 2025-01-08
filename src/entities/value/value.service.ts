@@ -54,10 +54,7 @@ export class ValueService {
 			value.imageName = file?.filename
 		}
 
-		const filledValue = await this.fillRequiredFieldsByObject(
-			value,
-			valueInDb
-		)
+		const filledValue = this.fillRequiredFieldsByObject(value, valueInDb)
 
 		if (filledValue.order !== valueInDb.order) {
 			return await this.repository.changeWithOrder(id, filledValue)
@@ -121,10 +118,7 @@ export class ValueService {
 		return { ...value, order, imageName }
 	}
 
-	private async fillRequiredFieldsByObject(
-		value: ValueDto,
-		valueInDb: Value
-	): Promise<RequiredValueDto> {
+	private fillRequiredFieldsByObject(value: ValueDto, valueInDb: Value) {
 		let order = value.order
 		if (!order) {
 			order = valueInDb.order

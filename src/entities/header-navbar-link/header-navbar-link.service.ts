@@ -22,6 +22,7 @@ export class HeaderNavbarLinkService {
 
 	async create(headerNavbarLink: HeaderNavbarLinkDto) {
 		await this.checkUniqFields(headerNavbarLink)
+		this.fillForeignKeys(headerNavbarLink)
 
 		if (headerNavbarLink.parentLinkId) {
 			await this.checkExistence(headerNavbarLink.parentLinkId)
@@ -37,8 +38,9 @@ export class HeaderNavbarLinkService {
 
 	async change(id: string, headerNavbarLink: HeaderNavbarLinkDto) {
 		const headerNavbarLinkInDb = await this.checkExistence(id)
+		this.fillForeignKeys(headerNavbarLink)
 
-		if (headerNavbarLink.parentLinkId != headerNavbarLinkInDb.parentLinkId) {
+		if (headerNavbarLink.parentLinkId !== headerNavbarLinkInDb.parentLinkId) {
 			await this.checkExistence(headerNavbarLink.parentLinkId)
 		}
 
@@ -46,7 +48,7 @@ export class HeaderNavbarLinkService {
 			await this.checkUniqFields(headerNavbarLink)
 		}
 
-		const filledHeaderNavbarLink = await this.fillRequiredFieldsByObject(
+		const filledHeaderNavbarLink = this.fillRequiredFieldsByObject(
 			headerNavbarLink,
 			headerNavbarLinkInDb
 		)
@@ -98,6 +100,10 @@ export class HeaderNavbarLinkService {
 		return headerNavbarLinkInDb
 	}
 
+	private fillForeignKeys(headerNavbarLink: HeaderNavbarLinkDto) {
+		if (!headerNavbarLink.parentLinkId) headerNavbarLink.parentLinkId = null
+	}
+
 	private async fillRequiredFields(
 		headerNavbarLink: HeaderNavbarLinkDto
 	): Promise<RequiredHeaderNavbarLinkDto> {
@@ -115,10 +121,10 @@ export class HeaderNavbarLinkService {
 		return { ...headerNavbarLink, order }
 	}
 
-	private async fillRequiredFieldsByObject(
+	private fillRequiredFieldsByObject(
 		headerNavbarLink: HeaderNavbarLinkDto,
 		headerNavbarLinkInDb: HeaderNavbarLink
-	): Promise<RequiredHeaderNavbarLinkDto> {
+	) {
 		let order = headerNavbarLink.order
 		if (!order) {
 			order = headerNavbarLinkInDb.order
