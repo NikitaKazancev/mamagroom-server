@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common'
 import { Breed, BreedType } from '@prisma/client'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { BooleanMappedType } from 'src/utils/types'
 import { BreedDto } from './breed.dto'
 
 @Injectable()
 export class BreedRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(
 		filter: FindManyFilter & { name?: string; type?: BreedType },
 		selection?: BooleanMappedType<Breed>
 	) {
-		return this.prisma.breed.findMany({
+		return this.prismaRead.breed.findMany({
 			where: {
 				...filter,
 			},
@@ -22,7 +25,7 @@ export class BreedRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.breed.findUnique({
+		return this.prismaRead.breed.findUnique({
 			where: {
 				id,
 			},
@@ -30,7 +33,7 @@ export class BreedRepository {
 	}
 
 	findByName(name: string) {
-		return this.prisma.breed.findUnique({
+		return this.prismaRead.breed.findUnique({
 			where: {
 				name,
 			},

@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { PrismaClient } from '@prisma/client'
-import { userSeed } from 'src/auth/user/utils/user.seed'
 import { breedSeed } from 'src/entities/breed/utils/breed.seed'
 import { constantSeed } from 'src/entities/constant/utils/constant.seed'
 import { headerNavbarLinkSeed } from 'src/entities/header-navbar-link/utils/header-navbar-link.seed'
@@ -17,13 +16,6 @@ const main = async () => {
 	try {
 		await constantSeed(prisma)
 		console.log('constant seeded')
-	} catch (e) {
-		console.error(e)
-	}
-
-	try {
-		await userSeed(prisma)
-		console.log('user seeded')
 	} catch (e) {
 		console.error(e)
 	}

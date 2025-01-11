@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsNumber, IsOptional, IsString } from 'class-validator'
+import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator'
 import { RequiredFields } from 'src/utils/types'
 
 export class MainSliderDto {
@@ -8,6 +8,7 @@ export class MainSliderDto {
 	imageName?: string
 
 	@IsNumber()
+	@IsPositive()
 	@IsOptional()
 	@Type(() => Number)
 	order?: number

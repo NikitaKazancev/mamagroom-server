@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { RequiredHeaderNavbarLinkDto } from './header-navbar-link.dto'
 
 @Injectable()
 export class HeaderNavbarLinkRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(filter: FindManyFilter & { name?: string }) {
-		return this.prisma.headerNavbarLink.findMany({
+		return this.prismaRead.headerNavbarLink.findMany({
 			where: {
 				...filter,
 				parentLinkId: null,
@@ -30,7 +33,7 @@ export class HeaderNavbarLinkRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.headerNavbarLink.findUnique({
+		return this.prismaRead.headerNavbarLink.findUnique({
 			where: {
 				id,
 			},
@@ -38,7 +41,7 @@ export class HeaderNavbarLinkRepository {
 	}
 
 	findByName(name: string) {
-		return this.prisma.headerNavbarLink.findUnique({
+		return this.prismaRead.headerNavbarLink.findUnique({
 			where: {
 				name,
 			},
@@ -46,7 +49,7 @@ export class HeaderNavbarLinkRepository {
 	}
 
 	findMaxOrder() {
-		return this.prisma.headerNavbarLink.aggregate({
+		return this.prismaRead.headerNavbarLink.aggregate({
 			_max: {
 				order: true,
 			},

@@ -1,6 +1,6 @@
 {
 	"name": "mamagroom-server",
-	"version": "0.1.17",
+	"version": "0.1.22",
 	"description": "",
 	"author": "",
 	"private": true,
@@ -28,7 +28,7 @@
 		"db-seed": "tsc prisma/seed.ts && cat prisma/seed.js | node --input-type=\"commonjs\""
 	},
 	"prisma": {
-		"seed": "tsx --env-file=.env prisma/seed.ts",
+		"seed": "tsx prisma/seed.ts",
 		"schema": "prisma/schema"
 	},
 	"dependencies": {
@@ -43,7 +43,8 @@
 		"@nestjs/platform-express": "^10.0.0",
 		"@nestjs/schedule": "^4.1.2",
 		"@nestjs/serve-static": "^4.0.2",
-		"@prisma/client": "^6.1.0",
+		"@prisma/client": "^5.22.0",
+		"@prisma/extension-read-replicas": "^0.4.0",
 		"argon2": "^0.40.3",
 		"axios": "^1.7.7",
 		"cache-manager": "^5.7.6",

@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Language } from 'src/utils/constants'
 import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
 import { HeaderNavbarLinkService } from './header-navbar-link.service'
-import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('header-navbar-links')
 export class HeaderNavbarLinkController {
@@ -24,6 +24,13 @@ export class HeaderNavbarLinkController {
 		@Query('language') language?: Language,
 		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
 	) {
+		// const test = await extendedPrismaClient.headerNavbarLink.create({
+		// 	data: {
+		// 		name: 'test',
+		// 		order: 10,
+		// 	},
+		// })
+		// console.log(test)
 		return await this.service.findMany({ language, isDeleted })
 	}
 

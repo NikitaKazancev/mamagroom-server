@@ -42,7 +42,17 @@ export class ProcedureService {
 	}
 
 	async findByBreed(breedId: string) {
-		return await this.repository.findByBreed(breedId)
+		return (await this.repository.findByBreed(breedId)) as Promise<
+			{
+				name: string
+				id: string
+				description: string
+				language: string
+				createdAt: Date
+				updatedAt: Date
+				isDeleted: boolean
+			}[]
+		>
 	}
 
 	async create(procedure: ProcedureDto) {

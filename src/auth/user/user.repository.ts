@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { UserDto } from './user.dto'
 
 @Injectable()
 export class UserRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(filter: FindManyFilter & { email?: string }) {
-		return this.prisma.user.findMany({
+		return this.prismaRead.user.findMany({
 			where: {
 				...filter,
 			},
@@ -16,7 +19,7 @@ export class UserRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.user.findUnique({
+		return this.prismaRead.user.findUnique({
 			where: {
 				id,
 			},
@@ -24,7 +27,7 @@ export class UserRepository {
 	}
 
 	findByEmail(email: string) {
-		return this.prisma.user.findUnique({
+		return this.prismaRead.user.findUnique({
 			where: {
 				email,
 			},

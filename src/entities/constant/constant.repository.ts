@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { ConstantDimensionsDto, ConstantDto } from './constant.dto'
 
 @Injectable()
 export class ConstantRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(dimensions: Partial<ConstantDimensionsDto>) {
-		return this.prisma.constant.findMany({
+		return this.prismaRead.constant.findMany({
 			where: {
 				...dimensions,
 			},
@@ -15,7 +18,7 @@ export class ConstantRepository {
 	}
 
 	findUnique(dimensions: ConstantDimensionsDto) {
-		return this.prisma.constant.findUnique({
+		return this.prismaRead.constant.findUnique({
 			where: {
 				language_type_name: dimensions,
 			},

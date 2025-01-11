@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer'
-import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator'
+import {
+	IsIn,
+	IsNumber,
+	IsOptional,
+	IsPositive,
+	IsString,
+} from 'class-validator'
 import { Language, LANGUAGES_LIST } from 'src/utils/constants'
 import { RequiredFields } from 'src/utils/types'
 
@@ -18,6 +24,7 @@ export class ValueDto {
 	imageName?: string
 
 	@IsNumber()
+	@IsPositive()
 	@IsOptional()
 	@Type(() => Number)
 	order?: number

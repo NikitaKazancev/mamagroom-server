@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { PriceDimensions, RequiredPriceDto } from './price.dto'
 
 @Injectable()
 export class PriceRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(dimensions?: Partial<PriceDimensions>) {
-		return this.prisma.price.findMany({
+		return this.prismaRead.price.findMany({
 			where: {
 				...dimensions,
 			},
@@ -15,7 +18,7 @@ export class PriceRepository {
 	}
 
 	findUnique(dimensions: PriceDimensions) {
-		return this.prisma.price.findUnique({
+		return this.prismaRead.price.findUnique({
 			where: {
 				breedId_procedureId_weight_time: dimensions,
 			},

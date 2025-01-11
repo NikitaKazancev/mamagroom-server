@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { RequiredValueDto } from './value.dto'
 
 @Injectable()
 export class ValueRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(filter: FindManyFilter & { title?: string }) {
-		return this.prisma.value.findMany({
+		return this.prismaRead.value.findMany({
 			where: {
 				...filter,
 			},
@@ -19,7 +22,7 @@ export class ValueRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.value.findUnique({
+		return this.prismaRead.value.findUnique({
 			where: {
 				id,
 			},
@@ -27,7 +30,7 @@ export class ValueRepository {
 	}
 
 	findByTitle(title: string) {
-		return this.prisma.value.findUnique({
+		return this.prismaRead.value.findUnique({
 			where: {
 				title,
 			},
@@ -35,7 +38,7 @@ export class ValueRepository {
 	}
 
 	findMaxOrder() {
-		return this.prisma.value.aggregate({
+		return this.prismaRead.value.aggregate({
 			_max: {
 				order: true,
 			},
@@ -56,7 +59,7 @@ export class ValueRepository {
 	}
 
 	async changeWithOrder(id: string, value: RequiredValueDto) {
-		const valueInDb = await this.prisma.value.count({
+		const valueInDb = await this.prismaRead.value.count({
 			where: {
 				id: {
 					not: id,

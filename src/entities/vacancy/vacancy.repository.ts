@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { VacancyDto } from './vacancy.dto'
 
 @Injectable()
 export class VacancyRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany(filter: FindManyFilter & { name?: string }) {
-		return this.prisma.vacancy.findMany({
+		return this.prismaRead.vacancy.findMany({
 			where: {
 				...filter,
 			},
@@ -16,7 +19,7 @@ export class VacancyRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.vacancy.findUnique({
+		return this.prismaRead.vacancy.findUnique({
 			where: {
 				id,
 			},
@@ -24,7 +27,7 @@ export class VacancyRepository {
 	}
 
 	findByName(name: string) {
-		return this.prisma.vacancy.findUnique({
+		return this.prismaRead.vacancy.findUnique({
 			where: {
 				name,
 			},

@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtModule } from '@nestjs/jwt'
 import { UserModule } from 'src/auth/user/user.module'
-import { PrismaService } from 'src/prisma.service'
 import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
 import { GithubService } from './oauth/github/github.service'
@@ -23,7 +22,6 @@ import { GoogleStrategy } from './oauth/google/google.strategy'
 	],
 	controllers: [AuthController],
 	providers: [
-		PrismaService,
 		AuthService,
 		GithubStrategy,
 		GoogleStrategy,

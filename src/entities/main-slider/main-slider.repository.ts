@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { MainSliderDto, RequiredMainSliderDto } from './main-slider.dto'
 
 @Injectable()
 export class MainSliderRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany({ isDeleted }: { isDeleted?: boolean }) {
-		return this.prisma.mainSlider.findMany({
+		return this.prismaRead.mainSlider.findMany({
 			where: {
 				isDeleted,
 			},
@@ -18,7 +21,7 @@ export class MainSliderRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.mainSlider.findUnique({
+		return this.prismaRead.mainSlider.findUnique({
 			where: {
 				id,
 			},
@@ -26,7 +29,7 @@ export class MainSliderRepository {
 	}
 
 	findMaxOrder() {
-		return this.prisma.mainSlider.aggregate({
+		return this.prismaRead.mainSlider.aggregate({
 			_max: {
 				order: true,
 			},

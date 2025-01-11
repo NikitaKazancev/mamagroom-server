@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common'
-import { PrismaService } from 'src/prisma.service'
+import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { ResponseFromAIDto } from './response-from-ai.dto'
 
 @Injectable()
 export class ResponseFromAIRepository {
-	constructor(private readonly prisma: PrismaService) {}
+	constructor(
+		private readonly prisma: PrismaService,
+		private readonly prismaRead: PrismaReadService
+	) {}
 
 	findMany({ userDescription }: { userDescription?: string }) {
-		return this.prisma.responseFromAI.findMany({
+		return this.prismaRead.responseFromAI.findMany({
 			where: {
 				userDescription: {
 					contains: userDescription,
@@ -24,7 +27,7 @@ export class ResponseFromAIRepository {
 	}
 
 	findById(id: string) {
-		return this.prisma.responseFromAI.findUnique({
+		return this.prismaRead.responseFromAI.findUnique({
 			where: {
 				id,
 			},

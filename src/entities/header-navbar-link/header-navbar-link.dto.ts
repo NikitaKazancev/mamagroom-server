@@ -4,6 +4,7 @@ import {
 	IsIn,
 	IsNumber,
 	IsOptional,
+	IsPositive,
 	IsString,
 } from 'class-validator'
 import { LANGUAGES_LIST, Language } from 'src/utils/constants'
@@ -17,6 +18,7 @@ export class HeaderNavbarLinkDto {
 	name: string
 
 	@IsNumber()
+	@IsPositive()
 	@IsOptional()
 	@Type(() => Number)
 	order?: number
