@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+   push:
+      tags:
+         - 'v*'
+
+jobs:
+   build-and-deploy:
+      runs-on: ubuntu-latest
+
+      steps:
+         - name: Checkout code
+           uses: actions/checkout@v3
+
+         - name: Extract version from tag
+           run: echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
+         - name: Set up Docker
+           uses: docker/setup-buildx-action@v2
+
+         - name: Build Docker image
+           run: |
+              docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.VERSION }} .
+
+         - name: Push Docker image
+           run: |
+              echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+              docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.VERSION }}
+
+         - name: Set up Kubectl
+           uses: azure/setup-kubectl@v3
+           with:
+              version: 'v1.27.0'
+
+         - uses: actions-hub/kubectl@master
+           name: Deploy to Kubernetes
+           env:
+              KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+           with:
+              args: set image deployment/server server=${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ env.VERSION }}
