@@ -17,6 +17,8 @@ RUN npm install
 RUN npm install prisma@5.22.0 -g
 RUN npm install @prisma/client@5.22.0 -g
 
+RUN chmod +x /server/docker-cmd.sh
+
 EXPOSE 8080
 
-CMD ["./docker-cmd.sh"]
+CMD ["bash", "./docker-cmd.sh"]
