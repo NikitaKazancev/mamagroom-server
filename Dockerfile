@@ -14,6 +14,8 @@ COPY bun.lockb /server/
 
 RUN apt-get update -y && apt-get install -y openssl
 RUN npm install
+RUN npm install prisma@5.22.0 -g
+RUN npm install @prisma/client@5.22.0 -g
 
 EXPOSE 8080
 
