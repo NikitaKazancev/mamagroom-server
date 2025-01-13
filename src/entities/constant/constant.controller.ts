@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Inject,
+	Post,
+	Put,
+	Query,
+} from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { KafkaProducerService } from 'src/kafka/kafka.producer'
@@ -10,7 +20,8 @@ import { ConstantService } from './constant.service'
 export class ConstantController {
 	constructor(
 		private readonly service: ConstantService,
-		private readonly kafkaProducerService: KafkaProducerService
+		private readonly kafkaProducerService: KafkaProducerService,
+		@Inject(CACHE_MANAGER) private readonly cacheManager: Cache
 	) {}
 
 	@Get()
@@ -32,6 +43,7 @@ export class ConstantController {
 	@Auth(Role.constantPut)
 	async change(@Body() data: ConstantDto) {
 		this.kafkaProducerService.resetCache()
+		await this.cacheManager.reset()
 		return await this.service.change(data)
 	}
 

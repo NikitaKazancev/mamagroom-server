@@ -11,7 +11,7 @@ import { Consumer, Kafka } from 'kafkajs'
 export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 	private kafka = new Kafka({
 		clientId: 'nestjs-consumer',
-		brokers: ['kafka:9092'], // Адрес вашего Kafka-брокера
+		brokers: ['kafka:9092'],
 	})
 
 	private consumer: Consumer
