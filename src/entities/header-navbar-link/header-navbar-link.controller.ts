@@ -24,13 +24,6 @@ export class HeaderNavbarLinkController {
 		@Query('language') language?: Language,
 		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
 	) {
-		// const test = await extendedPrismaClient.headerNavbarLink.create({
-		// 	data: {
-		// 		name: 'test',
-		// 		order: 10,
-		// 	},
-		// })
-		// console.log(test)
 		return await this.service.findMany({ language, isDeleted })
 	}
 

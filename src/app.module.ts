@@ -1,5 +1,7 @@
+import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { APP_INTERCEPTOR } from '@nestjs/core'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { join } from 'path'
 import { AppController } from './app.controller'
@@ -20,6 +22,7 @@ import { ValueModule } from './entities/value/value.module'
 import { FileModule } from './file/file.module'
 import { IntegrationModule } from './integration/integration.module'
 import { ResponseFromAIModule } from './integration/response-from-ai/response-from-ai.module'
+import { KafkaModule } from './kafka/kafka.module'
 import { PrismaReadService, PrismaService } from './prisma.service'
 
 @Module({
@@ -29,6 +32,11 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 			serveRoot: '/api/static',
 		}),
 		ConfigModule.forRoot({
+			isGlobal: true,
+		}),
+		CacheModule.register({
+			ttl: 100000,
+			max: 1000,
 			isGlobal: true,
 		}),
 		BreedModule,
@@ -45,9 +53,14 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 		ResponseFromAIModule,
 		AuthModule,
 		UserModule,
+		KafkaModule,
 	],
 	controllers: [AppController],
 	providers: [
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: CacheInterceptor,
+		},
 		GithubStrategy,
 		GoogleStrategy,
 		JwtStrategy,
