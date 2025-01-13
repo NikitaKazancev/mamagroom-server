@@ -21,7 +21,7 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 			topic: 'cache-clear-topic',
 			messages: [{ value: 'reset-cache' }],
 		})
-		console.log(`Cache clear message sent for key:`)
+		console.log(`Messages is sent by Kafka Producer`)
 	}
 
 	async onModuleDestroy() {
