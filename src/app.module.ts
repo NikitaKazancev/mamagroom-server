@@ -35,7 +35,7 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 			isGlobal: true,
 		}),
 		CacheModule.register({
-			ttl: 100000,
+			ttl: 1000 * 60 * 5,
 			max: 1000,
 			isGlobal: true,
 		}),
