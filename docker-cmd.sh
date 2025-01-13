@@ -1,7 +1,7 @@
 #!/bin/bash
 
-prisma db push
-prisma generate
+npx prisma db push
+npx prisma generate
 npm run build
-prisma db seed
+npx prisma db seed
 npm run prod

@@ -4,6 +4,7 @@ WORKDIR /server
 
 COPY /src /server/src
 COPY /prisma /server/prisma
+COPY /static /server/static
 COPY .eslintrc.js /server/
 COPY nest-cli.json /server/
 COPY tsconfig.json /server/
@@ -14,8 +15,6 @@ COPY bun.lockb /server/
 
 RUN apt-get update -y && apt-get install -y openssl
 RUN npm install
-RUN npm install prisma@5.22.0 -g
-RUN npm install @prisma/client@5.22.0 -g
 
 RUN chmod +x /server/docker-cmd.sh
 
