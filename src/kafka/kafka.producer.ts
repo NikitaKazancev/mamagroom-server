@@ -25,7 +25,7 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 
 	async resetCache() {
 		await this.cacheManager.reset()
-		console.log('cache cleared locally')
+		console.log(Date.now(), 'cache cleared locally')
 		await this.producer.send({
 			topic: 'cache-clear-topic',
 			messages: [{ value: 'reset-cache' }],

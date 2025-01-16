@@ -31,7 +31,7 @@ export class ConstantController {
 	@ClearCache()
 	async change(@Body() data: ConstantDto) {
 		const res = await this.service.change(data)
-		console.log('Changed constant: ', res)
+		console.log(Date.now(), 'Changed constant: ', res)
 		return res
 	}
 
