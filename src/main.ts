@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
+import { MyCacheService } from './cache/my-cache.service'
+import { ClearCacheInterceptor } from './interceptors/clear-cache.interceptor'
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule)
@@ -18,6 +20,8 @@ async function bootstrap() {
 			whitelist: true,
 		})
 	)
+
+	app.useGlobalInterceptors(new ClearCacheInterceptor(app.get(MyCacheService)))
 
 	await app.listen(8080)
 }

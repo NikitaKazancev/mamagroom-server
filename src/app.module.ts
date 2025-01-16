@@ -10,6 +10,7 @@ import { JwtStrategy } from './auth/jwt/jwt.strategy'
 import { GithubStrategy } from './auth/oauth/github/github.strategy'
 import { GoogleStrategy } from './auth/oauth/google/google.strategy'
 import { UserModule } from './auth/user/user.module'
+import { MyCacheModule } from './cache/my-cache.module'
 import { BreedModule } from './entities/breed/breed.module'
 import { ConstantModule } from './entities/constant/constant.module'
 import { HeaderNavbarLinkModule } from './entities/header-navbar-link/header-navbar-link.module'
@@ -40,6 +41,7 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 			max: 1000,
 			isGlobal: true,
 		}),
+		MyCacheModule,
 		BreedModule,
 		ConstantModule,
 		HeaderNavbarLinkModule,

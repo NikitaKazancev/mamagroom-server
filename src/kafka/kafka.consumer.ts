@@ -33,7 +33,6 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 		await this.consumer.run({
 			eachMessage: async ({ topic, partition, message }) => {
 				await this.cacheManager.reset()
-				console.log(Date.now(), 'cache cleared by Kafka')
 			},
 		})
 	}

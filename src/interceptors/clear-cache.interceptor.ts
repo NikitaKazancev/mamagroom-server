@@ -7,18 +7,25 @@ import {
 } from '@nestjs/common'
 import { Observable } from 'rxjs'
 import { tap } from 'rxjs/operators'
-import { KafkaProducerService } from 'src/kafka/kafka.producer'
+import { MyCacheService } from 'src/cache/my-cache.service'
 
 @Injectable()
 export class ClearCacheInterceptor implements NestInterceptor {
-	constructor(private readonly kafkaProducerService: KafkaProducerService) {}
+	constructor(private readonly cacheService: MyCacheService) {}
 
 	intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-		return next.handle().pipe(
-			tap(async () => {
-				await this.kafkaProducerService.resetCache()
-			})
-		)
+		const request = context.switchToHttp().getRequest()
+
+		const method = request.method
+		if (['POST', 'PUT', 'DELETE'].includes(method)) {
+			return next.handle().pipe(
+				tap(async () => {
+					await this.cacheService.reset()
+				})
+			)
+		}
+
+		return next.handle()
 	}
 }
 

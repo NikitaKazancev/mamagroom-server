@@ -1,15 +1,9 @@
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
-import {
-	Inject,
-	Injectable,
-	OnModuleDestroy,
-	OnModuleInit,
-} from '@nestjs/common'
+import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { Kafka, Producer } from 'kafkajs'
 
 @Injectable()
 export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
-	constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
+	constructor() {}
 
 	private kafka = new Kafka({
 		clientId: 'nestjs-producer',
@@ -24,8 +18,6 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 	}
 
 	async resetCache() {
-		await this.cacheManager.reset()
-		console.log(Date.now(), 'cache cleared locally')
 		await this.producer.send({
 			topic: 'cache-clear-topic',
 			messages: [{ value: 'reset-cache' }],

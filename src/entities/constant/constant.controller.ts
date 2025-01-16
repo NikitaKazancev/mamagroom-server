@@ -1,7 +1,6 @@
 import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { ClearCache } from 'src/decorators/clear-cache.decorator'
 import { Language } from 'src/utils/constants'
 import { ConstantDto } from './constant.dto'
 import { ConstantService } from './constant.service'
@@ -21,23 +20,18 @@ export class ConstantController {
 
 	@Post()
 	@Auth(Role.constantPost)
-	@ClearCache()
 	async create(@Body() data: ConstantDto) {
 		return await this.service.create(data)
 	}
 
 	@Put()
 	@Auth(Role.constantPut)
-	@ClearCache()
 	async change(@Body() data: ConstantDto) {
-		const res = await this.service.change(data)
-		console.log(Date.now(), 'Changed constant: ', res)
-		return res
+		return await this.service.change(data)
 	}
 
 	@Delete()
 	@Auth(Role.constantDelete)
-	@ClearCache()
 	async delete(
 		@Query('language') language?: Language,
 		@Query('type') type?: string,
