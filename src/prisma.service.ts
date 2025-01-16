@@ -22,7 +22,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 export class PrismaReadService extends PrismaClient implements OnModuleInit {
 	constructor() {
 		super({
-			datasourceUrl: process.env.DATABASE_READ_URL,
+			datasourceUrl:
+				process.env.NODE_ENV === 'production'
+					? process.env.DATABASE_READ_URL
+					: process.env.DATABASE_MAIN_URL,
 			transactionOptions,
 		})
 	}

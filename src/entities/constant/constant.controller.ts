@@ -1,28 +1,14 @@
-import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager'
-import {
-	Body,
-	Controller,
-	Delete,
-	Get,
-	Inject,
-	Post,
-	Put,
-	Query,
-} from '@nestjs/common'
+import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { KafkaProducerService } from 'src/kafka/kafka.producer'
+import { ClearCache } from 'src/decorators/clear-cache.decorator'
 import { Language } from 'src/utils/constants'
 import { ConstantDto } from './constant.dto'
 import { ConstantService } from './constant.service'
 
 @Controller('constants')
 export class ConstantController {
-	constructor(
-		private readonly service: ConstantService,
-		private readonly kafkaProducerService: KafkaProducerService,
-		@Inject(CACHE_MANAGER) private readonly cacheManager: Cache
-	) {}
+	constructor(private readonly service: ConstantService) {}
 
 	@Get()
 	async findMany(
@@ -35,20 +21,23 @@ export class ConstantController {
 
 	@Post()
 	@Auth(Role.constantPost)
+	@ClearCache()
 	async create(@Body() data: ConstantDto) {
 		return await this.service.create(data)
 	}
 
 	@Put()
 	@Auth(Role.constantPut)
+	@ClearCache()
 	async change(@Body() data: ConstantDto) {
-		this.kafkaProducerService.resetCache()
-		await this.cacheManager.reset()
-		return await this.service.change(data)
+		const res = await this.service.change(data)
+		console.log('Changed constant: ', res)
+		return res
 	}
 
 	@Delete()
 	@Auth(Role.constantDelete)
+	@ClearCache()
 	async delete(
 		@Query('language') language?: Language,
 		@Query('type') type?: string,

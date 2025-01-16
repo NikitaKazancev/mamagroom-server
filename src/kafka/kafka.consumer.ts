@@ -6,12 +6,12 @@ import {
 	OnModuleInit,
 } from '@nestjs/common'
 import { Consumer, Kafka } from 'kafkajs'
-import { v4 as uuidv4 } from 'uuid' // Установите библиотеку uuid
+import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 	private kafka = new Kafka({
-		clientId: `nestjs-consumer-${uuidv4()}`, // Уникальный clientId
+		clientId: `nestjs-consumer-${uuidv4()}`,
 		brokers: ['kafka:9092'],
 	})
 
@@ -20,11 +20,10 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 	constructor(@Inject(CACHE_MANAGER) private readonly cacheManager: Cache) {}
 
 	async onModuleInit() {
-		const groupId = `nestjs-group-${uuidv4()}` // Уникальный groupId
+		const groupId = `nestjs-group-${uuidv4()}`
 		this.consumer = this.kafka.consumer({ groupId })
 
 		await this.consumer.connect()
-		console.log(`Kafka Consumer connected with groupId: ${groupId}`)
 
 		await this.consumer.subscribe({
 			topic: 'cache-clear-topic',
@@ -34,9 +33,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 		await this.consumer.run({
 			eachMessage: async ({ topic, partition, message }) => {
 				await this.cacheManager.reset()
-				console.log(
-					`Cache cleared with Kafka message: ${message.value?.toString()}`
-				)
+				console.log('cache cleared by Kafka')
 			},
 		})
 	}

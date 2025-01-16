@@ -23,6 +23,7 @@ import { FileModule } from './file/file.module'
 import { IntegrationModule } from './integration/integration.module'
 import { ResponseFromAIModule } from './integration/response-from-ai/response-from-ai.module'
 import { KafkaModule } from './kafka/kafka.module'
+import { KafkaProducerService } from './kafka/kafka.producer'
 import { PrismaReadService, PrismaService } from './prisma.service'
 
 @Module({
@@ -35,7 +36,7 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 			isGlobal: true,
 		}),
 		CacheModule.register({
-			ttl: 1000 * 60 * 5,
+			ttl: process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 : 1000,
 			max: 1000,
 			isGlobal: true,
 		}),
@@ -66,6 +67,7 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 		JwtStrategy,
 		PrismaService,
 		PrismaReadService,
+		KafkaProducerService,
 	],
 })
 export class AppModule {}
