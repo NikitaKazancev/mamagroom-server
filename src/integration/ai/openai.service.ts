@@ -4,7 +4,12 @@ import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import { HttpsProxyAgent } from 'https-proxy-agent'
 import { FileService } from 'src/file/file.service'
-import { AIRequestBody, AIResponse, IServiceAI, OpenAIModel } from './ai.types'
+import {
+	type AIRequestBody,
+	type AIResponse,
+	type IServiceAI,
+	type OpenAIModel,
+} from './ai.types'
 
 @Injectable()
 export class OpenAIService implements IServiceAI {

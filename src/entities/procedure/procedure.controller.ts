@@ -14,7 +14,7 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
-import { Language } from 'src/utils/constants'
+import { type Language } from 'src/utils/constants'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
 

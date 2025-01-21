@@ -9,7 +9,11 @@ import {
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FileService } from './file.service'
-import { EXTERNAL_PATHS, FileName, FilePath } from './utils/file.constants'
+import {
+	EXTERNAL_PATHS,
+	type FileName,
+	type FilePath,
+} from './utils/file.constants'
 import { SaveFile } from './utils/file.interceptors'
 
 @Controller('files')

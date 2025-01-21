@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Breed } from '@prisma/client'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
-import { BooleanMappedType } from 'src/utils/types'
+import { type BooleanMappedType } from 'src/utils/types'
 import { BreedDto } from './breed.dto'
 import { BreedRepository } from './breed.repository'
 

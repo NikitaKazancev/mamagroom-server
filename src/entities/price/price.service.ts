@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { conflict, notFound } from 'src/utils/errors'
 import { BreedService } from '../breed/breed.service'
 import { ProcedureService } from '../procedure/procedure.service'
-import { PriceDimensions, PriceDto, RequiredPriceDto } from './price.dto'
+import {
+	type PriceDimensions,
+	PriceDto,
+	type RequiredPriceDto,
+} from './price.dto'
 import { PriceRepository } from './price.repository'
 
 @Injectable()

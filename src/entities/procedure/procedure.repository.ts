@@ -3,7 +3,7 @@ import { Procedure } from '@prisma/client'
 // import { findProceduresByBreed } from '@prisma/client/sql'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
-import { BooleanMappedType } from 'src/utils/types'
+import { type BooleanMappedType } from 'src/utils/types'
 import { ProcedureDto } from './procedure.dto'
 
 @Injectable()

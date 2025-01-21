@@ -5,7 +5,12 @@ import axios from 'axios'
 import * as FormData from 'form-data'
 import * as fs from 'fs'
 import { v4 as uuidv4 } from 'uuid'
-import { AIRequestBody, AIResponse, IServiceAI, SberAIModel } from './ai.types'
+import {
+	type AIRequestBody,
+	type AIResponse,
+	type IServiceAI,
+	type SberAIModel,
+} from './ai.types'
 
 @Injectable()
 export class SberService implements IServiceAI {

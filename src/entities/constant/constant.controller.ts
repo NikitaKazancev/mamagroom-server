@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { Language } from 'src/utils/constants'
+import { type Language } from 'src/utils/constants'
 import { ConstantDto } from './constant.dto'
 import { ConstantService } from './constant.service'
 

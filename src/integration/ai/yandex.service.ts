@@ -3,10 +3,10 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import {
-	AIRequestBody,
-	AIResponse,
-	IServiceAI,
-	YandexAIModel,
+	type AIRequestBody,
+	type AIResponse,
+	type IServiceAI,
+	type YandexAIModel,
 } from './ai.types'
 
 @Injectable()

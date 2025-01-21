@@ -11,7 +11,7 @@ import {
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
-import { Language } from 'src/utils/constants'
+import { type Language } from 'src/utils/constants'
 import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
 import { HeaderNavbarLinkService } from './header-navbar-link.service'
 

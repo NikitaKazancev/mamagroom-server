@@ -2,7 +2,7 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { diskStorage } from 'multer'
 import { fileExtension } from 'src/utils/functions'
 import { v4 as uuidv4 } from 'uuid'
-import { FileName, FilePath } from './file.constants'
+import { type FileName, type FilePath } from './file.constants'
 import { sanitizeFilename } from './file.functions'
 
 export const SaveFile = ({

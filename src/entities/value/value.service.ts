@@ -4,7 +4,7 @@ import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { IMAGE_NOT_FOUND_URL } from 'src/utils/constants'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
-import { RequiredValueDto, ValueDto } from './value.dto'
+import { type RequiredValueDto, ValueDto } from './value.dto'
 import { ValueRepository } from './value.repository'
 
 @Injectable()

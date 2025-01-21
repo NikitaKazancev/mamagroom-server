@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
-import { RequiredValueDto } from './value.dto'
+import { type RequiredValueDto } from './value.dto'
 
 @Injectable()
 export class ValueRepository {

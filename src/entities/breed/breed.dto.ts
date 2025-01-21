@@ -1,6 +1,6 @@
 import { BreedType } from '@prisma/client'
 import { IsBoolean, IsEnum, IsIn, IsOptional, IsString } from 'class-validator'
-import { Language, LANGUAGES_LIST } from 'src/utils/constants'
+import { type Language, LANGUAGES_LIST } from 'src/utils/constants'
 
 export class BreedDto {
 	@IsIn(LANGUAGES_LIST)

@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
-import { Language } from 'src/utils/constants'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
+import { type Language } from 'src/utils/constants'
 import { VacancyDto } from './vacancy.dto'
 import { VacancyService } from './vacancy.service'
-import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('vacancies')
 export class VacancyController {

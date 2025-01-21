@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer'
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator'
-import { RequiredFields } from 'src/utils/types'
+import { type RequiredFields } from 'src/utils/types'
 
 export class PriceDto {
 	@IsString()

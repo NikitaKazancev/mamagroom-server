@@ -1,5 +1,5 @@
 import { IsIn, IsOptional, IsString } from 'class-validator'
-import { LANGUAGES_LIST, Language } from 'src/utils/constants'
+import { LANGUAGES_LIST, type Language } from 'src/utils/constants'
 
 export class MasterDto {
 	@IsIn(LANGUAGES_LIST)

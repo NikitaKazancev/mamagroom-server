@@ -6,8 +6,8 @@ import {
 	IsPositive,
 	IsString,
 } from 'class-validator'
-import { Language, LANGUAGES_LIST } from 'src/utils/constants'
-import { RequiredFields } from 'src/utils/types'
+import { type Language, LANGUAGES_LIST } from 'src/utils/constants'
+import { type RequiredFields } from 'src/utils/types'
 
 export class ValueDto {
 	@IsIn(LANGUAGES_LIST)

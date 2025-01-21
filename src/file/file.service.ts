@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import * as fs from 'fs'
 import * as path from 'path'
-import { FileName, FilePath } from './utils/file.constants'
+import { type FileName, type FilePath } from './utils/file.constants'
 
 @Injectable()
 export class FileService {

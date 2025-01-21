@@ -1,5 +1,5 @@
 import { IsIn, IsString } from 'class-validator'
-import { Language, LANGUAGES_LIST } from 'src/utils/constants'
+import { type Language, LANGUAGES_LIST } from 'src/utils/constants'
 import {
 	CONSTANT_NAMES_LIST,
 	CONSTANT_TYPES_LIST,

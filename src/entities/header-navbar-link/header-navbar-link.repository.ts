@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
 import { FindManyFilter } from 'src/utils/dtos'
-import { RequiredHeaderNavbarLinkDto } from './header-navbar-link.dto'
+import { type RequiredHeaderNavbarLinkDto } from './header-navbar-link.dto'
 
 @Injectable()
 export class HeaderNavbarLinkRepository {

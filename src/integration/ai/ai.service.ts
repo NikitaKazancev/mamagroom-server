@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { AIModel, AIResponse, IServiceAI } from './ai.types'
+import { type AIModel, type AIResponse, type IServiceAI } from './ai.types'
 import { OpenAIService } from './openai.service'
 import { SberService } from './sber.service'
 import { YandexService } from './yandex.service'

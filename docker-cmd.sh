@@ -1,6 +1,4 @@
 #!/bin/bash
 
 npx prisma migrate deploy
-npx prisma generate
-npm run build
-npm run prod
+bun ./dist/src/main.js

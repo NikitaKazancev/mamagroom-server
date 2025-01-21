@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
-import { PriceDimensions, RequiredPriceDto } from './price.dto'
+import { type PriceDimensions, type RequiredPriceDto } from './price.dto'
 
 @Injectable()
 export class PriceRepository {

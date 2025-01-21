@@ -4,7 +4,7 @@ import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import {
 	HeaderNavbarLinkDto,
-	RequiredHeaderNavbarLinkDto,
+	type RequiredHeaderNavbarLinkDto,
 } from './header-navbar-link.dto'
 import { HeaderNavbarLinkRepository } from './header-navbar-link.repository'
 

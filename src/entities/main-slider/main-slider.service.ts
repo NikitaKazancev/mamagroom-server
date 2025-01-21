@@ -3,7 +3,7 @@ import { MainSlider } from '@prisma/client'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
 import { IMAGE_NOT_FOUND_URL } from 'src/utils/constants'
 import { notFound } from 'src/utils/errors'
-import { MainSliderDto, RequiredMainSliderDto } from './main-slider.dto'
+import { MainSliderDto, type RequiredMainSliderDto } from './main-slider.dto'
 import { MainSliderRepository } from './main-slider.repository'
 
 @Injectable()

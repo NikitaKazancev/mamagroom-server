@@ -1,22 +1,17 @@
 FROM node:current-slim
 
-WORKDIR /server
+WORKDIR /app
+COPY . .
 
-COPY /src /server/src
-COPY /prisma /server/prisma
-COPY /static /server/static
-COPY .eslintrc.js /server/
-COPY nest-cli.json /server/
-COPY tsconfig.json /server/
-COPY tsconfig.build.json /server/
-COPY package.json /server/
-COPY docker-cmd.sh /server/
-COPY bun.lockb /server/
+RUN apt-get update -y && apt-get install -y openssl dos2unix
+RUN dos2unix ./docker-cmd.sh
 
-RUN apt-get update -y && apt-get install -y openssl
-RUN npm install
+RUN npm i -g bun
+RUN bun install
+RUN npx prisma generate
+RUN npm run build
 
-RUN chmod +x /server/docker-cmd.sh
+RUN chmod +x ./docker-cmd.sh
 
 EXPOSE 8080
 

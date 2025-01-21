@@ -1,0 +1,5 @@
+.git
+.github
+.dockerignore
+node_modules
+dist

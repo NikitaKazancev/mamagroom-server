@@ -7,8 +7,8 @@ import {
 	IsPositive,
 	IsString,
 } from 'class-validator'
-import { LANGUAGES_LIST, Language } from 'src/utils/constants'
-import { RequiredFields } from 'src/utils/types'
+import { LANGUAGES_LIST, type Language } from 'src/utils/constants'
+import { type RequiredFields } from 'src/utils/types'
 
 export class HeaderNavbarLinkDto {
 	@IsIn(LANGUAGES_LIST)

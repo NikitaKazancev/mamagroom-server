@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { OAuthUser } from 'src/auth/auth.service'
+import { type OAuthUser } from 'src/auth/auth.service'
 import { UserDto } from 'src/auth/user/user.dto'
 
 export interface GoogleUser {

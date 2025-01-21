@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
-import { MainSliderDto, RequiredMainSliderDto } from './main-slider.dto'
+import { MainSliderDto, type RequiredMainSliderDto } from './main-slider.dto'
 
 @Injectable()
 export class MainSliderRepository {

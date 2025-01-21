@@ -3,7 +3,7 @@ import { Procedure } from '@prisma/client'
 import { IntegrationService } from 'src/integration/integration.service'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
-import { BooleanMappedType } from 'src/utils/types'
+import { type BooleanMappedType } from 'src/utils/types'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureRepository } from './procedure.repository'
 

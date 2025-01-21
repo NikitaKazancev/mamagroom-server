@@ -1,4 +1,4 @@
-import { AIModel } from '../ai/ai.types'
+import { type AIModel } from '../ai/ai.types'
 
 export class ResponseFromAIDto {
 	model?: AIModel

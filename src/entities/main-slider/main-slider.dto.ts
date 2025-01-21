@@ -1,6 +1,6 @@
 import { Type } from 'class-transformer'
 import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator'
-import { RequiredFields } from 'src/utils/types'
+import { type RequiredFields } from 'src/utils/types'
 
 export class MainSliderDto {
 	@IsString()
