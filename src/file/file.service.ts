@@ -1,31 +1,41 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
+// import { file } from 'bun'
+import { ConfigService } from '@nestjs/config'
 import * as fs from 'fs'
+import { readdir, stat } from 'node:fs/promises'
 import * as path from 'path'
 import { type FileName, type FilePath } from './utils/file.constants'
 
 @Injectable()
 export class FileService {
-	constructor() {}
+	private readonly logger = new Logger(FileService.name)
+	private nodeEnv: string
 
-	findOne(filePath: FilePath, name: FileName) {
+	constructor(private readonly configService: ConfigService) {
+		this.nodeEnv = this.configService.get('NODE_ENV')
+	}
+
+	async findOne(filePath: FilePath, name: FileName) {
 		try {
 			const fullPath = this.fullFileUrl(filePath)
 
-			const files = fs.readdirSync(fullPath)
+			const files = await readdir(fullPath)
 			const matchingFiles = files.filter(file => file.startsWith(name))
 
 			if (!matchingFiles.length) return null
 
-			const filesWithStats = matchingFiles.map(file => {
-				const filePath = path.join(fullPath, file)
-				const stats = fs.statSync(filePath)
-				return { file, mtime: stats.mtime }
-			})
+			const filesWithStats = await Promise.all(
+				matchingFiles.map(async file => {
+					const filePath = path.join(fullPath, file)
+					const stats = await stat(filePath)
+					return { file, mtime: stats.mtime }
+				})
+			)
 
 			filesWithStats.sort((a: any, b: any) => b.mtime - a.mtime)
 			return `/static/${filePath}/${filesWithStats[0].file}`
 		} catch (error) {
-			console.error(`Ошибка при чтении директории: ${error.message}`)
+			this.logger.error(`Ошибка при чтении директории: ${error.message}`)
 			return null
 		}
 	}
@@ -35,30 +45,46 @@ export class FileService {
 		return path.join(__dirname, '..', '..', '..', 'static', ...imagePath)
 	}
 
-	dataUrlOfImage(filePath: string) {
-		try {
-			if (!fs.existsSync(filePath)) {
-				return ''
-			}
-
-			const fileBuffer = fs.readFileSync(filePath)
-			const fileExtension = path.extname(filePath).slice(1).toLowerCase()
-			const supportedExtensions = [
-				'png',
-				'jpg',
-				'jpeg',
-				'gif',
-				'bmp',
-				'webp',
-			]
-
-			if (!supportedExtensions.includes(fileExtension)) {
-				return ''
-			}
-
-			return `data:image/${fileExtension};base64,${fileBuffer.toString('base64')}`
-		} catch (error) {
-			console.error(`Ошибка при обработке файла ${filePath}:`, error.message)
+	async dataUrlOfImage(filePath: string) {
+		const fileExtension = path.extname(filePath).slice(1).toLowerCase()
+		const supportedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp']
+		if (!supportedExtensions.includes(fileExtension)) {
+			return ''
 		}
+
+		try {
+			// Bun не виден в dev-режиме
+			if (this.nodeEnv === 'development') {
+				return await this.dataUrlOfImageDevelopment(filePath, fileExtension)
+			} else {
+				return await this.dataUrlOfImageProduction(filePath, fileExtension)
+			}
+		} catch (error) {
+			this.logger.error(
+				`Ошибка при обработке файла ${filePath}: ${error.message}`
+			)
+		}
+	}
+
+	private async dataUrlOfImageProduction(
+		filePath: string,
+		fileExtension: string
+	) {
+		const fileData = Bun.file(filePath)
+		if (!(await fileData.exists())) return ''
+
+		const data = Buffer.from(await fileData.arrayBuffer()).toString('base64')
+		return `data:image/${fileExtension};base64,${data}`
+	}
+
+	private async dataUrlOfImageDevelopment(
+		filePath: string,
+		fileExtension: string
+	) {
+		if (!fs.existsSync(filePath)) return ''
+		const fileData = fs.readFileSync(filePath)
+
+		const data = fileData.toString('base64')
+		return `data:image/${fileExtension};base64,${data}`
 	}
 }

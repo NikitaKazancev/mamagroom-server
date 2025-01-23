@@ -4,6 +4,7 @@ import { BreedService } from 'src/entities/breed/breed.service'
 import { ProcedureService } from 'src/entities/procedure/procedure.service'
 import { FileService } from 'src/file/file.service'
 import { FILE_PATHS } from 'src/file/utils/file.constants'
+import { Language } from 'src/utils/constants'
 import { AIService } from './ai/ai.service'
 import { ResponseFromAIService } from './response-from-ai/response-from-ai.service'
 
@@ -26,9 +27,11 @@ export class IntegrationService {
 	async procedureIdsByUserData({
 		userDescription,
 		imageName,
+		language,
 	}: {
 		userDescription?: string
 		imageName?: string
+		language?: Language
 	}) {
 		if (!userDescription && !imageName) {
 			return []
@@ -48,9 +51,12 @@ export class IntegrationService {
 			}
 		}
 
+		if (!language) language = 'ru'
+
 		const detectedBreedData = await this.detectedBreedByUserData({
 			imageUrl,
 			userDescription,
+			language,
 		})
 
 		if (!detectedBreedData.data) {
@@ -69,6 +75,7 @@ export class IntegrationService {
 			userDescription,
 			imageUrl,
 			detectedBreed: detectedBreedData.data,
+			language,
 		})
 
 		await this.responseFromAIService.create({
@@ -87,10 +94,11 @@ export class IntegrationService {
 	private async detectedBreedByUserData({
 		imageUrl,
 		userDescription,
-	}: RequestBody) {
+		language,
+	}: RequestBody & { language?: Language }) {
 		const breedsInDb: { name: string; id: string }[] =
 			await this.breedService.findMany(
-				{ isDeleted: false, language: 'ru' },
+				{ isDeleted: false, language },
 				{ name: true, id: true }
 			)
 
@@ -171,9 +179,14 @@ export class IntegrationService {
 		userDescription,
 		imageUrl,
 		detectedBreed,
-	}: RequestBody & { detectedBreed: { id: string; name: string } }) {
+		language,
+	}: RequestBody & {
+		detectedBreed: { id: string; name: string }
+		language?: Language
+	}) {
 		const proceduresInDb = await this.procedureService.findByBreed(
-			detectedBreed.id
+			detectedBreed.id,
+			language
 		)
 		if (proceduresInDb.length <= 3) {
 			return {

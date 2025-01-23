@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { Procedure } from '@prisma/client'
 // import { findProceduresByBreed } from '@prisma/client/sql'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
+import { Language } from 'src/utils/constants'
 import { FindManyFilter } from 'src/utils/dtos'
 import { type BooleanMappedType } from 'src/utils/types'
 import { ProcedureDto } from './procedure.dto'
@@ -51,13 +52,24 @@ export class ProcedureRepository {
 		})
 	}
 
-	findByBreed(breedId: string) {
+	findByBreed(breedId: string, language: Language) {
 		return this.prismaRead.$queryRaw`
 				SELECT DISTINCT procedures.id, procedures.name
 				FROM prices
 				LEFT JOIN procedures ON prices.procedure_id = procedures.id
 				WHERE prices.breed_id = ${breedId}
-			`
+				AND procedures.language = ${language}
+			` as Promise<
+			{
+				name: string
+				id: string
+				description: string
+				language: string
+				createdAt: Date
+				updatedAt: Date
+				isDeleted: boolean
+			}[]
+		>
 	}
 
 	create(procedure: ProcedureDto) {

@@ -21,8 +21,8 @@ export class FileController {
 	constructor(private readonly fileService: FileService) {}
 
 	@Get()
-	findOne(@Query('path') path: FilePath, @Query('name') name: FileName) {
-		const fileUrl = this.fileService.findOne(path, name)
+	async findOne(@Query('path') path: FilePath, @Query('name') name: FileName) {
+		const fileUrl = await this.fileService.findOne(path, name)
 		return { fileUrl }
 	}
 

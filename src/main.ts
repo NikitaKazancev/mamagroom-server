@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core'
 import * as cookieParser from 'cookie-parser'
 import { AppModule } from './app.module'
 import { MyCacheService } from './cache/my-cache.service'
+import { MyExceptionFilter } from './filters/exception.filter'
 import { ClearCacheInterceptor } from './interceptors/clear-cache.interceptor'
 
 async function bootstrap() {
@@ -20,7 +21,7 @@ async function bootstrap() {
 			whitelist: true,
 		})
 	)
-
+	app.useGlobalFilters(new MyExceptionFilter())
 	app.useGlobalInterceptors(new ClearCacheInterceptor(app.get(MyCacheService)))
 
 	await app.listen(8080)

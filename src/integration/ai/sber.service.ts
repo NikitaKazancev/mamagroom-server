@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import * as FormData from 'form-data'
@@ -14,6 +14,8 @@ import {
 
 @Injectable()
 export class SberService implements IServiceAI {
+	private readonly logger = new Logger(SberService.name)
+
 	data: {
 		authUrl: string
 		filesUrl: string
@@ -91,7 +93,7 @@ export class SberService implements IServiceAI {
 		return await axios(config)
 			.then(response => response.data?.access_token)
 			.catch(error => {
-				console.error(error)
+				this.logger.error(`Ошибка при получении токена: ${error.message}`)
 				return undefined
 			})
 	}
@@ -120,7 +122,7 @@ export class SberService implements IServiceAI {
 		return await axios(config)
 			.then(response => response.data?.id)
 			.catch(error => {
-				console.error(error)
+				this.logger.error(`Ошибка при отправке картинки: ${error.message}`)
 				return undefined
 			})
 	}
@@ -181,7 +183,11 @@ export class SberService implements IServiceAI {
 		return await axios(config)
 			.then(response => response.data?.choices[0]?.message?.content)
 			.catch(error => {
-				console.error(error)
+				this.logger.error(`Ошибка при запросе: ${error.message}`)
+				if (error.response) {
+					this.logger.error(`Ответ от сервера: ${error.response.data}`)
+				}
+
 				return undefined
 			})
 	}

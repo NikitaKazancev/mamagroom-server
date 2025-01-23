@@ -7,8 +7,14 @@ import { ResponseFromAIRepository } from './response-from-ai.repository'
 export class ResponseFromAIService {
 	constructor(private readonly repository: ResponseFromAIRepository) {}
 
-	async findMany({ userDescription }: { userDescription?: string } = {}) {
-		return await this.repository.findMany({ userDescription })
+	async findMany({
+		userDescription,
+		amount,
+	}: {
+		userDescription?: string
+		amount?: number
+	} = {}) {
+		return await this.repository.findMany({ userDescription, amount })
 	}
 
 	async findById(id: string) {

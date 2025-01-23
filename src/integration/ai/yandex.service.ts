@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import {
@@ -11,6 +11,8 @@ import {
 
 @Injectable()
 export class YandexService implements IServiceAI {
+	private readonly logger = new Logger(YandexService.name)
+
 	data: {
 		apiUrl: string
 		folderId: string
@@ -81,9 +83,9 @@ export class YandexService implements IServiceAI {
 				}
 			})
 			.catch(error => {
-				console.error('Ошибка при запросе:', error.message)
+				this.logger.error(`Ошибка при запросе: ${error.message}`)
 				if (error.response) {
-					console.error('Ответ от сервера:', error.response.data)
+					this.logger.error(`Ответ от сервера: ${error.response.data}`)
 				}
 
 				return {

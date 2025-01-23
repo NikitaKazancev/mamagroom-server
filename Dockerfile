@@ -2,6 +2,7 @@ FROM node:current-slim
 
 WORKDIR /app
 COPY . .
+RUN mkdir static
 
 RUN apt-get update -y && apt-get install -y openssl dos2unix
 RUN dos2unix ./docker-cmd.sh

@@ -70,7 +70,6 @@ export class AIService {
 			})
 		}
 
-		console.log(res)
 		return res
 	}
 

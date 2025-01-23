@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import axios from 'axios'
 import { HttpsProxyAgent } from 'https-proxy-agent'
@@ -13,6 +13,8 @@ import {
 
 @Injectable()
 export class OpenAIService implements IServiceAI {
+	private readonly logger = new Logger(OpenAIService.name)
+
 	data: {
 		apiUrl: string
 		apiKey: string
@@ -56,7 +58,7 @@ export class OpenAIService implements IServiceAI {
 		let modelType: OpenAIModel
 
 		if (imageUrl) {
-			const dataUrl = this.fileService.dataUrlOfImage(imageUrl)
+			const dataUrl = await this.fileService.dataUrlOfImage(imageUrl)
 			if (dataUrl) {
 				content = [
 					{ type: 'text', text },
@@ -106,9 +108,9 @@ export class OpenAIService implements IServiceAI {
 				}
 			})
 			.catch(error => {
-				console.error('Ошибка при запросе:', error.message)
+				this.logger.error(`Ошибка при запросе: ${error.message}`)
 				if (error.response) {
-					console.error('Ответ от сервера:', error.response.data)
+					this.logger.error(`Ответ от сервера: ${error.response.data}`)
 				}
 
 				return {

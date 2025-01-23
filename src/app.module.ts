@@ -37,7 +37,8 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 			isGlobal: true,
 		}),
 		CacheModule.register({
-			ttl: process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 : 1000,
+			// ttl: process.env.NODE_ENV === 'production' ? 1000 * 60 * 60 : 1000,
+			ttl: 1000,
 			max: 1000,
 			isGlobal: true,
 		}),

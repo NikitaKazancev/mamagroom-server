@@ -23,22 +23,26 @@ export class ProcedureController {
 	constructor(private readonly service: ProcedureService) {}
 
 	@Get()
-	@UseInterceptors(SaveFile({ path: 'for-ai' }))
 	async findMany(
-		@Body() data: { description?: string },
-		@UploadedFile() file?: Express.Multer.File,
 		@Query('language') language?: Language,
 		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
 	) {
-		if (data.description || file) {
-			return await this.service.findByUserData(data.description, file)
-		}
 		return await this.service.findMany({ language, isDeleted })
 	}
 
 	@Get(':id')
 	async findById(@Param('id') id: string) {
 		return await this.service.findById(id)
+	}
+
+	@Post('ai')
+	@UseInterceptors(SaveFile({ path: 'for-ai' }))
+	async findByUserData(
+		@Body() data: { description?: string },
+		@UploadedFile() file?: Express.Multer.File,
+		@Query('language') language?: Language
+	) {
+		return await this.service.findByUserData(data.description, file, language)
 	}
 
 	@Post()

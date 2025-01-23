@@ -1,6 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common'
 import { Procedure } from '@prisma/client'
 import { IntegrationService } from 'src/integration/integration.service'
+import { Language } from 'src/utils/constants'
 import { FindManyFilter } from 'src/utils/dtos'
 import { conflict, notFound } from 'src/utils/errors'
 import { type BooleanMappedType } from 'src/utils/types'
@@ -26,11 +27,16 @@ export class ProcedureService {
 		return await this.checkExistence(id)
 	}
 
-	async findByUserData(description?: string, file?: Express.Multer.File) {
+	async findByUserData(
+		description?: string,
+		file?: Express.Multer.File,
+		language?: Language
+	) {
 		const procedureIds = await this.integrationService.procedureIdsByUserData(
 			{
 				userDescription: description,
 				imageName: file?.filename,
+				language,
 			}
 		)
 
@@ -41,18 +47,8 @@ export class ProcedureService {
 		return await this.repository.findByIds(procedureIds)
 	}
 
-	async findByBreed(breedId: string) {
-		return (await this.repository.findByBreed(breedId)) as Promise<
-			{
-				name: string
-				id: string
-				description: string
-				language: string
-				createdAt: Date
-				updatedAt: Date
-				isDeleted: boolean
-			}[]
-		>
+	async findByBreed(breedId: string, language: Language) {
+		return await this.repository.findByBreed(breedId, language)
 	}
 
 	async create(procedure: ProcedureDto) {

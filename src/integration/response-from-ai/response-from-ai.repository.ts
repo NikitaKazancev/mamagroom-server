@@ -9,7 +9,13 @@ export class ResponseFromAIRepository {
 		private readonly prismaRead: PrismaReadService
 	) {}
 
-	findMany({ userDescription }: { userDescription?: string }) {
+	findMany({
+		userDescription,
+		amount,
+	}: {
+		userDescription?: string
+		amount?: number
+	}) {
 		return this.prismaRead.responseFromAI.findMany({
 			where: {
 				userDescription: {
@@ -22,6 +28,10 @@ export class ResponseFromAIRepository {
 						id: true,
 					},
 				},
+			},
+			take: amount,
+			orderBy: {
+				createdAt: 'desc',
 			},
 		})
 	}

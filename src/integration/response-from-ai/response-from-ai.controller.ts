@@ -1,7 +1,8 @@
-import { Controller, Delete, Get, Param } from '@nestjs/common'
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { ResponseFromAIService } from './response-from-ai.service'
+import { OptionalParseNumberPipe } from 'src/pipes/oprional-parse-number.pipe'
 
 @Controller('responses-from-ai')
 export class ResponseFromAIController {
@@ -9,8 +10,8 @@ export class ResponseFromAIController {
 
 	@Get()
 	@Auth(Role.responseFromAIGet)
-	async findMany() {
-		return await this.service.findMany()
+	async findMany(@Query('amount', OptionalParseNumberPipe) amount?: number) {
+		return await this.service.findMany({ amount })
 	}
 
 	@Get(':id')
