@@ -7,14 +7,17 @@ import {
 	Post,
 	Put,
 	Query,
+	UseInterceptors,
 } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseNumberPipe } from 'src/pipes/oprional-parse-number.pipe'
 import { PriceDto } from './price.dto'
 import { PriceService } from './price.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('prices')
+@UseInterceptors(CacheInterceptor)
 export class PriceController {
 	constructor(private readonly service: PriceService) {}
 

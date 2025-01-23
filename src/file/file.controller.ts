@@ -15,8 +15,10 @@ import {
 	type FilePath,
 } from './utils/file.constants'
 import { SaveFile } from './utils/file.interceptors'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('files')
+@UseInterceptors(CacheInterceptor)
 export class FileController {
 	constructor(private readonly fileService: FileService) {}
 

@@ -1,6 +1,6 @@
 {
 	"name": "mamagroom-server",
-	"version": "0.4.2",
+	"version": "0.4.3",
 	"description": "",
 	"author": "",
 	"private": true,
@@ -51,6 +51,7 @@
 		"@nestjs/schedule": "^4.1.2",
 		"@nestjs/serve-static": "^4.0.2",
 		"@nestjs/websockets": "^11.0.3",
+		"@nestlab/google-recaptcha": "^3.8.0",
 		"@prisma/client": "^5.22.0",
 		"@prisma/extension-read-replicas": "^0.4.0",
 		"@types/bun": "^1.2.0",
@@ -70,9 +71,11 @@
 		"nats": "^2.29.1",
 		"openai": "^4.73.1",
 		"passport": "^0.7.0",
+		"passport-github-oauth20": "^1.0.4",
 		"passport-github2": "^0.1.12",
 		"passport-google-oauth20": "^2.0.0",
 		"passport-jwt": "^4.0.1",
+		"passport-yandex": "^0.0.5",
 		"reflect-metadata": "^0.2.0",
 		"rxjs": "^7.8.1",
 		"uuid": "^11.0.3"

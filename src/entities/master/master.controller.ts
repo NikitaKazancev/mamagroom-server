@@ -17,8 +17,10 @@ import { type Language } from 'src/utils/constants'
 import { toBoolean } from 'src/utils/functions'
 import { MasterDto } from './master.dto'
 import { MasterService } from './master.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('masters')
+@UseInterceptors(CacheInterceptor)
 export class MasterController {
 	constructor(private readonly service: MasterService) {}
 

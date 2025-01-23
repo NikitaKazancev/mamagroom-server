@@ -8,6 +8,8 @@ import { GithubService } from './oauth/github/github.service'
 import { GithubStrategy } from './oauth/github/github.strategy'
 import { GoogleService } from './oauth/google/google.service'
 import { GoogleStrategy } from './oauth/google/google.strategy'
+import { YandexService } from './oauth/yandex/yandex.service'
+import { YandexStrategy } from './oauth/yandex/yandex.strategy'
 
 @Module({
 	imports: [
@@ -25,8 +27,10 @@ import { GoogleStrategy } from './oauth/google/google.strategy'
 		AuthService,
 		GithubStrategy,
 		GoogleStrategy,
+		YandexStrategy,
 		GithubService,
 		GoogleService,
+		YandexService,
 	],
 	exports: [AuthService],
 })

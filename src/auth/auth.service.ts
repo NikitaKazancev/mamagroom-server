@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import { User } from '@prisma/client'
@@ -9,8 +9,9 @@ import { notFound, unauthorized } from 'src/utils/errors'
 import { LoginDto, RegisterDto } from './auth.dto'
 import { GithubService, GithubUser } from './oauth/github/github.service'
 import { GoogleService, GoogleUser } from './oauth/google/google.service'
+import { YandexService, YandexUser } from './oauth/yandex/yandex.service'
 
-export type OAuthUser = GoogleUser | GithubUser
+export type OAuthUser = GoogleUser | GithubUser | YandexUser
 
 @Injectable()
 export class AuthService {
@@ -29,10 +30,12 @@ export class AuthService {
 		secure: true,
 		sameSite: 'lax',
 	}
+	private readonly logger = new Logger(AuthService.name)
 
 	constructor(
 		private readonly userService: UserService,
 		private readonly githubService: GithubService,
+		private readonly yandexService: YandexService,
 		private readonly googleService: GoogleService,
 		private readonly jwtService: JwtService,
 		private readonly configService: ConfigService
@@ -74,9 +77,13 @@ export class AuthService {
 			userDto = this.googleService.convertToGeneralUser(user)
 		} else if (this.githubService.isGithubUser(user)) {
 			userDto = this.githubService.convertToGeneralUser(user)
+		} else if (this.yandexService.isYandexUser(user)) {
+			userDto = this.yandexService.convertToGeneralUser(user)
 		}
 
 		const userInDb = await this.userService.findOrCreate(userDto)
+		this.logger.log(`User ${userInDb.email} logged in by OAuth`)
+
 		return this.withNewToken(userInDb, res)
 	}
 

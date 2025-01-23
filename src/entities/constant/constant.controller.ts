@@ -1,11 +1,22 @@
-import { Body, Controller, Delete, Get, Post, Put, Query } from '@nestjs/common'
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Post,
+	Put,
+	Query,
+	UseInterceptors,
+} from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { type Language } from 'src/utils/constants'
 import { ConstantDto } from './constant.dto'
 import { ConstantService } from './constant.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('constants')
+@UseInterceptors(CacheInterceptor)
 export class ConstantController {
 	constructor(private readonly service: ConstantService) {}
 

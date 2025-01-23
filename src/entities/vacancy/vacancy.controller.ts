@@ -7,6 +7,7 @@ import {
 	Post,
 	Put,
 	Query,
+	UseInterceptors,
 } from '@nestjs/common'
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
@@ -14,8 +15,10 @@ import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
 import { VacancyDto } from './vacancy.dto'
 import { VacancyService } from './vacancy.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('vacancies')
+@UseInterceptors(CacheInterceptor)
 export class VacancyController {
 	constructor(private readonly service: VacancyService) {}
 

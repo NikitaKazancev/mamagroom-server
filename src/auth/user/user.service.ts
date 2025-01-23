@@ -22,7 +22,9 @@ export class UserService {
 	}
 
 	async findOrCreate(user: UserDto) {
+		console.log(user)
 		const userInDb = await this.findByEmail(user.email)
+		console.log(userInDb)
 		if (userInDb) {
 			return userInDb
 		}

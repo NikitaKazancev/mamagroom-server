@@ -17,8 +17,10 @@ import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('procedures')
+@UseInterceptors(CacheInterceptor)
 export class ProcedureController {
 	constructor(private readonly service: ProcedureService) {}
 

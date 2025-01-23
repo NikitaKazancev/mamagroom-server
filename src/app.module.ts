@@ -1,14 +1,16 @@
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager'
+import { CacheModule } from '@nestjs/cache-manager'
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
-import { APP_INTERCEPTOR } from '@nestjs/core'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { ServeStaticModule } from '@nestjs/serve-static'
+import { GoogleRecaptchaModule } from '@nestlab/google-recaptcha'
 import { join } from 'path'
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
 import { JwtStrategy } from './auth/jwt/jwt.strategy'
 import { GithubStrategy } from './auth/oauth/github/github.strategy'
 import { GoogleStrategy } from './auth/oauth/google/google.strategy'
+import { YandexStrategy } from './auth/oauth/yandex/yandex.strategy'
+import { getGoogleRecaptchaConfig } from './auth/recaptcha/google.recaptcha'
 import { UserModule } from './auth/user/user.module'
 import { MyCacheModule } from './cache/my-cache.module'
 import { BreedModule } from './entities/breed/breed.module'
@@ -41,6 +43,11 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 			max: 1000,
 			isGlobal: true,
 		}),
+		GoogleRecaptchaModule.forRootAsync({
+			imports: [ConfigModule],
+			useFactory: getGoogleRecaptchaConfig,
+			inject: [ConfigService],
+		}),
 		MyCacheModule,
 		BreedModule,
 		ConstantModule,
@@ -60,12 +67,13 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 	],
 	controllers: [AppController],
 	providers: [
-		{
-			provide: APP_INTERCEPTOR,
-			useClass: CacheInterceptor,
-		},
+		// {
+		// 	provide: APP_INTERCEPTOR,
+		// 	useClass: CacheInterceptor,
+		// },
 		GithubStrategy,
 		GoogleStrategy,
+		YandexStrategy,
 		JwtStrategy,
 		PrismaService,
 		PrismaReadService,

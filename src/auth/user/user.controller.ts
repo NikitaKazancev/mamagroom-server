@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -7,14 +8,16 @@ import {
 	Post,
 	Put,
 	Query,
+	UseInterceptors,
 } from '@nestjs/common'
 import { Role } from '@prisma/client'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { Auth } from '../decorators/auth.decorator'
 import { UserDto } from './user.dto'
 import { UserService } from './user.service'
-import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 
 @Controller('users')
+@UseInterceptors(CacheInterceptor)
 export class UserController {
 	constructor(private readonly service: UserService) {}
 

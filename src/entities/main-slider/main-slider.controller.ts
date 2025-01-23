@@ -16,8 +16,10 @@ import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { toBoolean } from 'src/utils/functions'
 import { MainSliderDto } from './main-slider.dto'
 import { MainSliderService } from './main-slider.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('main-slider')
+@UseInterceptors(CacheInterceptor)
 export class MainSliderController {
 	constructor(private readonly service: MainSliderService) {}
 

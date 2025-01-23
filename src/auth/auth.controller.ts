@@ -9,11 +9,13 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
+import { Recaptcha } from '@nestlab/google-recaptcha'
 import { Response } from 'express'
 import { LoginDto, RegisterDto } from './auth.dto'
 import { AuthService } from './auth.service'
 import { GithubUser } from './oauth/github/github.service'
 import { GoogleUser } from './oauth/google/google.service'
+import { YandexUser } from './oauth/yandex/yandex.service'
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +31,7 @@ export class AuthController {
 	}
 
 	@Post('login')
+	@Recaptcha()
 	async login(
 		@Body() data: LoginDto,
 		@Res({ passthrough: true }) res: Response
@@ -37,6 +40,7 @@ export class AuthController {
 	}
 
 	@Post('register')
+	@Recaptcha()
 	async register(
 		@Body() data: RegisterDto,
 		@Res({ passthrough: true }) res: Response
@@ -73,6 +77,22 @@ export class AuthController {
 	@UseGuards(AuthGuard('google'))
 	async googleAuthRedirect(
 		@Req() req: { user: GoogleUser },
+		@Res({ passthrough: true }) res: Response
+	) {
+		const userData = await this.service.loginOAuth(req.user, res)
+		return res.redirect(
+			`${this.CLIENT_OAUTH_REDIRECT_URL}?token=${userData.token}`
+		)
+	}
+
+	@Get('yandex')
+	@UseGuards(AuthGuard('yandex'))
+	async yandexAuth() {}
+
+	@Get('yandex/redirect')
+	@UseGuards(AuthGuard('yandex'))
+	async yandexAuthRedirect(
+		@Req() req: { user: YandexUser },
 		@Res({ passthrough: true }) res: Response
 	) {
 		const userData = await this.service.loginOAuth(req.user, res)

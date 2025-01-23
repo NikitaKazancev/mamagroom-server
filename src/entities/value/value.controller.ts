@@ -17,8 +17,10 @@ import { type Language } from 'src/utils/constants'
 import { toBoolean } from 'src/utils/functions'
 import { ValueDto } from './value.dto'
 import { ValueService } from './value.service'
+import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('values')
+@UseInterceptors(CacheInterceptor)
 export class ValueController {
 	constructor(private readonly service: ValueService) {}
 
