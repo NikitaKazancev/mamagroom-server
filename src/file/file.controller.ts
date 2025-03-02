@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Controller,
 	Get,
@@ -10,12 +11,12 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { FileService } from './file.service'
 import {
-	EXTERNAL_PATHS,
+	FILE_NAMES,
+	FILE_PATHS,
 	type FileName,
 	type FilePath,
 } from './utils/file.constants'
 import { SaveFile } from './utils/file.interceptors'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('files')
 @UseInterceptors(CacheInterceptor)
@@ -28,8 +29,24 @@ export class FileController {
 		return { fileUrl }
 	}
 
-	@Post(EXTERNAL_PATHS.mainBg)
+	@Post(`${FILE_PATHS.mainPage}/${FILE_NAMES.mainBg}`)
 	@Auth(Role.filePostPut)
-	@UseInterceptors(SaveFile({ name: 'main-bg', path: 'pages/home' }))
+	@UseInterceptors(
+		SaveFile({ path: FILE_PATHS.mainPage, name: FILE_NAMES.mainBg })
+	)
 	saveHomePageMainBg(@UploadedFile() file: Express.Multer.File) {}
+
+	@Post(`${FILE_PATHS.vacanciesPage}/${FILE_NAMES.mainBg}`)
+	@Auth(Role.filePostPut)
+	@UseInterceptors(
+		SaveFile({ path: FILE_PATHS.vacanciesPage, name: FILE_NAMES.mainBg })
+	)
+	saveVacanciesPageMainBg(@UploadedFile() file: Express.Multer.File) {}
+
+	@Post(`${FILE_PATHS.mastersPage}/${FILE_NAMES.mainBg}`)
+	@Auth(Role.filePostPut)
+	@UseInterceptors(
+		SaveFile({ path: FILE_PATHS.mastersPage, name: FILE_NAMES.mainBg })
+	)
+	saveMastersPageMainBg(@UploadedFile() file: Express.Multer.File) {}
 }

@@ -1,4 +1,8 @@
-export const CONSTANT_TYPES_LIST = ['home-page']
+export const CONSTANT_TYPES_LIST = [
+	'home-page',
+	'vacancies-page',
+	'masters-page',
+]
 export const CONSTANT_NAMES_LIST = [
 	'main-title',
 	'main-description',
@@ -13,6 +17,8 @@ export const CONSTANT_NAMES_LIST = [
 
 export const CONSTANT_TYPES = {
 	homePage: 'home-page',
+	vacanciesPage: 'vacancies-page',
+	mastersPage: 'masters-page',
 }
 
 export const CONSTANT_NAMES = {
