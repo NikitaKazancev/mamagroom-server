@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common'
+import { Language } from 'src/utils/constants'
 import { conflict, notFound } from 'src/utils/errors'
 import { BreedService } from '../breed/breed.service'
 import { ProcedureService } from '../procedure/procedure.service'
-import {
-	type PriceDimensions,
-	PriceDto,
-	type RequiredPriceDto,
-} from './price.dto'
+import { PriceDto } from './price.dto'
 import { PriceRepository } from './price.repository'
 
 @Injectable()
@@ -17,76 +14,74 @@ export class PriceService {
 		private readonly breedService: BreedService
 	) {}
 
-	async findMany(dimensions?: Partial<PriceDimensions>) {
-		return await this.repository.findMany(dimensions)
+	async findMany(
+		filter: {
+			isDeleted?: boolean
+			breedId?: string
+			procedureId?: string
+			weight?: number
+			time?: number
+		},
+		language?: Language
+	) {
+		return await this.repository.findMany(filter, language)
 	}
 
-	async findUnique(dimensions: PriceDimensions) {
-		return await this.checkExistence(dimensions)
+	async findById(id: string) {
+		return await this.checkExistence(id)
 	}
 
 	async create(price: PriceDto) {
-		const filledPrice = this.fillRequiredFields(price)
+		await this.checkUniqCombination(price)
 
-		const dimensions = this.dimensions(filledPrice)
-		const priceInDb = await this.repository.findUnique(dimensions)
-		if (priceInDb) {
-			conflict(`price by dimensions = ${dimensions}`, PriceService.name)
-		}
+		await this.procedureService.checkExistence(price.procedureId)
+		await this.breedService.checkExistence(price.breedId)
 
-		await this.procedureService.checkExistence(filledPrice.procedureId)
-		await this.breedService.checkExistence(filledPrice.breedId)
-
-		return await this.repository.create(filledPrice)
+		return await this.repository.create(price)
 	}
 
-	async change(price: PriceDto) {
-		const filledPrice = this.fillRequiredFields(price)
-		const dimensions = this.dimensions(filledPrice)
-		const priceInDb = await this.checkExistence(dimensions)
-
-		if (filledPrice.procedureId !== priceInDb.procedureId) {
-			await this.procedureService.checkExistence(filledPrice.procedureId)
+	async change(id: string, price: PriceDto) {
+		const priceInDb = await this.checkExistence(id)
+		if (
+			priceInDb.breedId !== price.breedId ||
+			priceInDb.procedureId !== price.procedureId ||
+			priceInDb.weight !== price.weight ||
+			priceInDb.time !== price.time
+		) {
+			await this.checkUniqCombination(price)
 		}
-		if (filledPrice.breedId !== priceInDb.breedId) {
-			await this.breedService.checkExistence(filledPrice.breedId)
-		}
 
-		return await this.repository.change(dimensions, filledPrice)
+		return await this.repository.change(id, price)
 	}
 
-	async delete(dimensions: PriceDimensions) {
-		await this.checkExistence(dimensions)
-
-		return await this.repository.delete(dimensions)
+	async delete(id: string) {
+		await this.checkExistence(id)
+		return await this.repository.markToDelete(id)
 	}
 
-	async checkExistence(dimensions: PriceDimensions) {
-		if (!dimensions) {
-			notFound(`dimensions are undefined`, PriceService.name)
+	async checkExistence(id: string) {
+		if (!id) {
+			notFound(`id is undefined`, PriceService.name)
 		}
 
-		const price = await this.repository.findUnique(dimensions)
+		const price = await this.repository.findById(id)
 		if (!price) {
-			notFound(`price by dimensions = ${dimensions}`, PriceService.name)
+			notFound(`price by id = ${id}`, PriceService.name)
 		}
 
 		return price
 	}
 
-	private dimensions(price: PriceDto): PriceDimensions {
-		return {
-			breedId: price.breedId,
-			procedureId: price.procedureId,
-			weight: price.weight,
-			time: price.time,
+	private async checkUniqCombination(price: PriceDto) {
+		const priceInDb = await this.repository.findMany({
+			...price,
+			isDeleted: undefined,
+		})
+
+		if (priceInDb.length) {
+			conflict(`price by fields`, PriceService.name)
 		}
-	}
 
-	private fillRequiredFields(price: PriceDto): RequiredPriceDto {
-		const time = price.time || 0
-		const weight = price.weight || 0
-
-		return { ...price, time, weight }
+		return priceInDb
 	}
 }

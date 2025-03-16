@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
-import { type PriceDimensions, type RequiredPriceDto } from './price.dto'
+import { Language } from 'src/utils/constants'
+import { PriceDto } from './price.dto'
 
 @Injectable()
 export class PriceRepository {
@@ -9,40 +10,66 @@ export class PriceRepository {
 		private readonly prismaRead: PrismaReadService
 	) {}
 
-	findMany(dimensions?: Partial<PriceDimensions>) {
+	findMany(
+		filter: {
+			isDeleted?: boolean
+			breedId?: string
+			procedureId?: string
+			weight?: number
+			time?: number
+		},
+		language?: Language
+	) {
 		return this.prismaRead.price.findMany({
 			where: {
-				...dimensions,
+				...filter,
+				procedure: {
+					language,
+				},
+			},
+			include: {
+				procedure: {
+					select: {
+						name: true,
+						id: true,
+					},
+				},
+			},
+			orderBy: {
+				procedure: {
+					name: 'asc',
+				},
 			},
 		})
 	}
 
-	findUnique(dimensions: PriceDimensions) {
+	findById(id: string) {
 		return this.prismaRead.price.findUnique({
 			where: {
-				breedId_procedureId_weight_time: dimensions,
+				id,
 			},
 		})
 	}
 
-	create(price: RequiredPriceDto) {
+	create(price: PriceDto) {
 		return this.prisma.price.create({ data: price })
 	}
 
-	change(dimensions: PriceDimensions, price: RequiredPriceDto) {
+	change(id: string, price: PriceDto) {
 		return this.prisma.price.update({
 			where: {
-				breedId_procedureId_weight_time: dimensions,
+				id,
 			},
 			data: price,
 		})
 	}
 
-	delete(dimensions: PriceDimensions) {
-		return this.prisma.price.delete({
+	markToDelete(id: string) {
+		return this.prisma.price.update({
 			where: {
-				breedId_procedureId_weight_time: dimensions,
+				id,
 			},
+			data: { isDeleted: true },
 		})
 	}
 }

@@ -16,6 +16,10 @@ export class MasterDto {
 	@IsOptional()
 	imageName?: string
 
+	@IsString()
+	@IsOptional()
+	position?: string
+
 	@IsOptional()
 	isDeleted?: boolean
 }

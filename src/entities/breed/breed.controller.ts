@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -15,7 +16,6 @@ import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
 import { BreedDto } from './breed.dto'
 import { BreedService } from './breed.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('breeds')
 @UseInterceptors(CacheInterceptor)
@@ -25,9 +25,10 @@ export class BreedController {
 	@Get()
 	async findMany(
 		@Query('language') language?: Language,
-		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean,
+		@Query('type') type?: 'dogs' | 'cats'
 	) {
-		return await this.service.findMany({ language, isDeleted })
+		return await this.service.findMany({ language, isDeleted, type })
 	}
 
 	@Get(':id')

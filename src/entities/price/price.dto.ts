@@ -15,9 +15,8 @@ export class PriceDto {
 	weight?: number
 
 	@IsNumber()
-	@IsOptional()
 	@Type(() => Number)
-	time?: number
+	time: number
 
 	@IsNumber()
 	@Type(() => Number)

@@ -13,12 +13,13 @@ export class BreedRepository {
 	) {}
 
 	findMany(
-		filter: FindManyFilter & { name?: string; type?: BreedType },
+		filter: FindManyFilter & { name?: string; type?: 'dogs' | 'cats' },
 		selection?: BooleanMappedType<Breed>
 	) {
 		return this.prismaRead.breed.findMany({
 			where: {
 				...filter,
+				type: filter.type === 'cats' ? BreedType.cat : undefined,
 			},
 			select: selection,
 		})

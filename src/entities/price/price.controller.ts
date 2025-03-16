@@ -1,9 +1,10 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
 	Delete,
 	Get,
-	ParseIntPipe,
+	Param,
 	Post,
 	Put,
 	Query,
@@ -12,9 +13,10 @@ import {
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseNumberPipe } from 'src/pipes/oprional-parse-number.pipe'
+import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
+import { Language } from 'src/utils/constants'
 import { PriceDto } from './price.dto'
 import { PriceService } from './price.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('prices')
 @UseInterceptors(CacheInterceptor)
@@ -26,9 +28,20 @@ export class PriceController {
 		@Query('breedId') breedId?: string,
 		@Query('procedureId') procedureId?: string,
 		@Query('weight', OptionalParseNumberPipe) weight?: number,
-		@Query('time', OptionalParseNumberPipe) time?: number
+		@Query('time', OptionalParseNumberPipe) time?: number,
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean,
+		@Query('language') language?: Language
 	) {
-		return await this.service.findMany({ breedId, procedureId, weight, time })
+		return await this.service.findMany(
+			{
+				breedId,
+				procedureId,
+				weight,
+				time,
+				isDeleted,
+			},
+			language
+		)
 	}
 
 	@Post()
@@ -37,20 +50,15 @@ export class PriceController {
 		return await this.service.create(data)
 	}
 
-	@Put()
+	@Put(':id')
 	@Auth(Role.pricePut)
-	async change(@Body() data: PriceDto) {
-		return await this.service.change(data)
+	async change(@Param('id') id: string, @Body() data: PriceDto) {
+		return await this.service.change(id, data)
 	}
 
-	@Delete()
+	@Delete(':id')
 	@Auth(Role.priceDelete)
-	async delete(
-		@Query('breedId') breedId: string,
-		@Query('procedureId') procedureId: string,
-		@Query('weight', ParseIntPipe) weight: number,
-		@Query('time', ParseIntPipe) time: number
-	) {
-		return await this.service.delete({ breedId, procedureId, weight, time })
+	async delete(@Param('id') id: string) {
+		return await this.service.delete(id)
 	}
 }

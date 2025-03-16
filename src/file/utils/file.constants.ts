@@ -10,6 +10,8 @@ export const FILE_PATHS = {
 	mainPage: `pages/home`,
 	vacanciesPage: 'pages/vacancies',
 	mastersPage: 'pages/masters',
+	dogsPage: 'pages/dogs',
+	catsPage: 'pages/cats',
 } as const
 
 export type FileName = (typeof FILE_NAMES)[keyof typeof FILE_NAMES]

@@ -49,4 +49,18 @@ export class FileController {
 		SaveFile({ path: FILE_PATHS.mastersPage, name: FILE_NAMES.mainBg })
 	)
 	saveMastersPageMainBg(@UploadedFile() file: Express.Multer.File) {}
+
+	@Post(`${FILE_PATHS.dogsPage}/${FILE_NAMES.mainBg}`)
+	@Auth(Role.filePostPut)
+	@UseInterceptors(
+		SaveFile({ path: FILE_PATHS.dogsPage, name: FILE_NAMES.mainBg })
+	)
+	saveDogsPageMainBg(@UploadedFile() file: Express.Multer.File) {}
+
+	@Post(`${FILE_PATHS.catsPage}/${FILE_NAMES.mainBg}`)
+	@Auth(Role.filePostPut)
+	@UseInterceptors(
+		SaveFile({ path: FILE_PATHS.catsPage, name: FILE_NAMES.mainBg })
+	)
+	saveCatsPageMainBg(@UploadedFile() file: Express.Multer.File) {}
 }

@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -17,7 +18,6 @@ import { type Language } from 'src/utils/constants'
 import { toBoolean } from 'src/utils/functions'
 import { ValueDto } from './value.dto'
 import { ValueService } from './value.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('values')
 @UseInterceptors(CacheInterceptor)

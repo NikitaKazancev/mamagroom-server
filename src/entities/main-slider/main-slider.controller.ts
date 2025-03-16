@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -16,7 +17,6 @@ import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { toBoolean } from 'src/utils/functions'
 import { MainSliderDto } from './main-slider.dto'
 import { MainSliderService } from './main-slider.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('main-slider')
 @UseInterceptors(CacheInterceptor)
@@ -54,6 +54,7 @@ export class MainSliderController {
 		@Body() data: MainSliderDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		console.log(file)
 		this.castDataPropsTypes(data)
 		return await this.service.change(id, data, file)
 	}

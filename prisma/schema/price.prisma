@@ -1,9 +1,10 @@
 model Price {
+   id          String    @id @default(cuid())
    breedId     String    @map("breed_id")
    breed       Breed     @relation(fields: [breedId], references: [id], onDelete: Cascade)
    procedureId String    @map("procedure_id")
    procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
-   weight      Float
+   weight      Float?
    time        Float
 
    price Int
@@ -12,6 +13,5 @@ model Price {
    updatedAt DateTime @updatedAt() @map("updated_at")
    isDeleted Boolean  @default(false) @map("is_deleted")
 
-   @@id([breedId, procedureId, weight, time])
    @@map("prices")
 }

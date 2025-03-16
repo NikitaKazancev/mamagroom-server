@@ -40,7 +40,10 @@ export class HeaderNavbarLinkService {
 		const headerNavbarLinkInDb = await this.checkExistence(id)
 		this.fillForeignKeys(headerNavbarLink)
 
-		if (headerNavbarLink.parentLinkId !== headerNavbarLinkInDb.parentLinkId) {
+		if (
+			headerNavbarLink.parentLinkId &&
+			headerNavbarLink.parentLinkId !== headerNavbarLinkInDb.parentLinkId
+		) {
 			await this.checkExistence(headerNavbarLink.parentLinkId)
 		}
 

@@ -8,8 +8,6 @@ export class ConstantService {
 	constructor(private readonly repository: ConstantRepository) {}
 
 	async findMany(dimensions: ConstantDimensionsDto) {
-		console.log(dimensions)
-
 		return await this.repository.findMany(dimensions)
 	}
 

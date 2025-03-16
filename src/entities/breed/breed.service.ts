@@ -11,7 +11,7 @@ export class BreedService {
 	constructor(private readonly repository: BreedRepository) {}
 
 	async findMany(
-		filter: FindManyFilter,
+		filter: FindManyFilter & { type?: 'dogs' | 'cats' },
 		selection?: BooleanMappedType<Breed>
 	) {
 		return await this.repository.findMany(filter, selection)
