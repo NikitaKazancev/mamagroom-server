@@ -22,9 +22,7 @@ SET row_security = off;
 
 COPY public.breeds (id, name, type, language, created_at, updated_at, is_deleted) FROM stdin;
 cm8bcg0zh00006elmbyf7ndra	Чихуахуа	small_dog	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
-cm8bcg0zi00016elmsqsypg3j	Йоркширский терьер	small_dog	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
 cm8bcg0zi00026elmlxjlwmwj	Бордер-колли	medium_dog	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
-cm8bcg0zi00036elmjqduu6gv	Бигль	medium_dog	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
 cm8bcg0zi00046elmapugnbdn	Немецкий дог	big_dog	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
 cm8bcg0zi00056elm0lb0pjay	Алабай	big_dog	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
 cm8bcg0zi00066elmboo6tkng	Кошка	cat	ru	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
@@ -35,6 +33,8 @@ cm8bcg0zi000a6elmv5h0iikr	Bichon Frisé	small_dog	en	2025-03-16 07:58:19.901	202
 cm8bcg0zi000b6elmghjb2069	German Shepherd	big_dog	en	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
 cm8bcg0zi000c6elmsnc2dp6y	Alaskan Malamute	big_dog	en	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
 cm8bcg0zi000d6elmvv1xbrar	Cat	cat	en	2025-03-16 07:58:19.901	2025-03-16 07:58:19.901	f
+cm8bcg0zi00036elmjqduu6gv	Бигль	medium_dog	ru	2025-03-16 07:58:19.901	2025-03-16 09:50:43.93	f
+cm8bcg0zi00016elmsqsypg3j	Йоркширский терьер	small_dog	ru	2025-03-16 07:58:19.901	2025-03-16 13:00:54.158	f
 \.
 
 
@@ -83,22 +83,10 @@ COPY public."_ProcedureToResponseFromAI" ("A", "B") FROM stdin;
 
 
 --
--- Data for Name: _prisma_migrations; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public._prisma_migrations (id, checksum, finished_at, migration_name, logs, rolled_back_at, started_at, applied_steps_count) FROM stdin;
-1bbfea7a-7cde-4ef8-886a-391d8d9333e9	2c8229269cf27b0141e95488ce09bc8b535cb533e7597881612b02b244c6963a	2025-03-16 10:46:33.53883+03	0_init	\N	\N	2025-03-16 10:46:33.421883+03	1
-6058dbdd-7175-43d8-8c4a-d1ec8762b63a	30d7575c76e094b28157240cbd1c84363d1b8c4dfb121d072b3990ef86722db4	2025-03-16 10:48:41.816989+03	20250316074711_added_position	\N	\N	2025-03-16 10:48:41.809551+03	1
-\.
-
-
---
 -- Data for Name: constants; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.constants (language, type, name, value, created_at, updated_at) FROM stdin;
-ru	home-page	main-title	заголовок	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
-ru	home-page	main-description	описание	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
 ru	home-page	about-us-title	о нас	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
 ru	home-page	about-us-description	В рамках спецификации современных стандартов, интерактивные прототипы освещают чрезвычайно интересные особенности картины в целом, однако конкретные выводы, разумеется, объективно рассмотрены соответствующими инстанциями. Не следует, однако, забывать, что	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
 ru	home-page	procedures-for-dogs-title	Процедуры для собак	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
@@ -115,6 +103,16 @@ en	home-page	procedures-for-dogs-description	Dog grooming includes haircuts, hai
 en	home-page	procedures-for-cats-title	Procedures for cats	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
 en	home-page	procedures-for-cats-description	Cat grooming involves regular brushing, bathing, and nail care, which helps prevent matting and reduce hair loss. The beauty of cat grooming is that it minimizes stress for the animal and promotes hygiene, especially for long-haired breeds.	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
 en	home-page	values-title	our values	2025-03-16 07:58:19.886	2025-03-16 07:58:19.886
+ru	home-page	main-title	МамагруМ	2025-03-16 07:58:19.886	2025-03-16 08:22:53.542
+ru	home-page	main-description	вы нам – чубаку, мы вам – собаку	2025-03-16 07:58:19.886	2025-03-16 08:23:14.87
+ru	dogs-page	main-title	процедуры для собак	2025-03-16 08:26:05.043	2025-03-16 08:26:05.043
+ru	dogs-page	main-description	любим их всем сердцем	2025-03-16 08:26:20.202	2025-03-16 08:26:20.202
+ru	cats-page	main-title	процедуры для кошек	2025-03-16 08:26:50.386	2025-03-16 08:26:50.386
+ru	cats-page	main-description	любим, но поменьше	2025-03-16 08:27:00.418	2025-03-16 08:27:00.418
+ru	masters-page	main-title	мастера	2025-03-16 08:43:18.208	2025-03-16 08:43:18.208
+ru	masters-page	main-description	самые лучшие	2025-03-16 08:43:36.764	2025-03-16 08:43:36.764
+ru	vacancies-page	main-title	вакансии	2025-03-16 08:43:53.203	2025-03-16 08:43:53.203
+ru	vacancies-page	main-description	давайте к нам в команду	2025-03-16 08:47:48.831	2025-03-16 08:47:48.831
 \.
 
 
@@ -134,9 +132,9 @@ cm8bcg0zx000l6elmt0sbnl7b	главная	/	1	ru	2025-03-16 07:58:19.917	2025-03-
 cm8bcg0zx000m6elm2o3bjv8k	процедуры и цены	\N	2	ru	2025-03-16 07:58:19.917	2025-03-16 07:58:19.917	f	\N
 cm8bcg0zx000n6elmcdxna809	мастера	/masters	3	ru	2025-03-16 07:58:19.917	2025-03-16 07:58:19.917	f	\N
 cm8bcg0zx000o6elmsyp36sdz	вакансии	/vacancies	4	ru	2025-03-16 07:58:19.917	2025-03-16 07:58:19.917	f	\N
-cm8bcg0zx000p6elmehhwlle9	контакты	/contacts	5	ru	2025-03-16 07:58:19.917	2025-03-16 07:58:19.917	f	\N
 cm8bcg0zz000q6elmbtu4as6w	для собак	/dogs	1	ru	2025-03-16 07:58:19.919	2025-03-16 07:58:19.919	f	cm8bcg0zx000m6elm2o3bjv8k
 cm8bcg0zz000r6elm1gzhaaev	для кошек	/cats	2	ru	2025-03-16 07:58:19.919	2025-03-16 07:58:19.919	f	cm8bcg0zx000m6elm2o3bjv8k
+cm8bdb91q0001f6ntuvil5uwq	пользователи	/users	6	ru	2025-03-16 08:22:36.684	2025-03-16 08:22:36.684	f	\N
 \.
 
 
@@ -145,12 +143,12 @@ cm8bcg0zz000r6elm1gzhaaev	для кошек	/cats	2	ru	2025-03-16 07:58:19.919	2
 --
 
 COPY public.main_slider (id, image_name, "order", created_at, updated_at, is_deleted) FROM stdin;
-cm8bcg104000s6elmcg4c1473	1.png	1	2025-03-16 07:58:19.925	2025-03-16 07:58:19.925	f
-cm8bcg104000t6elmwi5uge6q	2.png	2	2025-03-16 07:58:19.925	2025-03-16 07:58:19.925	f
-cm8bcg104000u6elmgiwjl1i7	3.png	3	2025-03-16 07:58:19.925	2025-03-16 07:58:19.925	f
-cm8bcg104000v6elmg9hybimu	4.png	4	2025-03-16 07:58:19.925	2025-03-16 07:58:19.925	f
-cm8bcg104000w6elmdfv6dnoc	5.png	5	2025-03-16 07:58:19.925	2025-03-16 07:58:19.925	f
-cm8bcg104000x6elmjidgq7r9	6.png	6	2025-03-16 07:58:19.925	2025-03-16 07:58:19.925	f
+cm8bcg104000t6elmwi5uge6q	2.jpg	3	2025-03-16 07:58:19.925	2025-03-16 14:24:23.101	f
+cm8bcg104000u6elmgiwjl1i7	3.jpg	4	2025-03-16 07:58:19.925	2025-03-16 14:24:23.101	f
+cm8bcg104000v6elmg9hybimu	4.jpg	5	2025-03-16 07:58:19.925	2025-03-16 14:24:23.101	f
+cm8bcg104000w6elmdfv6dnoc	5.jpg	6	2025-03-16 07:58:19.925	2025-03-16 14:24:23.101	f
+cm8bcg104000x6elmjidgq7r9	6.jpg	7	2025-03-16 07:58:19.925	2025-03-16 14:24:23.101	f
+cm8bcg104000s6elmcg4c1473	2.jpg_b3fd9f53-c5d5-4df1-9537-2d2fbc9bd435.jpg	1	2025-03-16 07:58:19.925	2025-03-16 14:58:14.984	f
 \.
 
 
@@ -170,19 +168,20 @@ cm8bcg10600116elml35hkka5	Katerina	The best	2.png	en	2025-03-16 07:58:19.927	202
 -- Data for Name: prices; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.prices (breed_id, procedure_id, weight, "time", price, created_at, updated_at, is_deleted) FROM stdin;
-cm8bcg0zh00006elmbyf7ndra	cm8bcg10c00126elmo9cytcqf	30	120	3000	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zh00006elmbyf7ndra	cm8bcg10c00136elm6408vxgv	20	60	600	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zh00006elmbyf7ndra	cm8bcg10c00146elmwka2s2v2	20	60	1000	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00126elmo9cytcqf	30	120	3100	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00136elm6408vxgv	0	0	700	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00146elmwka2s2v2	0	0	1100	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00076elmvgt73b9p	cm8bcg10d001c6elmly1lfkm9	30	120	3000	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00076elmvgt73b9p	cm8bcg10d001d6elm9cbzhyy1	20	60	600	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00076elmvgt73b9p	cm8bcg10d001e6elmnkuj9e9r	20	60	1000	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001c6elmly1lfkm9	30	120	3100	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001d6elm9cbzhyy1	0	0	700	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
-cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001e6elmnkuj9e9r	0	0	1100	2025-03-16 07:58:19.94	2025-03-16 07:58:19.94	f
+COPY public.prices (breed_id, procedure_id, weight, "time", price, created_at, updated_at, is_deleted, id) FROM stdin;
+cm8bcg0zh00006elmbyf7ndra	cm8bcg10c00126elmo9cytcqf	30	120	3000	2025-03-16 14:14:17.265	2025-03-16 14:14:17.265	f	cm8bpvicz0001isd0v3p42rfl
+cm8bcg0zh00006elmbyf7ndra	cm8bcg10c00136elm6408vxgv	20	60	600	2025-03-16 14:14:39.68	2025-03-16 14:14:39.68	f	cm8bpvznk0003isd0d6tlcpy9
+cm8bcg0zh00006elmbyf7ndra	cm8bcg10c00146elmwka2s2v2	20	60	1000	2025-03-16 14:14:48.93	2025-03-16 14:14:48.93	f	cm8bpw6si0005isd0qkyx6g47
+cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00126elmo9cytcqf	30	120	3100	2025-03-16 14:15:06.383	2025-03-16 14:15:06.383	f	cm8bpwk9b0007isd05q7wdqzi
+cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00136elm6408vxgv	\N	30	700	2025-03-16 14:15:24.281	2025-03-16 14:15:24.281	f	cm8bpwy2h0009isd0xdf1ryj0
+cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00146elmwka2s2v2	\N	60	1100	2025-03-16 14:15:39.884	2025-03-16 14:15:39.884	f	cm8bpxa3w000bisd02ldeuu50
+cm8bcg0zi00076elmvgt73b9p	cm8bcg10d001c6elmly1lfkm9	30	120	3000	2025-03-16 14:16:02.026	2025-03-16 14:16:02.026	f	cm8bpxr6y000disd0sclwlyum
+cm8bcg0zi00076elmvgt73b9p	cm8bcg10d001d6elm9cbzhyy1	20	60	600	2025-03-16 14:16:15.773	2025-03-16 14:16:15.773	f	cm8bpy1ss000fisd0gnveblir
+cm8bcg0zi00076elmvgt73b9p	cm8bcg10d001e6elmnkuj9e9r	20	60	1000	2025-03-16 14:16:23.045	2025-03-16 14:16:23.045	f	cm8bpy7et000hisd0iodk305g
+cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001c6elmly1lfkm9	30	120	3100	2025-03-16 14:16:37.88	2025-03-16 14:16:37.88	f	cm8bpyiuv000jisd0rnk8r5cp
+cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001d6elm9cbzhyy1	\N	30	700	2025-03-16 14:17:12.456	2025-03-16 14:17:12.456	f	cm8bpz9jc000lisd01jx5d1w5
+cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001e6elmnkuj9e9r	\N	60	1100	2025-03-16 14:17:22.02	2025-03-16 14:17:22.02	f	cm8bpzgx0000nisd05a66nd6g
+cm8bcg0zi00016elmsqsypg3j	cm8bcg10c00126elmo9cytcqf	40	150	3500	2025-03-16 14:18:12.424	2025-03-16 15:03:55.188	f	cm8bq0jt3000pisd0ricz8paf
 \.
 
 
@@ -191,6 +190,8 @@ cm8bcg0zi00086elm9qzk2ckh	cm8bcg10d001e6elmnkuj9e9r	0	0	1100	2025-03-16 07:58:19
 --
 
 COPY public.users (id, email, name, password, created_at, updated_at, is_deleted, roles) FROM stdin;
+1	my@nikita-kazantsev.ru	Nikita Kazantsev	$argon2id$v=19$m=65536,t=3,p=4$CT+8IIX0NU8p89kDtqCt2Q$d3tJE9OywewqnulqOKWchfzeNEuvT63C6+Q1jMZPG1o	0001-01-01 00:00:00	0001-01-01 00:00:00	f	{fullAccess}
+cm8bix4z80000kc7wyif5t52i	nkaz2003@gmail.com	NikitaKazancev	$argon2id$v=19$m=65536,t=3,p=4$ECz0UmobHqyvLa6sc9ej6A$ZLpFfPfvDOW+R92/9HhZNPRv+ivb6zNUOK4/PVi0Pno	2025-03-16 10:59:35.873	2025-03-16 10:59:35.873	f	\N
 \.
 
 
@@ -213,18 +214,18 @@ cm8bcg10q001r6elmxu76bax0	Intern	Just be my friend, so I can talk to someone	en	
 --
 
 COPY public."values" (id, title, description, image_name, "order", language, created_at, updated_at, is_deleted) FROM stdin;
-cm8bcg10v001s6elmlfuzuvli	Забота о здоровье	Мы ставим здоровье и благополучие каждого питомца на первое место	1.png	1	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001t6elmhga2vm65	Качество услуг	Мы гарантируем высокие стандарты в каждой процедуре груминга	2.png	2	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001u6elm3dfg6fua	Комфорт животных	Мы создаем безопасную и комфортную среду для всех питомцев	3.png	3	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001v6elmxv9luh1v	Профессионализм	Наша команда постоянно совершенствует свои навыки и знания	4.png	4	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001w6elmqxj8qdet	Индивидуальный подход	Мы учитываем уникальные потребности каждого клиента и его питомца	5.png	5	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001x6elmp02uv6ow	Этика и уважение	Мы относимся к животным с любовью, терпением и уважением	6.png	6	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001y6elmn9qbjpnh	Health Care	We put the health and well-being of each pet first	1.png	1	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v001z6elmif4gq8at	Quality of Service	We guarantee high standards in every grooming procedure	2.png	2	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v00206elmtaq7rj7x	Pet Comfort	We create a safe and comfortable environment for all pets	3.png	3	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v00216elmlbn3fr7f	Professionalism	Our team is constantly improving their skills and knowledge	4.png	4	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v00226elmpuoywlns	Individual approach	We take into account the unique needs of each client and their pet	5.png	5	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
-cm8bcg10v00236elmp8bqotcn	Ethics and Respect	We treat animals with love, patience and respect	6.png	6	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001s6elmlfuzuvli	Забота о здоровье	Мы ставим здоровье и благополучие каждого питомца на первое место	1.jpg	1	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001t6elmhga2vm65	Качество услуг	Мы гарантируем высокие стандарты в каждой процедуре груминга	2.jpg	2	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001u6elm3dfg6fua	Комфорт животных	Мы создаем безопасную и комфортную среду для всех питомцев	3.jpg	3	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001w6elmqxj8qdet	Индивидуальный подход	Мы учитываем уникальные потребности каждого клиента и его питомца	5.jpg	5	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001x6elmp02uv6ow	Этика и уважение	Мы относимся к животным с любовью, терпением и уважением	6.jpg	6	ru	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001y6elmn9qbjpnh	Health Care	We put the health and well-being of each pet first	1.jpg	1	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001z6elmif4gq8at	Quality of Service	We guarantee high standards in every grooming procedure	2.jpg	2	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v00206elmtaq7rj7x	Pet Comfort	We create a safe and comfortable environment for all pets	3.jpg	3	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v00216elmlbn3fr7f	Professionalism	Our team is constantly improving their skills and knowledge	4.jpg	4	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v00226elmpuoywlns	Individual approach	We take into account the unique needs of each client and their pet	5.jpg	5	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v00236elmp8bqotcn	Ethics and Respect	We treat animals with love, patience and respect	6.jpg	6	en	2025-03-16 07:58:19.951	2025-03-16 07:58:19.951	f
+cm8bcg10v001v6elmxv9luh1v	Профессионализм	1 Наша команда постоянно совершенствует свои навыки и знания	undefined_ddd8d375-9f36-414d-a6f1-69409411b6cd.undefined	4	ru	2025-03-16 07:58:19.951	2025-03-16 14:23:34.441	f
 \.
 
 
