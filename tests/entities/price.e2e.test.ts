@@ -10,10 +10,12 @@ import {
 } from 'tests/kafka/kafka-mock'
 import { AppModule } from '../../src/app.module'
 
-describe('Breed (e2e)', () => {
+describe('Price (e2e)', () => {
 	let app: INestApplication
 	let token: string
 	let id: string
+	let procedureId: string
+	let breedId: string
 
 	beforeAll(async () => {
 		const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -42,24 +44,54 @@ describe('Breed (e2e)', () => {
 		await app.close()
 	})
 
-	it('/breeds (GET)', async () => {
-		const res = await request(app.getHttpServer()).get('/breeds').expect(200)
+	it('/prices (GET)', async () => {
+		const res = await request(app.getHttpServer()).get('/prices').expect(200)
 		expect(Array.isArray(res.body)).toBe(true)
 	})
 
-	it('/breeds (POST) с неверным токеном', async () => {
+	it('/prices (POST) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.post('/breeds')
+			.post('/prices')
 			.set('Authorization', 'Bearer wrong_token')
 			.send({ name: 'TEST' })
 			.expect(401)
 	})
 
-	it('/breeds (POST) с корректным токеном', async () => {
-		const data = { name: 'TEST', type: 'bigDog', language: 'ru' }
+	it('/prices (POST) с корректным токеном', async () => {
+		const procedureRes = await request(app.getHttpServer())
+			.post('/procedures')
+			.set('Authorization', `Bearer ${token}`)
+			.send({
+				name: 'TEST',
+				description: '',
+				language: 'ru',
+				isDeleted: true,
+			})
+			.expect(201)
+		const breedRes = await request(app.getHttpServer())
+			.post('/breeds')
+			.set('Authorization', `Bearer ${token}`)
+			.send({
+				name: 'TEST',
+				type: 'smallDog',
+				language: 'ru',
+				isDeleted: true,
+			})
+			.expect(201)
+
+		procedureId = procedureRes.body.id
+		breedId = breedRes.body.id
+
+		const data = {
+			breedId,
+			procedureId,
+			weight: 30,
+			time: 60,
+			price: 1000,
+		}
 
 		const res = await request(app.getHttpServer())
-			.post('/breeds')
+			.post('/prices')
 			.set('Authorization', `Bearer ${token}`)
 			.send(data)
 			.expect(201)
@@ -67,35 +99,41 @@ describe('Breed (e2e)', () => {
 		expect(res.body).toMatchObject(data)
 	})
 
-	it('/breeds/id (PUT) с неверным токеном', async () => {
+	it('/prices/id (PUT) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.put(`/breeds/${id}`)
+			.put(`/prices/${id}`)
 			.set('Authorization', 'Bearer wrong_token')
 			.send({ name: 'TEST' })
 			.expect(401)
 	})
 
-	it('/breeds/id (PUT) с корректным токеном', async () => {
-		const data = { name: 'TEST 2', type: 'smallDog', language: 'en' }
+	it('/prices/id (PUT) с корректным токеном', async () => {
+		const data = {
+			breedId,
+			procedureId,
+			weight: null,
+			time: 120,
+			price: 2000,
+		}
 
 		const res = await request(app.getHttpServer())
-			.put(`/breeds/${id}`)
+			.put(`/prices/${id}`)
 			.set('Authorization', `Bearer ${token}`)
 			.send(data)
 			.expect(200)
 		expect(res.body).toMatchObject(data)
 	})
 
-	it('/breeds/:id (DELETE) с неверным токеном', async () => {
+	it('/prices/:id (DELETE) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.delete(`/breeds/${id}`)
+			.delete(`/prices/${id}`)
 			.set('Authorization', 'Bearer wrong_token')
 			.expect(401)
 	})
 
-	it('/breeds/:id (DELETE) с корректным токеном', async () => {
+	it('/prices/:id (DELETE) с корректным токеном', async () => {
 		const res = await request(app.getHttpServer())
-			.delete(`/breeds/${id}`)
+			.delete(`/prices/${id}`)
 			.set('Authorization', `Bearer ${token}`)
 			.expect(200)
 		expect(res.body.isDeleted).toBe(true)

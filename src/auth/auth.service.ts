@@ -6,7 +6,7 @@ import { verify } from 'argon2'
 import { Response } from 'express'
 import { UserService } from 'src/auth/user/user.service'
 import { notFound, unauthorized } from 'src/utils/errors'
-import { LoginDto, RegisterDto } from './auth.dto'
+import { AuthDto } from './auth.dto'
 import { GithubService, GithubUser } from './oauth/github/github.service'
 import { GoogleService, GoogleUser } from './oauth/google/google.service'
 import { YandexService, YandexUser } from './oauth/yandex/yandex.service'
@@ -43,7 +43,7 @@ export class AuthService {
 		this.tokenConfig.domain = configService.get('DOMAIN')
 	}
 
-	async login(data: LoginDto, res: Response) {
+	async login(data: AuthDto, res: Response) {
 		const user = await this.userService.findByEmail(data.email)
 		if (!user) notFound('user is not found', AuthService.name)
 
@@ -55,7 +55,7 @@ export class AuthService {
 		return this.withNewToken(user, res)
 	}
 
-	async register(data: RegisterDto, res: Response) {
+	async register(data: AuthDto, res: Response) {
 		const createdUser = await this.userService.create({ ...data, roles: [] })
 		return this.withNewToken(createdUser, res)
 	}

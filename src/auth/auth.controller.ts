@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
 import { Recaptcha } from '@nestlab/google-recaptcha'
 import { Response } from 'express'
-import { LoginDto, RegisterDto } from './auth.dto'
+import { AuthDto } from './auth.dto'
 import { AuthService } from './auth.service'
 import { GithubUser } from './oauth/github/github.service'
 import { GoogleUser } from './oauth/google/google.service'
@@ -33,7 +33,7 @@ export class AuthController {
 	@Post('login')
 	@Recaptcha()
 	async login(
-		@Body() data: LoginDto,
+		@Body() data: AuthDto,
 		@Res({ passthrough: true }) res: Response
 	) {
 		return await this.service.login(data, res)
@@ -42,7 +42,7 @@ export class AuthController {
 	@Post('register')
 	@Recaptcha()
 	async register(
-		@Body() data: RegisterDto,
+		@Body() data: AuthDto,
 		@Res({ passthrough: true }) res: Response
 	) {
 		return await this.service.register(data, res)

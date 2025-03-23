@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import {
 	IsIn,
@@ -11,12 +12,15 @@ import { type RequiredFields } from 'src/utils/types'
 
 export class ValueDto {
 	@IsIn(LANGUAGES_LIST)
+	@ApiProperty({ example: 'ru' })
 	language: Language
 
 	@IsString()
+	@ApiProperty({ example: 'Ответственность' })
 	title: string
 
 	@IsString()
+	@ApiProperty({ example: 'Ответственно относимся к самым разным пёсикам' })
 	description: string
 
 	@IsString()
@@ -26,10 +30,12 @@ export class ValueDto {
 	@IsNumber()
 	@IsPositive()
 	@IsOptional()
+	@ApiProperty({ example: 1 })
 	@Type(() => Number)
 	order?: number
 
 	@IsOptional()
+	@ApiProperty({ example: false })
 	isDeleted?: boolean
 }
 

@@ -10,7 +10,7 @@ import {
 } from 'tests/kafka/kafka-mock'
 import { AppModule } from '../../src/app.module'
 
-describe('Breed (e2e)', () => {
+describe('MainSlider (e2e)', () => {
 	let app: INestApplication
 	let token: string
 	let id: string
@@ -42,60 +42,51 @@ describe('Breed (e2e)', () => {
 		await app.close()
 	})
 
-	it('/breeds (GET)', async () => {
-		const res = await request(app.getHttpServer()).get('/breeds').expect(200)
+	it('/main-slider (GET)', async () => {
+		const res = await request(app.getHttpServer())
+			.get('/main-slider')
+			.expect(200)
 		expect(Array.isArray(res.body)).toBe(true)
 	})
 
-	it('/breeds (POST) с неверным токеном', async () => {
+	it('/main-slider (POST) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.post('/breeds')
+			.post('/main-slider')
 			.set('Authorization', 'Bearer wrong_token')
 			.send({ name: 'TEST' })
 			.expect(401)
 	})
 
-	it('/breeds (POST) с корректным токеном', async () => {
-		const data = { name: 'TEST', type: 'bigDog', language: 'ru' }
-
+	it('/main-slider (POST) с корректным токеном', async () => {
 		const res = await request(app.getHttpServer())
-			.post('/breeds')
+			.post('/main-slider')
 			.set('Authorization', `Bearer ${token}`)
-			.send(data)
+			.send({})
 			.expect(201)
 		id = res.body.id
-		expect(res.body).toMatchObject(data)
+		expect(res.body).toMatchObject({
+			id,
+		})
 	})
 
-	it('/breeds/id (PUT) с неверным токеном', async () => {
+	it('/main-slider/id (PUT) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.put(`/breeds/${id}`)
+			.put(`/main-slider/${id}`)
 			.set('Authorization', 'Bearer wrong_token')
 			.send({ name: 'TEST' })
 			.expect(401)
 	})
 
-	it('/breeds/id (PUT) с корректным токеном', async () => {
-		const data = { name: 'TEST 2', type: 'smallDog', language: 'en' }
-
-		const res = await request(app.getHttpServer())
-			.put(`/breeds/${id}`)
-			.set('Authorization', `Bearer ${token}`)
-			.send(data)
-			.expect(200)
-		expect(res.body).toMatchObject(data)
-	})
-
-	it('/breeds/:id (DELETE) с неверным токеном', async () => {
+	it('/main-slider/:id (DELETE) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.delete(`/breeds/${id}`)
+			.delete(`/main-slider/${id}`)
 			.set('Authorization', 'Bearer wrong_token')
 			.expect(401)
 	})
 
-	it('/breeds/:id (DELETE) с корректным токеном', async () => {
+	it('/main-slider/:id (DELETE) с корректным токеном', async () => {
 		const res = await request(app.getHttpServer())
-			.delete(`/breeds/${id}`)
+			.delete(`/main-slider/${id}`)
 			.set('Authorization', `Bearer ${token}`)
 			.expect(200)
 		expect(res.body.isDeleted).toBe(true)

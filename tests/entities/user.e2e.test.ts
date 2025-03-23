@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from '@jest/globals'
 import { INestApplication, ValidationPipe } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
+import { verify } from 'argon2'
 import { KafkaConsumerService } from 'src/kafka/kafka.consumer'
 import { KafkaProducerService } from 'src/kafka/kafka.producer'
 import * as request from 'supertest'
@@ -10,7 +11,7 @@ import {
 } from 'tests/kafka/kafka-mock'
 import { AppModule } from '../../src/app.module'
 
-describe('Breed (e2e)', () => {
+describe('User (e2e)', () => {
 	let app: INestApplication
 	let token: string
 	let id: string
@@ -42,60 +43,86 @@ describe('Breed (e2e)', () => {
 		await app.close()
 	})
 
-	it('/breeds (GET)', async () => {
-		const res = await request(app.getHttpServer()).get('/breeds').expect(200)
+	it('/users (GET) с неверным токеном', async () => {
+		const res = await request(app.getHttpServer())
+			.get('/users')
+			.set('Authorization', 'Bearer wrong_token')
+			.expect(401)
+	})
+
+	it('/users (GET) с корректным токеном', async () => {
+		const res = await request(app.getHttpServer())
+			.get('/users')
+			.set('Authorization', `Bearer ${token}`)
+			.expect(200)
 		expect(Array.isArray(res.body)).toBe(true)
 	})
 
-	it('/breeds (POST) с неверным токеном', async () => {
+	it('/users (POST) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.post('/breeds')
+			.post('/users')
 			.set('Authorization', 'Bearer wrong_token')
 			.send({ name: 'TEST' })
 			.expect(401)
 	})
 
-	it('/breeds (POST) с корректным токеном', async () => {
-		const data = { name: 'TEST', type: 'bigDog', language: 'ru' }
+	it('/users (POST) с корректным токеном', async () => {
+		const data = {
+			email: 'test@test.ru',
+			password: '123',
+			roles: ['userGet'],
+		}
 
 		const res = await request(app.getHttpServer())
-			.post('/breeds')
+			.post('/users')
 			.set('Authorization', `Bearer ${token}`)
 			.send(data)
 			.expect(201)
 		id = res.body.id
-		expect(res.body).toMatchObject(data)
+		expect(res.body).toMatchObject({
+			email: data.email,
+			roles: data.roles,
+		})
+		expect(await verify(res.body.password, '123')).toBe(true)
 	})
 
-	it('/breeds/id (PUT) с неверным токеном', async () => {
+	it('/users/id (PUT) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.put(`/breeds/${id}`)
+			.put(`/users/${id}`)
 			.set('Authorization', 'Bearer wrong_token')
 			.send({ name: 'TEST' })
 			.expect(401)
 	})
 
-	it('/breeds/id (PUT) с корректным токеном', async () => {
-		const data = { name: 'TEST 2', type: 'smallDog', language: 'en' }
+	it('/users/id (PUT) с корректным токеном', async () => {
+		const data = {
+			email: 'test2@test.ru',
+			password: '234',
+			roles: ['userPost'],
+		}
 
 		const res = await request(app.getHttpServer())
-			.put(`/breeds/${id}`)
+			.put(`/users/${id}`)
 			.set('Authorization', `Bearer ${token}`)
 			.send(data)
 			.expect(200)
-		expect(res.body).toMatchObject(data)
+		expect(res.body).toMatchObject({
+			email: data.email,
+			roles: data.roles,
+		})
+		expect(await verify(res.body.password, '234')).toBe(true)
 	})
 
-	it('/breeds/:id (DELETE) с неверным токеном', async () => {
+	it('/users/:id (DELETE) с неверным токеном', async () => {
 		await request(app.getHttpServer())
-			.delete(`/breeds/${id}`)
+			.delete(`/users/${id}`)
 			.set('Authorization', 'Bearer wrong_token')
 			.expect(401)
 	})
 
-	it('/breeds/:id (DELETE) с корректным токеном', async () => {
+	it('/users/:id (DELETE) с корректным токеном', async () => {
 		const res = await request(app.getHttpServer())
-			.delete(`/breeds/${id}`)
+			.delete(`/users/${id}`)
 			.set('Authorization', `Bearer ${token}`)
 			.expect(200)
 		expect(res.body.isDeleted).toBe(true)
