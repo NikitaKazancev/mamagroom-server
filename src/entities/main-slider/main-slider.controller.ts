@@ -54,7 +54,6 @@ export class MainSliderController {
 		@Body() data: MainSliderDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
-		console.log(file)
 		this.castDataPropsTypes(data)
 		return await this.service.change(id, data, file)
 	}

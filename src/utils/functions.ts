@@ -18,4 +18,5 @@ export const toBoolean = (value: unknown): boolean => {
 }
 
 export const isDev = (configService: ConfigService) =>
-	configService.get('NODE_ENV') === 'development'
+	configService.get('NODE_ENV') === 'development' ||
+	configService.get('NODE_ENV') === 'test'

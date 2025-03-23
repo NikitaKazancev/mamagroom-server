@@ -67,10 +67,6 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 	],
 	controllers: [AppController],
 	providers: [
-		// {
-		// 	provide: APP_INTERCEPTOR,
-		// 	useClass: CacheInterceptor,
-		// },
 		GithubStrategy,
 		GoogleStrategy,
 		YandexStrategy,
