@@ -19,9 +19,15 @@ export class BreedRepository {
 		return this.prismaRead.breed.findMany({
 			where: {
 				...filter,
-				type: filter.type === 'cats' ? BreedType.cat : undefined,
+				type:
+					filter.type === 'cats'
+						? BreedType.cat
+						: {
+								not: BreedType.cat,
+							},
 			},
 			select: selection,
+			orderBy: { name: 'asc' },
 		})
 	}
 

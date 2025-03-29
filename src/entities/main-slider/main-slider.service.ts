@@ -30,12 +30,10 @@ export class MainSliderService {
 	}
 
 	async create(mainSlider: MainSliderDto, file?: Express.Multer.File) {
+		mainSlider.imageName = undefined
 		if (file) {
 			mainSlider.imageName = file?.filename
 		}
-
-		mainSlider.imageName = undefined
-		mainSlider.order = undefined
 
 		const filledMainSlider = await this.fillRequiredFields(mainSlider)
 		return await this.repository.create(filledMainSlider)
