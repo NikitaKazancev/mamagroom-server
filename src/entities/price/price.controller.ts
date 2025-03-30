@@ -14,7 +14,6 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseNumberPipe } from 'src/pipes/oprional-parse-number.pipe'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
-import { Language } from 'src/utils/constants'
 import { PriceDto } from './price.dto'
 import { PriceService } from './price.service'
 
@@ -29,19 +28,15 @@ export class PriceController {
 		@Query('procedureId') procedureId?: string,
 		@Query('weight', OptionalParseNumberPipe) weight?: number,
 		@Query('time', OptionalParseNumberPipe) time?: number,
-		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean,
-		@Query('language') language?: Language
+		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean
 	) {
-		return await this.service.findMany(
-			{
-				breedId,
-				procedureId,
-				weight,
-				time,
-				isDeleted,
-			},
-			language
-		)
+		return await this.service.findMany({
+			breedId,
+			procedureId,
+			weight,
+			time,
+			isDeleted,
+		})
 	}
 
 	@Post()

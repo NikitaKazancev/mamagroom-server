@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { PrismaReadService, PrismaService } from 'src/prisma.service'
-import { Language } from 'src/utils/constants'
 import { PriceDto } from './price.dto'
 
 @Injectable()
@@ -10,22 +9,16 @@ export class PriceRepository {
 		private readonly prismaRead: PrismaReadService
 	) {}
 
-	findMany(
-		filter: {
-			isDeleted?: boolean
-			breedId?: string
-			procedureId?: string
-			weight?: number
-			time?: number
-		},
-		language?: Language
-	) {
+	findMany(filter: {
+		isDeleted?: boolean
+		breedId?: string
+		procedureId?: string
+		weight?: number
+		time?: number
+	}) {
 		return this.prismaRead.price.findMany({
 			where: {
 				...filter,
-				procedure: {
-					language,
-				},
 			},
 			include: {
 				procedure: {

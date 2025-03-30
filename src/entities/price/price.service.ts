@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common'
-import { Language } from 'src/utils/constants'
 import { conflict, notFound } from 'src/utils/errors'
 import { BreedService } from '../breed/breed.service'
 import { ProcedureService } from '../procedure/procedure.service'
@@ -14,17 +13,14 @@ export class PriceService {
 		private readonly breedService: BreedService
 	) {}
 
-	async findMany(
-		filter: {
-			isDeleted?: boolean
-			breedId?: string
-			procedureId?: string
-			weight?: number
-			time?: number
-		},
-		language?: Language
-	) {
-		return await this.repository.findMany(filter, language)
+	async findMany(filter: {
+		isDeleted?: boolean
+		breedId?: string
+		procedureId?: string
+		weight?: number
+		time?: number
+	}) {
+		return await this.repository.findMany(filter)
 	}
 
 	async findById(id: string) {
