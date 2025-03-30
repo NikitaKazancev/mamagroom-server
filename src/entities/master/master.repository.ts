@@ -15,6 +15,9 @@ export class MasterRepository {
 			where: {
 				...filter,
 			},
+			orderBy: {
+				name: 'asc',
+			},
 		})
 	}
 

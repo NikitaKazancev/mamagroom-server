@@ -16,6 +16,10 @@ export class VacancyDto {
 	@ApiProperty({ example: 'Нужно помогать грумеру, мыть собак' })
 	description?: string
 
+	@IsString()
+	@ApiProperty({ example: 'https://hh.ru/...' })
+	link: string
+
 	@IsOptional()
 	@IsBoolean()
 	@ApiProperty({ example: false })

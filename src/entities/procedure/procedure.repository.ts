@@ -23,6 +23,9 @@ export class ProcedureRepository {
 				...filter,
 			},
 			select: selection,
+			orderBy: {
+				name: 'asc',
+			},
 		})
 	}
 

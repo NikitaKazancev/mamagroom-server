@@ -1,6 +1,7 @@
 model Vacancy {
    id          String  @id @default(cuid())
    name        String  @unique
+   link        String?
    description String?
 
    language  String   @default("ru")

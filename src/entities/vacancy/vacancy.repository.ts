@@ -15,6 +15,9 @@ export class VacancyRepository {
 			where: {
 				...filter,
 			},
+			orderBy: {
+				name: 'asc',
+			},
 		})
 	}
 
