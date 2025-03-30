@@ -33,8 +33,13 @@ export class IntegrationService {
 		imageName?: string
 		language?: Language
 	}) {
+		const res = {
+			procedureIds: [],
+			breedId: '',
+		}
+
 		if (!userDescription && !imageName) {
-			return []
+			return res
 		}
 
 		let imageUrl: string | undefined
@@ -47,7 +52,11 @@ export class IntegrationService {
 				userDescription,
 			})
 			if (dataInDb.length) {
-				return dataInDb[0].procedures.map(procedure => procedure.id)
+				res.breedId = dataInDb[0].breedId
+				res.procedureIds = dataInDb[0].procedures.map(
+					procedure => procedure.id
+				)
+				return res
 			}
 		}
 
@@ -68,7 +77,7 @@ export class IntegrationService {
 				procedureIds: [],
 			})
 
-			return []
+			return res
 		}
 
 		const procedureIdsData = await this.detectedProceduresByUserData({
@@ -88,7 +97,9 @@ export class IntegrationService {
 			procedureIds: procedureIdsData.data,
 		})
 
-		return procedureIdsData.data
+		res.procedureIds = procedureIdsData.data
+		res.breedId = detectedBreedData.data.id
+		return res
 	}
 
 	private async detectedBreedByUserData({

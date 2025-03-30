@@ -40,6 +40,8 @@ export class AIService {
 
 		let res: AIResponse
 
+		this.skipAIService(this.yandexService)
+
 		if (imageUrl) {
 			this.setModelToWorkWithImages()
 		}

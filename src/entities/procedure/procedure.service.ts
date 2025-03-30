@@ -32,19 +32,18 @@ export class ProcedureService {
 		file?: Express.Multer.File,
 		language?: Language
 	) {
-		const procedureIds = await this.integrationService.procedureIdsByUserData(
-			{
-				userDescription: description,
-				imageName: file?.filename,
-				language,
-			}
-		)
+		const response = await this.integrationService.procedureIdsByUserData({
+			userDescription: description,
+			imageName: file?.filename,
+			language,
+		})
 
-		if (!procedureIds.length) {
+		if (!response.procedureIds.length) {
 			return []
 		}
 
-		return await this.repository.findByIds(procedureIds)
+		const procedures = await this.repository.findByIds(response.procedureIds)
+		return { procedures, breedId: response.breedId }
 	}
 
 	async findByBreed(breedId: string, language: Language) {
