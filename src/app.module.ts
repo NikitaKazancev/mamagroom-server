@@ -20,6 +20,7 @@ import { MainSliderModule } from './entities/main-slider/main-slider.module'
 import { MasterModule } from './entities/master/master.module'
 import { PriceModule } from './entities/price/price.module'
 import { ProcedureModule } from './entities/procedure/procedure.module'
+import { ReviewModule } from './entities/review/review.module'
 import { VacancyModule } from './entities/vacancy/vacancy.module'
 import { ValueModule } from './entities/value/value.module'
 import { FileModule } from './file/file.module'
@@ -61,6 +62,7 @@ import { PrismaReadService, PrismaService } from './prisma.service'
 		ProcedureModule,
 		VacancyModule,
 		ValueModule,
+		ReviewModule,
 		FileModule,
 		IntegrationModule,
 		ResponseFromAIModule,

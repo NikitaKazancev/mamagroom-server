@@ -1,0 +1,12 @@
+model Review {
+   id          String   @id @unique @default(cuid())
+   name        String
+   rating      Int
+   date        DateTime
+   description String
+
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt() @map("updated_at")
+
+   @@map("reviews")
+}

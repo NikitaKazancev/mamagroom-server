@@ -4,6 +4,7 @@ export const CONSTANT_TYPES_LIST = [
 	'masters-page',
 	'dogs-page',
 	'cats-page',
+	'reviews',
 ]
 export const CONSTANT_NAMES_LIST = [
 	'main-title',
@@ -15,6 +16,13 @@ export const CONSTANT_NAMES_LIST = [
 	'procedures-for-cats-title',
 	'procedures-for-cats-description',
 	'values-title',
+	'title',
+	'rating',
+	'amount',
+	'personal-rating',
+	'personal-amount',
+	'clean-rating',
+	'clean-amount',
 ]
 
 export const CONSTANT_TYPES = {

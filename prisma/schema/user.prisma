@@ -46,6 +46,9 @@ enum Role {
    valuePost
    valuePut
    valueDelete
+   reviewPost
+   reviewPut
+   reviewDelete
    filePostPut
    responseFromAIGet
    responseFromAIPost
