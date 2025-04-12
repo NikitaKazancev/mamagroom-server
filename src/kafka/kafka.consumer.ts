@@ -1,4 +1,4 @@
-import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager'
+import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import {
 	Inject,
 	Injectable,
@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { Consumer, Kafka } from 'kafkajs'
+import { Cache } from 'src/types/extended-cache.interface'
 import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
@@ -47,7 +48,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 
 		await this.consumer.run({
 			eachMessage: async ({ topic, partition, message }) => {
-				await this.cacheManager.reset()
+				await this.cacheManager.clear()
 			},
 		})
 	}

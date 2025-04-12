@@ -32,7 +32,7 @@ describe('Auth (e2e)', () => {
 
 		const loginResponse = await request(app.getHttpServer())
 			.post('/auth/login')
-			.send({ email: 'my@nikita-kazantsev.ru', password: '123' })
+			.send({ email: 'my@nikita-kazantsev.ru', password: '1' })
 		token = loginResponse.body.token
 	})
 
@@ -44,7 +44,7 @@ describe('Auth (e2e)', () => {
 	})
 
 	it('/auth/register (POST)', async () => {
-		const data = { email: 'test@test.ru', password: '123' }
+		const data = { email: 'test@test.ru', password: '1' }
 
 		const res = await request(app.getHttpServer())
 			.post('/auth/register')
@@ -52,7 +52,7 @@ describe('Auth (e2e)', () => {
 			.expect(201)
 		id = res.body.id
 		expect(res.body).toMatchObject({ email: 'test@test.ru' })
-		expect(await verify(res.body.password, '123')).toBe(true)
+		expect(await verify(res.body.password, '1')).toBe(true)
 	})
 
 	it('/auth/login (POST) некорректные данные', async () => {
@@ -65,7 +65,7 @@ describe('Auth (e2e)', () => {
 	})
 
 	it('/auth/login (POST) корректные данные', async () => {
-		const data = { email: 'test@test.ru', password: '123' }
+		const data = { email: 'test@test.ru', password: '1' }
 
 		await request(app.getHttpServer())
 			.post('/auth/login')
