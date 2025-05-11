@@ -21,10 +21,13 @@ export const isDev = (configService: ConfigService) =>
 	configService.get('NODE_ENV') === 'development' ||
 	configService.get('NODE_ENV') === 'test'
 
-export const getMemStart = () => process.memoryUsage().heapUsed
+export const getMemStart = () => {
+	return 0
+	// return process.memoryUsage().heapUsed
+}
 export const logUsedMemory = async (memStart: number, prefix?: string) => {
-	await new Promise(res => setTimeout(res, 100))
-	const memEnd = process.memoryUsage().heapUsed
-	const memoryUsedInMB = (memEnd - memStart) / 1024 / 1024
-	console.log(`[${prefix}] Memory used: ${memoryUsedInMB.toFixed(2)} MB`)
+	// await new Promise(res => setTimeout(res, 100))
+	// const memEnd = process.memoryUsage().heapUsed
+	// const memoryUsedInMB = (memEnd - memStart) / 1024 / 1024
+	// console.log(`[${prefix}] Memory used: ${memoryUsedInMB.toFixed(2)} MB`)
 }
