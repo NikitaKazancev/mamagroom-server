@@ -28,6 +28,17 @@ export class PriceDto {
 	@ApiProperty({ example: 2500 })
 	price: number
 
+	@IsNumber()
+	@IsOptional()
+	@Type(() => Number)
+	@ApiProperty({ example: 7000 })
+	maxPrice?: number
+
+	@IsString()
+	@IsOptional()
+	@ApiProperty({ example: 'abc...' })
+	description?: string
+
 	@IsOptional()
 	@IsBoolean()
 	@ApiProperty({ example: false })
