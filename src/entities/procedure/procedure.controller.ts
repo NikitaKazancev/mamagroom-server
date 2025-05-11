@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -15,9 +16,9 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
+import { getMemStart, logUsedMemory } from 'src/utils/functions'
 import { ProcedureDto } from './procedure.dto'
 import { ProcedureService } from './procedure.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('procedures')
 @UseInterceptors(CacheInterceptor)
@@ -44,7 +45,14 @@ export class ProcedureController {
 		@UploadedFile() file?: Express.Multer.File,
 		@Query('language') language?: Language
 	) {
-		return await this.service.findByUserData(data.description, file, language)
+		const memStart = getMemStart()
+		const response = await this.service.findByUserData(
+			data.description,
+			file,
+			language
+		)
+		logUsedMemory(memStart, 'findByUserData procedures')
+		return response
 	}
 
 	@Post()
@@ -62,6 +70,9 @@ export class ProcedureController {
 	@Delete(':id')
 	@Auth(Role.procedureDelete)
 	async delete(@Param('id') id: string) {
-		return await this.service.delete(id)
+		const memStart = getMemStart()
+		const response = await this.service.delete(id)
+		logUsedMemory(memStart, 'delete procedures')
+		return response
 	}
 }

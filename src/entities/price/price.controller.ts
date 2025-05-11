@@ -14,6 +14,7 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseNumberPipe } from 'src/pipes/oprional-parse-number.pipe'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
+import { getMemStart, logUsedMemory } from 'src/utils/functions'
 import { PriceDto } from './price.dto'
 import { PriceService } from './price.service'
 
@@ -42,7 +43,10 @@ export class PriceController {
 	@Post()
 	@Auth(Role.pricePost)
 	async create(@Body() data: PriceDto) {
-		return await this.service.create(data)
+		const memStart = getMemStart()
+		const response = await this.service.create(data)
+		logUsedMemory(memStart, 'create prices')
+		return response
 	}
 
 	@Put(':id')

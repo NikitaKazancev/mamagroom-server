@@ -14,7 +14,7 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
-import { toBoolean } from 'src/utils/functions'
+import { getMemStart, logUsedMemory, toBoolean } from 'src/utils/functions'
 import { MainSliderDto } from './main-slider.dto'
 import { MainSliderService } from './main-slider.service'
 
@@ -42,8 +42,11 @@ export class MainSliderController {
 		@Body() data: MainSliderDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		const memStart = getMemStart()
 		this.castDataPropsTypes(data)
-		return await this.service.create(data, file)
+		const response = await this.service.create(data, file)
+		logUsedMemory(memStart, 'create main-slider')
+		return response
 	}
 
 	@Put(':id')

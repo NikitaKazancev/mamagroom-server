@@ -14,6 +14,7 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
+import { getMemStart, logUsedMemory } from 'src/utils/functions'
 import { BreedDto } from './breed.dto'
 import { BreedService } from './breed.service'
 
@@ -28,7 +29,14 @@ export class BreedController {
 		@Query('isDeleted', OptionalParseBoolPipe) isDeleted?: boolean,
 		@Query('type') type?: 'dogs' | 'cats'
 	) {
-		return await this.service.findMany({ language, isDeleted, type })
+		const memStart = getMemStart()
+		const response = await this.service.findMany({
+			language,
+			isDeleted,
+			type,
+		})
+		logUsedMemory(memStart, 'findMany breeds')
+		return response
 	}
 
 	@Get(':id')

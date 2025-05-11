@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config'
 import { AuthGuard } from '@nestjs/passport'
 import { Recaptcha } from '@nestlab/google-recaptcha'
 import { Response } from 'express'
+import { getMemStart, logUsedMemory } from 'src/utils/functions'
 import { AuthDto } from './auth.dto'
 import { AuthService } from './auth.service'
 import { GithubUser } from './oauth/github/github.service'
@@ -36,7 +37,10 @@ export class AuthController {
 		@Body() data: AuthDto,
 		@Res({ passthrough: true }) res: Response
 	) {
-		return await this.service.login(data, res)
+		const memStart = getMemStart()
+		const response = await this.service.login(data, res)
+		logUsedMemory(memStart, 'login')
+		return response
 	}
 
 	@Post('register')

@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -13,9 +14,9 @@ import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
+import { getMemStart, logUsedMemory } from 'src/utils/functions'
 import { HeaderNavbarLinkDto } from './header-navbar-link.dto'
 import { HeaderNavbarLinkService } from './header-navbar-link.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('header-navbar-links')
 @UseInterceptors(CacheInterceptor)
@@ -32,7 +33,10 @@ export class HeaderNavbarLinkController {
 
 	@Get(':id')
 	async findById(@Param('id') id: string) {
-		return await this.service.findById(id)
+		const memStart = getMemStart()
+		const response = await this.service.findById(id)
+		logUsedMemory(memStart, 'findById header-navbar-links')
+		return response
 	}
 
 	@Post()

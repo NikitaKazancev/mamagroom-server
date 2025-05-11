@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -11,9 +12,9 @@ import {
 import { Role } from '@prisma/client'
 import { Auth } from 'src/auth/decorators/auth.decorator'
 import { type Language } from 'src/utils/constants'
+import { getMemStart, logUsedMemory } from 'src/utils/functions'
 import { ConstantDto } from './constant.dto'
 import { ConstantService } from './constant.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('constants')
 @UseInterceptors(CacheInterceptor)
@@ -26,7 +27,10 @@ export class ConstantController {
 		@Query('type') type?: string,
 		@Query('name') name?: string
 	) {
-		return await this.service.findMany({ language, type, name })
+		const memStart = getMemStart()
+		const response = await this.service.findMany({ language, type, name })
+		logUsedMemory(memStart, 'findMany constants')
+		return response
 	}
 
 	@Post()

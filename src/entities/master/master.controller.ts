@@ -1,3 +1,4 @@
+import { CacheInterceptor } from '@nestjs/cache-manager'
 import {
 	Body,
 	Controller,
@@ -14,10 +15,9 @@ import { Auth } from 'src/auth/decorators/auth.decorator'
 import { SaveFile } from 'src/file/utils/file.interceptors'
 import { OptionalParseBoolPipe } from 'src/pipes/optional-parse-bool.pipe'
 import { type Language } from 'src/utils/constants'
-import { toBoolean } from 'src/utils/functions'
+import { getMemStart, logUsedMemory, toBoolean } from 'src/utils/functions'
 import { MasterDto } from './master.dto'
 import { MasterService } from './master.service'
-import { CacheInterceptor } from '@nestjs/cache-manager'
 
 @Controller('masters')
 @UseInterceptors(CacheInterceptor)
@@ -56,8 +56,11 @@ export class MasterController {
 		@Body() data: MasterDto,
 		@UploadedFile() file?: Express.Multer.File
 	) {
+		const memStart = getMemStart()
 		this.castDataPropsTypes(data)
-		return await this.service.change(id, data, file)
+		const response = await this.service.change(id, data, file)
+		logUsedMemory(memStart, 'change masters')
+		return response
 	}
 
 	@Delete(':id')
