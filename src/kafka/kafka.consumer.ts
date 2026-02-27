@@ -8,6 +8,7 @@ import {
 import { ConfigService } from '@nestjs/config'
 import { Consumer, Kafka } from 'kafkajs'
 import { Cache } from 'src/types/extended-cache.interface'
+import { v4 as uuidv4 } from 'uuid'
 
 @Injectable()
 export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
@@ -25,7 +26,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 		}
 
 		this.kafka = new Kafka({
-			clientId: `nestjs-cache-group`,
+			clientId: `nestjs-consumer-${uuidv4()}`,
 			brokers: ['kafka:9092'],
 		})
 	}
@@ -35,7 +36,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 			return
 		}
 
-		const groupId = `nestjs-cache-group`
+		const groupId = `nestjs-group-${uuidv4()}`
 		this.consumer = this.kafka.consumer({ groupId })
 
 		await this.consumer.connect()
