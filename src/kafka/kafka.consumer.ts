@@ -2,11 +2,12 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager'
 import {
 	Inject,
 	Injectable,
+	Logger,
 	OnModuleDestroy,
 	OnModuleInit,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Consumer, Kafka, Logger } from 'kafkajs'
+import { Consumer, Kafka } from 'kafkajs'
 import { Cache } from 'src/types/extended-cache.interface'
 import { KAFKA_UID } from 'src/utils/constants'
 import { v4 as uuidv4 } from 'uuid'
@@ -50,7 +51,7 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 
 		await this.consumer.run({
 			eachMessage: async ({ topic, partition, message }) => {
-				this.logger.info(
+				this.logger.log(
 					`Received request to clear cache... [${Date.now()}] [KAFKA_UID = ${KAFKA_UID}]`,
 				)
 				await this.cacheManager.clear()
