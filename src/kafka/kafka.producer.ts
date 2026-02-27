@@ -13,11 +13,9 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 	private kafka = undefined
 	private producer: Producer
 	private nodeEnv: string
+	private readonly logger = new Logger(KafkaProducerService.name)
 
-	constructor(
-		private readonly configService: ConfigService,
-		private readonly logger: Logger,
-	) {
+	constructor(private readonly configService: ConfigService) {
 		this.nodeEnv = this.configService.get('NODE_ENV')
 		if (this.nodeEnv === 'development') {
 			return

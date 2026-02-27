@@ -17,11 +17,11 @@ export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy {
 	private kafka = undefined
 	private consumer: Consumer
 	private nodeEnv: string
+	private readonly logger = new Logger(KafkaConsumerService.name)
 
 	constructor(
 		@Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
 		private readonly configService: ConfigService,
-		private readonly logger: Logger,
 	) {
 		this.nodeEnv = this.configService.get('NODE_ENV')
 		if (this.nodeEnv === 'development') {

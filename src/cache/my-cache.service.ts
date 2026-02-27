@@ -6,9 +6,10 @@ import { KAFKA_UID } from 'src/utils/constants'
 
 @Injectable()
 export class MyCacheService {
+	private readonly logger = new Logger(MyCacheService.name)
+
 	constructor(
 		private readonly kafkaProducerService: KafkaProducerService,
-		private readonly logger: Logger,
 		@Inject(CACHE_MANAGER) private readonly cacheManager: Cache,
 	) {}
 
