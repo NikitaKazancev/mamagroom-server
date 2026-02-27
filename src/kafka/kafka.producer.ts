@@ -1,6 +1,7 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
-import { Kafka, Producer } from 'kafkajs'
+import { Kafka, Logger, Producer } from 'kafkajs'
+import { KAFKA_UID } from 'src/utils/constants'
 
 @Injectable()
 export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
@@ -8,7 +9,10 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 	private producer: Producer
 	private nodeEnv: string
 
-	constructor(private readonly configService: ConfigService) {
+	constructor(
+		private readonly configService: ConfigService,
+		private readonly logger: Logger,
+	) {
 		this.nodeEnv = this.configService.get('NODE_ENV')
 		if (this.nodeEnv === 'development') {
 			return
@@ -34,6 +38,9 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
 			return
 		}
 
+		this.logger.info(
+			`Sending request to clear cache... [${Date.now()}] [KAFKA_UID = ${KAFKA_UID}]`,
+		)
 		await this.producer.send({
 			topic: 'cache-clear-topic',
 			messages: [{ value: 'reset-cache' }],
